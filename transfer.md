@@ -34,7 +34,10 @@ Transfer learning takes two slightly different approaches (http://cs231n.github.
 - __Fine-tuning the ConvNet__ The second strategy is to not only replace and retrain the classifier on top of the ConvNet on the new dataset, but to also fine-tune the weights of the pretrained network by continuing the backpropagation. It is possible to fine-tune all the layers of the ConvNet, or it’s possible to keep some of the earlier layers fixed (due to overfitting concerns) and only fine-tune some higher-level portion of the network (more on this later)
 
 ### Transfer learning using inception-v3
-Inception-v3 is a ConvNet trained on ImageNet and developed by Google, the default input size for this model is 299 x 299 with three channels. (The following code has been written using the Keras library with a TensorFlow backend)
+The following model has been trained to distinguish [Fender Stratocaster](https://en.wikipedia.org/wiki/Fender_Stratocaster) and [Gibson Les Paul](https://en.wikipedia.org/wiki/Gibson_Les_Paul) guitar pictures (In this regard, the [Flickr APIs](https://www.flickr.com/services/api/), Instagram or Google Image results are invaluable resources for the collection of training sets for ConvNets).
+Inception-v3 is a ConvNet trained on ImageNet and developed by Google, the default input size for this model is 299 x 299 with three channels.  
+
+(The following code has been written using the Keras library with a TensorFlow backend)
 
 
 Let's first import the necessary libraries and instantiate a the Inception-v3 model contained in Keras:
@@ -50,14 +53,21 @@ base_model = InceptionV3( weights =' imagenet', include_top = False)
 ```
 `include_top` is set `False` in order to exclude the last three layers (including the final softmax layer with 200 classes of output). We are basically 'chopping off' the external layers to replace them with a classifier of our choice, to be refitted using a new training dataset.
 
-```
+```python
 layer x = base_model.output x = GlobalAveragePooling2D()( x)
 # let's add a fully-connected layer as first layer
-x = Dense( 1024, activation =' relu')( x)
-# and a logistic layer with 200 classes as last layer 
-predictions = Dense( 200, activation =' softmax')( x)
-# model to train model = Model( input = base_model.input, output = predictions)
+x = Dense( 1024, activation ='relu')(x)
+# and a logistic layer with 2 classes as the last layer
+predictions = Dense(1, activation ='sigmoid')(x)
+model = Model( input = base_model.input, output = predictions)
 ```
 
+All the convolutional InceptionV3 layers are frozen, so that training is only allowed for the external (newly defined) layers
+```python
+ 
+for layer in base_model.layers: layer.trainable = False
+
+Gulli, Antonio; Pal, Sujit. Deep Learning with Keras (posizioni nel Kindle 1504-1505). Packt Publishing. Edizione del Kindle. 
+```
 
 * part of the code referenced in this section has been ported and adapted from [here](https://github.com/PacktPublishing/Deep-Learning-with-Keras/blob/master/LICENSE)
