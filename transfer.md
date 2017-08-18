@@ -1,4 +1,5 @@
-# Transfer learning: making your ConvNets great since 2014
+# Transfer learning
+## Making your ConvNets great since 2014
 
 ### Convolutional neural networks (CNN): the context
 Many deep neural networks trained on natural images exhibit a curious phenomenon in common: on the first layer they learn features similar to Gabor filters and color blobs. The appearance of these filters is very common, and made researchers understand that such first layers are not _specific_ for a certain task or a dataset, but they can truly build the foundation of a _general_ learning system.
