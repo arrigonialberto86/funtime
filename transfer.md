@@ -8,10 +8,10 @@ On the other hand, generalization power is progressively lost by the terminal la
 
 <img src="transfer_learning/image_1.png" alt="Image not found" width="600"/>
 ======
-__Fig.1__: Outer layers in convnets tend to learn features similar to Gabor filters and color blobs
+__Fig.1__: The first convolutional layers in convnets tend to learn features similar to Gabor filters and color blobs
 
 ### What is 'transfer learning'?
-It is often difficult (and computationally very expensive) to reach the amount of data needed to train CNNs (which is in order of tens of thousands of images). Instead, it is common to pretrain a ConvNet on a very large dataset (e.g. ImageNet, which contains 1.2 million images with 1000 categories), and then use the ConvNet as a fixed feature extractor for the task of interest (Razavian et al., 2014)
+It is often difficult (and computationally very expensive) to collect the amount of data needed to train CNNs from scratch (which is in order of tens of thousands of images). Instead, it is common to pretrain a ConvNet on a very large dataset (e.g. ImageNet, which contains 1.2 million images with 1000 categories), and then use the ConvNet as a fixed feature extractor for the task of interest (Razavian et al., 2014).
 
 
 This means: take a ConvNet that has been pre-trained on ImageNet (a huge repository of images collected for this purpose), remove the last fully-connected layer (which as we have shown is specific for the task the network was trained for), then treat the rest of the ConvNet as a feature extractor for the new dataset. Once you extract the features for all images, train a classifier for the new dataset.
