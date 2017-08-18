@@ -26,7 +26,7 @@ Syntax highlighted code block
 [Link](url) and ![Image](src)
 ```
 
-[Link Text](https://github.com/arrigonialberto86/funtime/blob/master/transfer_learning/transfer.md)
+[Link Text](https://arrigonialberto86.github.io/funtime/transfer)
 [a relative link](transfer_learning/transfer.md)
 
 For more details see [GitHub Flavored Markdown](https://guides.github.com/features/mastering-markdown/).
