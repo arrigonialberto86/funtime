@@ -9,7 +9,7 @@ The effectiveness of transfer learning is supported by a vast amount of evidence
 - initializing a network with transferred features from almost any number of layers can produce a boost to generalization that lingers even after fine-tuning to the target dataset (Yosinski et al., 2014)
 
 <img src="transfer_learning/image_1.png" alt="Image not found" width="600"/>
-
+======
 __Fig.1__: outer layers in convnets tend to learn features similar to Gabor filters and color blobs
 
 
