@@ -34,10 +34,10 @@ Transfer learning takes two slightly different approaches (http://cs231n.github.
 - __Fine-tuning the ConvNet__ The second strategy is to not only replace and retrain the classifier on top of the ConvNet on the new dataset, but to also fine-tune the weights of the pretrained network by continuing the backpropagation. It is possible to fine-tune all the layers of the ConvNet, or it’s possible to keep some of the earlier layers fixed (due to overfitting concerns) and only fine-tune some higher-level portion of the network (more on this later)
 
 ### Transfer learning using inception-v3
-The following model has been trained to distinguish [Fender Stratocaster](https://en.wikipedia.org/wiki/Fender_Stratocaster) and [Gibson Les Paul](https://en.wikipedia.org/wiki/Gibson_Les_Paul) guitar pictures (In this regard, the [Flickr APIs](https://www.flickr.com/services/api/), Instagram or Google Image results are invaluable resources for the collection of training sets for ConvNets).
+The following model has been trained to distinguish [Fender Stratocaster](https://en.wikipedia.org/wiki/Fender_Stratocaster), [Gibson Les Paul](https://en.wikipedia.org/wiki/Gibson_Les_Paul) and [Gibson SG](https://en.wikipedia.org/wiki/Gibson_SG) guitar pictures (In this regard, the [Flickr APIs](https://www.flickr.com/services/api/), Instagram or Google Image results are invaluable resources for the collection of training sets for ConvNets).
 Inception-v3 is a ConvNet trained on ImageNet and developed by Google, the default input size for this model is 299 x 299 with three channels.  
 
-(The following code has been written using the Keras library with a TensorFlow backend)
+(The following code has been written using the Keras library with TensorFlow backend)
 
 
 Let's first import the necessary libraries and instantiate a the Inception-v3 model contained in Keras:
@@ -53,6 +53,8 @@ base_model = InceptionV3( weights =' imagenet', include_top = False)
 ```
 `include_top` is set `False` in order to exclude the last three layers (including the final softmax layer with 200 classes of output). We are basically 'chopping off' the external layers to replace them with a classifier of our choice, to be refitted using a new training dataset.
 
+
+`x = GlobalAveragePooling2D()( x)` is used to convert the input to the correct shape for the dense layer to handle. This means that this function 'bridges' from the convolutional Inception V3 layers to the Dense layer that we use to classify our guitars in the final layers. 
 ```python
 layer x = base_model.output x = GlobalAveragePooling2D()( x)
 # let's add a fully-connected layer as first layer
@@ -74,7 +76,7 @@ Now our model is ready to be trained on the 'guitar' dataset:
 model.compile( optimizer =' rmsprop', loss =' categorical_crossentropy') # train the model on the new data for a few epochs model.fit_generator(...)
 ```
 
-We now freeze the top layers we have just trained and unfreeze the rest:
+We now freeze the top layers we have just trained and unfreeze the rest to allow fine-tuning in the following step:
 ```python
 for layer in model.layers[: 172]: 
 layer.trainable = False 
@@ -83,11 +85,13 @@ for layer in model.layers[ 172:]:
 layer.trainable = True
 ```
 
-```
-# we use SGD with a low learning rate 
+```python
+# We re-train again using SGD
 from keras.optimizers import SGD 
-model.compile( optimizer = SGD( lr = 0.0001, momentum = 0.9), loss =' categorical_crossentropy') 
-# we train our model again (this time fine-tuning the top 2 inception blocks) 
+model.compile( optimizer = SGD( lr = 0.0001, momentum = 0.9), 
+               loss =' categorical_crossentropy')
+        
+# we train our model again (fine-tuning)
 # alongside the top Dense layers 
 model.fit_generator(...) 
 ```
