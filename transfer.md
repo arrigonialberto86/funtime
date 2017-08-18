@@ -34,6 +34,13 @@ Transfer learning takes two slightly different approaches (http://cs231n.github.
 - __Fine-tuning the ConvNet__ The second strategy is to not only replace and retrain the classifier on top of the ConvNet on the new dataset, but to also fine-tune the weights of the pretrained network by continuing the backpropagation. It is possible to fine-tune all the layers of the ConvNet, or it’s possible to keep some of the earlier layers fixed (due to overfitting concerns) and only fine-tune some higher-level portion of the network (more on this later)
 
 ### Transfer learning using inception-v3
-Inception-v3 is a ConvNet trained on ImageNet and developed by Google, the default input size for this model is 299 x 299 with three channels. The following code has been written using the Keras library with a TensorFlow backend.
+Inception-v3 is a ConvNet trained on ImageNet and developed by Google, the default input size for this model is 299 x 299 with three channels. (The following code has been written using the Keras library with a TensorFlow backend)
+
+
+Let's first import the necessary libraries and instantiate a the Inception-v3 model contained in Keras:
+```python
+from keras.applications.inception_v3 import InceptionV3 from keras.preprocessing import image from keras.models import Model from keras.layers import Dense, GlobalAveragePooling2D from keras import backend as K # create the base pre-trained model base_model = InceptionV3( weights =' imagenet', include_top = False) 
+```
+`include_top` is set `False` in order to exclude the external layers (including the final softmax layer with 200 classes of output). 
 
 * part of the code referenced in this section has been ported and adapted from [here](https://github.com/PacktPublishing/Deep-Learning-with-Keras/blob/master/LICENSE)
