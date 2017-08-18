@@ -60,7 +60,7 @@ layer x = base_model.output x = GlobalAveragePooling2D()( x)
 # let's add a fully-connected layer as first layer
 x = Dense( 1024, activation ='relu')(x)
 # and a logistic layer with 2 classes as the last layer (Les Paul vs Stratocaster)
-predictions = Dense(1, activation ='sigmoid')(x)
+predictions = Dense(3, activation ='softmax')(x)
 # let's create a Keras model to be trained
 model = Model( input = base_model.input, output = predictions)
 ```
