@@ -9,7 +9,7 @@ On the other hand, generalization power is progressively lost by the terminal la
 ======
 __Fig.1__: Outer layers in convnets tend to learn features similar to Gabor filters and color blobs
 
-### What is transfer learning?
+### What is 'transfer learning'?
 It is often difficult (and computationally very expensive) to reach the amount of data needed to train CNNs (which is in order of tens of thousands of images). Instead, it is common to pretrain a ConvNet on a very large dataset (e.g. ImageNet, which contains 1.2 million images with 1000 categories), and then use the ConvNet as a fixed feature extractor for the task of interest (Razavian et al., 2014)
 
 
@@ -18,3 +18,8 @@ This means: take a ConvNet that has been pre-trained on ImageNet (a huge reposit
 The effectiveness of transfer learning is supported by a vast amount of evidence, and some recent (empirical) findings have spurred much interest in the methodology, as:
 - the transferability of features decreases as the distance between the base task and target task increases, but transferring features even from distant tasks can be better than using random features (Yosinski et al., 2014)
 - initializing a network with transferred features from almost any number of layers can produce a boost to generalization that lingers even after fine-tuning to the target dataset (Yosinski et al., 2014)
+
+<img src="transfer_learning/image_2.png" alt="Image not found" width="600"/>
+======
+__Fig.2__: Transfer learning using a feature extractor for another pre-trained network (e.g Inception V3)
+
