@@ -24,14 +24,16 @@ The effectiveness of transfer learning is supported by a vast amount of evidence
 ======
 __Fig.2__: Transfer learning: the green layers are borrowed from the first network and supplied as feature extractors to the second network (with frozen weights)
 
-
-Transfer learning takes two slightly different approaches (http://cs231n.github.io/transfer-learning/):
-- __ConvNet as fixed feature extractor__ Take a ConvNet pretrained on ImageNet, remove the last fully-connected layer (this layer’s outputs are the 1000 class scores for a different task like ImageNet), then treat the rest of the ConvNet as a fixed feature extractor for the new dataset (as depicted in Fig.2)
-- __Fine-tuning the ConvNet__ The second strategy is to not only replace and retrain the classifier on top of the ConvNet on the new dataset, but to also fine-tune the weights of the pretrained network by continuing the backpropagation. It is possible to fine-tune all the layers of the ConvNet, or it’s possible to keep some of the earlier layers fixed (due to overfitting concerns) and only fine-tune some higher-level portion of the network (more on this later)
-
 ### Why it is useful
 - With transfer learning it is possible to greatly reduce the need for computational power when training ConvNets, as a pre-trained network is being 'repurposed' to address a different task
 - Reduced-size training set: the size of the input dataset to be used for training/evaluation varies according to the task at hand, but as a rule of thumb a dataset of at least ~300 images per class can be used to train a new ConvNet (as opposed to tens of thousand that we would need to train a network from scratch).
 
+### Transfer learning approaches
+Transfer learning takes two slightly different approaches (http://cs231n.github.io/transfer-learning/):
+- __ConvNet as fixed feature extractor__ Take a ConvNet pretrained on ImageNet, remove the last fully-connected layer (this layer’s outputs are the 1000 class scores for a different task like ImageNet), then treat the rest of the ConvNet as a fixed feature extractor for the new dataset (as depicted in Fig.2)
+- __Fine-tuning the ConvNet__ The second strategy is to not only replace and retrain the classifier on top of the ConvNet on the new dataset, but to also fine-tune the weights of the pretrained network by continuing the backpropagation. It is possible to fine-tune all the layers of the ConvNet, or it’s possible to keep some of the earlier layers fixed (due to overfitting concerns) and only fine-tune some higher-level portion of the network (more on this later)
 
+### Transfer learning using inception-v3
+Inception-v3 is a ConvNet trained on ImageNet and developed by Google, the default input size for this model is 299 x 299 with three channels. The following code has been written using the Keras library with a TensorFlow backend.
 
+* part of the code referenced in this section has been ported and adapted from [here](https://github.com/PacktPublishing/Deep-Learning-with-Keras/blob/master/LICENSE)
