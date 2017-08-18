@@ -39,8 +39,25 @@ Inception-v3 is a ConvNet trained on ImageNet and developed by Google, the defau
 
 Let's first import the necessary libraries and instantiate a the Inception-v3 model contained in Keras:
 ```python
-from keras.applications.inception_v3 import InceptionV3 from keras.preprocessing import image from keras.models import Model from keras.layers import Dense, GlobalAveragePooling2D from keras import backend as K # create the base pre-trained model base_model = InceptionV3( weights =' imagenet', include_top = False) 
+from keras.applications.inception_v3 import InceptionV3 
+from keras.preprocessing import image 
+from keras.models import Model 
+from keras.layers import Dense, GlobalAveragePooling2D 
+from keras import backend as K 
+
+# Instantiate the inception-V3 pre-trained model
+base_model = InceptionV3( weights =' imagenet', include_top = False) 
 ```
-`include_top` is set `False` in order to exclude the external layers (including the final softmax layer with 200 classes of output). 
+`include_top` is set `False` in order to exclude the last three layers (including the final softmax layer with 200 classes of output). We are basically 'chopping off' the external layers to replace them with a classifier of our choice, to be refitted using a new training dataset.
+
+```
+layer x = base_model.output x = GlobalAveragePooling2D()( x)
+# let's add a fully-connected layer as first layer
+x = Dense( 1024, activation =' relu')( x)
+# and a logistic layer with 200 classes as last layer 
+predictions = Dense( 200, activation =' softmax')( x)
+# model to train model = Model( input = base_model.input, output = predictions)
+```
+
 
 * part of the code referenced in this section has been ported and adapted from [here](https://github.com/PacktPublishing/Deep-Learning-with-Keras/blob/master/LICENSE)
