@@ -21,5 +21,5 @@ The effectiveness of transfer learning is supported by a vast amount of evidence
 
 <img src="transfer_learning/image_2.png" alt="Image not found" width="600"/>
 ======
-__Fig.2__: Transfer learning using a feature extractor from another pre-trained network (e.g Inception V3)
+__Fig.2__: Transfer learning: the green layers are borrowed from the first network and supplied as feature extractors to the second network (with frozen weights)
 
