@@ -8,6 +8,6 @@ The effectiveness of transfer learning is supported by a vast amount of evidence
 - the transferability of features decreases as the distance between the base task and target task increases, but transferring features even from distant tasks can be better than using random features (Yosinski et al., 2014)
 - initializing a network with transferred features from almost any number of layers can produce a boost to generalization that lingers even after fine-tuning to the target dataset (Yosinski et al., 2014)
 
-![Convnets](https://drive.google.com/file/d/0BwSmakcH4uldNGF0Mlc0TktXNlU/view?usp=sharing)
+![Convnets](transfer_learning/image_1.png)
 
 
