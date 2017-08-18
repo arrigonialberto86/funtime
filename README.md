@@ -27,7 +27,7 @@ Syntax highlighted code block
 ```
 
 [Link Text](https://arrigonialberto86.github.io/funtime/transfer)
-[a relative link](transfer.md)
+[Link Text](transfer.md)
 
 For more details see [GitHub Flavored Markdown](https://guides.github.com/features/mastering-markdown/).
 
