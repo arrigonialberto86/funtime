@@ -23,6 +23,9 @@ The effectiveness of transfer learning is supported by a vast amount of evidence
 ======
 __Fig.2__: Transfer learning: the green layers are borrowed from the first network and supplied as feature extractors to the second network (with frozen weights)
 
- 
+
+Transfer learning takes two slightly different approaches:
+- __ConvNet as fixed feature extractor__ Take a ConvNet pretrained on ImageNet, remove the last fully-connected layer (this layer’s outputs are the 1000 class scores for a different task like ImageNet), then treat the rest of the ConvNet as a fixed feature extractor for the new dataset (as depicted in Fig.2)
+- __Fine-tuning the ConvNet__ The second strategy is to not only replace and retrain the classifier on top of the ConvNet on the new dataset, but to also fine-tune the weights of the pretrained network by continuing the backpropagation. It is possible to fine-tune all the layers of the ConvNet, or it’s possible to keep some of the earlier layers fixed (due to overfitting concerns) and only fine-tune some higher-level portion of the network (more on this later)
 
 
