@@ -34,7 +34,11 @@ Transfer learning takes two slightly different approaches (http://cs231n.github.
 - __Fine-tuning the ConvNet__ The second strategy is to not only replace and retrain the classifier on top of the ConvNet on the new dataset, but to also fine-tune the weights of the pretrained network by continuing the backpropagation. It is possible to fine-tune all the layers of the ConvNet, or it’s possible to keep some of the earlier layers fixed (due to overfitting concerns) and only fine-tune some higher-level portion of the network (more on this later)
 
 ### Transfer learning using inception-v3
-The following model has been trained to distinguish [Fender Stratocaster](https://en.wikipedia.org/wiki/Fender_Stratocaster), [Gibson Les Paul](https://en.wikipedia.org/wiki/Gibson_Les_Paul) and [Gibson SG](https://en.wikipedia.org/wiki/Gibson_SG) guitar pictures (In this regard, the [Flickr APIs](https://www.flickr.com/services/api/), Instagram or Google Image results are invaluable resources for the collection of training sets for ConvNets).
+The following code builds a model that classifies [Fender Stratocaster](https://en.wikipedia.org/wiki/Fender_Stratocaster), [Gibson Les Paul](https://en.wikipedia.org/wiki/Gibson_Les_Paul) and [Gibson SG](https://en.wikipedia.org/wiki/Gibson_SG) guitar pictures (In this regard, the [Flickr APIs](https://www.flickr.com/services/api/), Instagram or Google Image results are invaluable resources for the collection of training sets for ConvNets).
+
+Model building is performed through two subsequent operations:
+- __Transfer learning__: freeze all but the penultimate layer and re-train the last Dense layer
+- __Fine-tuning__: un-freeze the lower convolutional layers and retrain more layers
 Inception-v3 is a ConvNet trained on ImageNet and developed by Google, the default input size for this model is 299 x 299 with three channels.  
 
 (The following code has been written using the Keras library with TensorFlow backend)
@@ -76,12 +80,12 @@ Now our model is ready to be trained on the 'guitar' dataset:
 model.compile( optimizer =' rmsprop', loss =' categorical_crossentropy') # train the model on the new data for a few epochs model.fit_generator(...)
 ```
 
-We now freeze the top layers we have just trained and unfreeze the rest to allow fine-tuning in the following step:
+Now freeze the first ~150 layers (an hyperparameter to be tuned) and unfreeze the rest to perform fine-tuning:
 ```python
-for layer in model.layers[: 172]: 
+for layer in model.layers[: 150]: 
 layer.trainable = False 
 
-for layer in model.layers[ 172:]: 
+for layer in model.layers[ 150:]: 
 layer.trainable = True
 ```
 
@@ -96,5 +100,5 @@ model.compile( optimizer = SGD( lr = 0.0001, momentum = 0.9),
 model.fit_generator(...) 
 ```
 
-We now have a deep network that has been trained on a new domain using the standard Inception V3 network, although (of course) there are many hyper-parameters that need to be fine-tuned in order to achieve a good level of accuracy. 
+We now have a deep network that has been trained on a new domain using the standard Inception V3 network,   although (of course) there are many hyper-parameters that need to be fine-tuned in order to achieve a good level of accuracy. 
 * part of the code referenced in this section has been ported and adapted from [here](https://github.com/PacktPublishing/Deep-Learning-with-Keras/blob/master/LICENSE)
