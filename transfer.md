@@ -57,17 +57,40 @@ base_model = InceptionV3( weights =' imagenet', include_top = False)
 layer x = base_model.output x = GlobalAveragePooling2D()( x)
 # let's add a fully-connected layer as first layer
 x = Dense( 1024, activation ='relu')(x)
-# and a logistic layer with 2 classes as the last layer
+# and a logistic layer with 2 classes as the last layer (Les Paul vs Stratocaster)
 predictions = Dense(1, activation ='sigmoid')(x)
+# let's create a Keras model to be trained
 model = Model( input = base_model.input, output = predictions)
 ```
 
-All the convolutional InceptionV3 layers are frozen, so that training is only allowed for the external (newly defined) layers
+All the convolutional InceptionV3 layers are frozen, so that training is allowed only for the external layers
 ```python
- 
 for layer in base_model.layers: layer.trainable = False
-
-Gulli, Antonio; Pal, Sujit. Deep Learning with Keras (posizioni nel Kindle 1504-1505). Packt Publishing. Edizione del Kindle. 
 ```
 
+Now our model is ready to be trained on the 'guitar' dataset: 
+```python
+# compile the model
+model.compile( optimizer =' rmsprop', loss =' categorical_crossentropy') # train the model on the new data for a few epochs model.fit_generator(...)
+```
+
+We now freeze the top layers we have just trained and unfreeze the rest:
+```python
+for layer in model.layers[: 172]: 
+layer.trainable = False 
+
+for layer in model.layers[ 172:]: 
+layer.trainable = True
+```
+
+```
+# we use SGD with a low learning rate 
+from keras.optimizers import SGD 
+model.compile( optimizer = SGD( lr = 0.0001, momentum = 0.9), loss =' categorical_crossentropy') 
+# we train our model again (this time fine-tuning the top 2 inception blocks) 
+# alongside the top Dense layers 
+model.fit_generator(...) 
+```
+
+We now have a deep network that has been trained on a new domain using the standard Inception V3 network, although (of course) there are many hyper-parameters that need to be fine-tuned in order to achieve a good level of accuracy. 
 * part of the code referenced in this section has been ported and adapted from [here](https://github.com/PacktPublishing/Deep-Learning-with-Keras/blob/master/LICENSE)
