@@ -39,12 +39,14 @@ The following code builds a model that classifies [Fender Stratocaster](https://
 Model building is performed through two subsequent operations:
 - __Transfer learning__: freeze all but the penultimate layer and re-train the last Dense layer
 - __Fine-tuning__: un-freeze the lower convolutional layers and retrain more layers
-Inception-v3 is a ConvNet trained on ImageNet and developed by Google, the default input size for this model is 299 x 299 with three channels.  
+Doing both, in that order, will ensure a more stable and consistent training.
 
-(The following code has been written using the Keras library with TensorFlow backend)
+The pre-trained ConvNet we will use for this tutorial is the Inception-v3, which is a ConvNet developed by Google (the default input size for this model is 299 x 299 with three channels).
+
+(The following code has been written using the Keras 2.0.6 library with TensorFlow backend)
 
 
-Let's first import the necessary libraries and instantiate a the Inception-v3 model contained in Keras:
+Let's first import the necessary libraries and instantiate the Inception-v3 model supported by Keras:
 ```python
 from keras.applications.inception_v3 import InceptionV3 
 from keras.preprocessing import image 
@@ -58,7 +60,7 @@ base_model = InceptionV3( weights =' imagenet', include_top = False)
 `include_top` is set `False` in order to exclude the last three layers (including the final softmax layer with 200 classes of output). We are basically 'chopping off' the external layers to replace them with a classifier of our choice, to be refitted using a new training dataset.
 
 
-`x = GlobalAveragePooling2D()( x)` is used to convert the input to the correct shape for the dense layer to handle. This means that this function 'bridges' from the convolutional Inception V3 layers to the Dense layer that we use to classify our guitars in the final layers. 
+We now stack on top of the Inception-V3 model (the 'chopped' version) our classifier. `x = GlobalAveragePooling2D()( x)` is used to convert the input to the correct shape for the dense layer to handle. This means that this function 'bridges' from the convolutional Inception V3 layers to the Dense layer that we use to classify our guitars in the final layers. 
 ```python
 layer x = base_model.output x = GlobalAveragePooling2D()( x)
 # let's add a fully-connected layer as first layer
@@ -71,7 +73,8 @@ model = Model( input = base_model.input, output = predictions)
 
 All the convolutional InceptionV3 layers are frozen, so that training is allowed only for the external layers
 ```python
-for layer in base_model.layers: layer.trainable = False
+for layer in base_model.layers: 
+    layer.trainable = False
 ```
 
 Now our model is ready to be trained on the 'guitar' dataset: 
@@ -80,7 +83,7 @@ Now our model is ready to be trained on the 'guitar' dataset:
 model.compile( optimizer =' rmsprop', loss =' categorical_crossentropy') # train the model on the new data for a few epochs model.fit_generator(...)
 ```
 
-Now freeze the first ~150 layers (an hyperparameter to be tuned) and unfreeze the rest to perform fine-tuning:
+Now freeze the first ~150 layers (an hyperparameter to be tuned) and 'unfreeze' the rest of the layers to perform fine-tuning:
 ```python
 for layer in model.layers[: 150]: 
 layer.trainable = False 
@@ -89,6 +92,8 @@ for layer in model.layers[ 150:]:
 layer.trainable = True
 ```
 
+
+We train again using the Dense layer on top of _some_ inception layers. When fine-tuning, it’s important to lower your learning rate relative to the rate that was used when training from scratch (lr=0.0001), otherwise, the optimization could destabilize and the loss diverge.
 ```python
 # We re-train again using SGD
 from keras.optimizers import SGD 
@@ -100,5 +105,5 @@ model.compile( optimizer = SGD( lr = 0.0001, momentum = 0.9),
 model.fit_generator(...) 
 ```
 
-We now have a deep network that has been trained on a new domain using the standard Inception V3 network,   although (of course) there are many hyper-parameters that need to be fine-tuned in order to achieve a good level of accuracy. 
+We now have a deep network that has been trained on a new domain using the standard Inception V3 network, although (of course) there are many hyper-parameters that need to be fine-tuned in order to achieve a good level of accuracy. 
 * part of the code referenced in this section has been ported and adapted from [here](https://github.com/PacktPublishing/Deep-Learning-with-Keras/blob/master/LICENSE)
