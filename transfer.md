@@ -106,4 +106,4 @@ model.fit_generator(...)
 ```
 
 We now have a deep network that has been trained on a new domain using the standard Inception V3 network, although (of course) there are many hyper-parameters that need to be fine-tuned in order to achieve a good level of accuracy. 
-* part of the code referenced in this section has been ported and adapted from [here](https://github.com/PacktPublishing/Deep-Learning-with-Keras/blob/master/LICENSE)
+* part of the code referenced in this section has been ported and adapted from [here](https://github.com/PacktPublishing/Deep-Learning-with-Keras)
