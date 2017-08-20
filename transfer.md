@@ -106,4 +106,10 @@ model.fit_generator(...)
 ```
 
 We now have a deep network that has been trained on a new domain using the standard Inception V3 network, although (of course) there are many hyper-parameters that need to be fine-tuned in order to achieve a good level of accuracy. 
-* part of the code referenced in this section has been ported and adapted from [here](https://github.com/PacktPublishing/Deep-Learning-with-Keras)
+
+### References (cited papers are not reported, only blogs/books)
+- [Gulli, Antonio; Pal, Sujit. Deep Learning with Keras (posizioni nel Kindle 1509-1516). Packt Publishing](https://www.packtpub.com/big-data-and-business-intelligence/deep-learning-keras)
+- [CS231 in Convolutional Neural networks](http://cs231n.github.io/transfer-learning/)
+- [The Keras blog](https://blog.keras.io/building-powerful-image-classification-models-using-very-little-data.html)
+- [Deep Learning book, Ian Goodfellow](https://pdfs.semanticscholar.org/751f/aab15cbb955b07537fc38901bc96d4e70f57.pdf)
+
