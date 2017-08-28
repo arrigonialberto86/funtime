@@ -14,3 +14,5 @@ Traditionally, autoencoders were used for dimensionality reduction or feature le
 
 <img src="https://latex.codecogs.com/gif.latex?\dpi{300}&space;\fn_phv&space;\tiny&space;x^{y}&space;&plus;&space;18&space;/&space;4" title="\tiny x^{y} + 18 / 4" />
 ### Applications of autoencoders
+
+<img src="https://latex.codecogs.com/gif.latex?\dpi{200}&space;\fn_phv&space;x^{y}&space;&plus;&space;18&space;/&space;4" title="x^{y} + 18 / 4" />
