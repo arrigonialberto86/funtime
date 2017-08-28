@@ -39,7 +39,7 @@ What autoencoders learn is a function mapping between the data points _x_ and an
 
 The vector produced by the function that maps a single observation to the _representation_ space is called 'embedding', and can be used to build a nearest neighbour graph of training examples connected by 'proximity' arcs (Gong et al., 2000).
 
-**Fig.2**: "data points x are funnel that attract" -> KNN
+**Fig.2**: Each training example is represented by a tangent plane of the manifold. Different examples can be tiled/interpolated to produce a continous density function representing the manifold
 
 As in k-NN, the generalization of the structure of the manifold is performed by interpolating neighboring points, which may result in inaccurate representations when dealing with manifolds with many 'peaks' and 'twists' (Bengio and Monperrus, 2005)
 
