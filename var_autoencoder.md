@@ -13,12 +13,14 @@ One way to obtain useful features from the autoencoder is to constrain _h_ to ha
 
 where _L_ is the loss function, the encoder is _f_ (mapping _x_ to _h_), while the decoder is _g_ (mapping _h_ to _r_)
 
-Autoencoders were mainly used for dimensionality reduction or feature learning. Recently, theoretical connections between autoencoders and latent variable models have brought autoencoders to the forefront of generative modeling, and variational autoencoders have become one of the hottest topics in unsupervised learning. Interested readers can refer this tutorial by Jaan Altosaar: [https://jaan.io/what-is-variational-autoencoder-vae-tutorial/] 
+
+Once the autoencoder is trained, we would typically just discard the decoder component and use the encoder component to generate compact representations of the input.
+In fact, autoencoders were mainly used for dimensionality reduction or feature learning. Recently, theoretical connections between autoencoders and latent variable models have brought autoencoders to the forefront of generative modeling, and variational autoencoders have become one of the hottest topics in unsupervised learning. Interested readers can refer this tutorial by Jaan Altosaar: [https://jaan.io/what-is-variational-autoencoder-vae-tutorial/] 
 
 \* in the present post I will not delve into the intricacies and advantages of stacking autoencoders and produce deep autoencoders, although experimentally deep autoencoders yield much better compression than corresponding linear autoencoders (Hinton and Salakhutdinov, 2006).
 
 ### Denoising autoencoder
- 
+
 A denoising autoencoder is an autoencoder that receives corrupted data as input and learns to predict the original uncorrupted version of the data (which is supplied during training).
 Corrupted data points are generated from 
 <img src="https://latex.codecogs.com/gif.latex?\dpi{200}&space;\fn_phv&space;\small&space;C(\widetilde{x}&space;|&space;x)" title="\small C(\widetilde{x} | x)" />,  which represents a conditional distribution over corrupted samples <img src="https://latex.codecogs.com/gif.latex?\dpi{200}&space;\fn_phv&space;\small&space;\widetilde{x}" title="\small \widetilde{x}" /> given a data sample <img src="https://latex.codecogs.com/gif.latex?\dpi{200}&space;\fn_phv&space;\small&space;x" title="\small x" />
@@ -27,3 +29,10 @@ The training strategy for denoising autoencoders is as follows:
 1. Sample a training example <img src="https://latex.codecogs.com/gif.latex?\dpi{200}&space;\fn_phv&space;\small&space;x" title="\small x" /> from the training data
 2. Sample a corrupted version <img src="https://latex.codecogs.com/gif.latex?\dpi{200}&space;\fn_phv&space;\small&space;\widetilde{x}" title="\small \widetilde{x}" /> from <img src="https://latex.codecogs.com/gif.latex?\dpi{200}&space;\fn_phv&space;\small&space;C(\widetilde{x}&space;|&space;x&space;=&space;x)" title="\small C(\widetilde{x} | x = x)" />
 3. Use <img src="https://latex.codecogs.com/gif.latex?\dpi{200}&space;\fn_phv&space;\small&space;(\widetilde{x},&space;x)" title="\small (\widetilde{x}, x)" /> as a training data point for error estimation
+
+### Learning manifolds with autoencoders
+Manifold learning is an approach to non-linear dimensionality reduction. Algorithms for this task are based on the idea that the dimensionality of many data sets is only artificially high, and can be reduced to a low-dimensional representation that (can) limit overfitting of learners using as input this low-dimensional dataset.
+
+
+
+
