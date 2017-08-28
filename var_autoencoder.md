@@ -8,6 +8,6 @@ One way to obtain useful features from the autoencoder is to constrain `h` to ha
 
 Traditionally, autoencoders were used for dimensionality reduction or feature learning. Recently, theoretical connections between autoencoders and latent variable models have brought autoencoders to the forefront of generative modeling, and variational autoencoders have become one of the hottest topics around.
 
-
+<img src="https://latex.codecogs.com/gif.latex?\dpi{200}&space;\fn_phv&space;x^{y}&space;&plus;&space;18&space;/&space;4" title="x^{y} + 18 / 4" />
 
 ### Applications of autoencoders
