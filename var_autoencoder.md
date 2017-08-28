@@ -33,13 +33,15 @@ The training strategy for denoising autoencoders is as follows:
 ### Learning manifolds with autoencoders
 Manifold learning is an approach to non-linear dimensionality reduction. Algorithms for this task are based on the idea that the dimensionality of many data sets is only artificially high, and can be reduced to a low-dimensional representation that (among other things) limits overfitting of learners that use this low-dimensional dataset as input.
 
-Autoencoders characterize the manifold using the set of its _tangent planes_. At a point _x_ on a d-dimensional manifold, the tangent plane is given by d basis vectors that span the local directions of variation allowed on the manifold. These local directions specify how one can change _x_ infinitesimally while staying on the manifold. 
+Autoencoders characterize the manifold using a set of its _tangent planes_ (described by the training data). At a point _x_ on a d-dimensional manifold, the tangent plane is given by d basis vectors that span the local directions of variation allowed on the manifold. These local directions specify how one can change _x_ infinitesimally while staying on the manifold. 
 
-What autoencoders learn is a mapping between the data points _x_ and their internal _representation_ space. This mapping is only sensitive to changes along the manifold directions (while being insensitive to changes orthogonal to the manifold). Precisely by making the reconstruction function insensitive to perturbations of the input around the data points we recover the manifold structure.
+What autoencoders learn is a function mapping between the data points _x_ and an internal _representation_ space. This mapping is only sensitive to changes along the manifold directions (while being insensitive to changes orthogonal to the manifold). By making the reconstruction function insensitive to perturbations of the input around the data points we recover the manifold structure.
 
-"data points x are funnel that attract" -> KNN
+The vector produced by the function that maps a single observation to the _representation_ space is called 'embedding', and can be used to build a nearest neighbour graph of training examples connected by 'proximity' arcs (Gong et al., 2000).
 
-As in k-NN, the generalization of the structure of the manifold is performed by interpolating neighboring points, which may result in inaccurate representations when dealing with manifolds with many 'peaks' and 'twists'.
+**Fig.2**: "data points x are funnel that attract" -> KNN
+
+As in k-NN, the generalization of the structure of the manifold is performed by interpolating neighboring points, which may result in inaccurate representations when dealing with manifolds with many 'peaks' and 'twists' (Bengio and Monperrus, 2005)
 
 
 
