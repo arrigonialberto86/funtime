@@ -19,4 +19,11 @@ Autoencoders were mainly used for dimensionality reduction or feature learning. 
 
 ### Denoising autoencoder
  
-A denoising autoencoder is an autoencoder that receives corrupted data in input
+A denoising autoencoder is an autoencoder that receives corrupted data as input and learns to predict the original uncorrupted version of the data (which is supplied during training).
+Corrupted data points are generated from 
+<img src="https://latex.codecogs.com/gif.latex?\dpi{200}&space;\fn_phv&space;\small&space;C(\widetilde{x}&space;|&space;x)" title="\small C(\widetilde{x} | x)" />,  which represents a conditional distribution over corrupted samples <img src="https://latex.codecogs.com/gif.latex?\dpi{200}&space;\fn_phv&space;\small&space;\widetilde{x}" title="\small \widetilde{x}" /> given a data sample <img src="https://latex.codecogs.com/gif.latex?\dpi{200}&space;\fn_phv&space;\small&space;x" title="\small x" />
+
+The training strategy for denoising autoencoders is as follows:
+1. Sample a training example <img src="https://latex.codecogs.com/gif.latex?\dpi{200}&space;\fn_phv&space;\small&space;x" title="\small x" /> from the training data
+2. Sample a corrupted version <img src="https://latex.codecogs.com/gif.latex?\dpi{200}&space;\fn_phv&space;\small&space;\widetilde{x}" title="\small \widetilde{x}" /> from <img src="https://latex.codecogs.com/gif.latex?\dpi{200}&space;\fn_phv&space;\small&space;C(\widetilde{x}&space;|&space;x&space;=&space;x)" title="\small C(\widetilde{x} | x = x)" />
+3. Use <img src="https://latex.codecogs.com/gif.latex?\dpi{200}&space;\fn_phv&space;\small&space;(\widetilde{x},&space;x)" title="\small (\widetilde{x}, x)" /> as a training data point for error estimation
