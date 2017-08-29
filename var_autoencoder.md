@@ -1,4 +1,4 @@
-# Variational autoencoder
+# Variational autoencoders
 ## The unsupervised wing of deep learning
 
 ### Autoencoders in brief 
