@@ -51,7 +51,7 @@ As in k-NN, the generalization of the structure of the manifold is performed by 
 
 ### Variational autoencoders
 
-As I mentioned in the previous section, one particular 'derivative' of autoencoder models is getting a lot of attention from the deep learning community.
+As I mentioned in the previous section, one particular 'flavour' of autoencoder models is getting a lot of attention from the deep learning community.
 From the description I have given in the last paragraphs of autoencoders their most appealing application seems to be related to the possibility of performing non-linear dimensionality reduction on input data. 
 Except there is a way to turn autoencoders into generative models (e.g. to generate new images, sounds, text).
 This is achieved by adding a constraint on the encoding network  that forces it to generate latent vectors that roughly follow a unit gaussian distribution.
