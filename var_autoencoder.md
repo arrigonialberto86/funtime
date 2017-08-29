@@ -53,7 +53,9 @@ As in k-NN, the generalization of the structure of the manifold is performed by 
 
 As I mentioned in the previous section, one particular type of autoencoder models is getting a lot of attention from the deep learning community.
 From the description I have given in the last paragraphs of autoencoders their most appealing application seems to be related to the possibility of performing non-linear dimensionality reduction on input data. 
-Except there is a way to turn autoencoders into generative models (e.g. to generate new images, sounds, text).
+
+
+There is a way though to turn autoencoders into __generative models__ (e.g. to generate new images, sounds, text).
 This is achieved by adding a constraint on the encoding network  that forces it to generate latent vectors that follow a unit gaussian distribution.
 In order to generate new images/sounds/text we now just need to sample a latent vector from the unit gaussian and pass it into the decoder.
 
@@ -61,7 +63,9 @@ Mathematically, this is done by supplying an 'addendum' to the loss function we 
 
 <img src="https://latex.codecogs.com/gif.latex?\dpi{200}&space;\fn_phv&space;\small&space;L(q)&space;=&space;\DeclareMathOperator{\EX}{\mathbb{E}}_{z&space;\sim&space;q(z|x)}logp_{model}(x|z)&space;-&space;D_{KL}(q(z|x)||p_{model}(z))" title="\small L(q) = \DeclareMathOperator{\EX}{\mathbb{E}}_{z \sim q(z|x)}logp_{model}(x|z) - D_{KL}(q(z|x)||p_{model}(z))" />
 
-In the variational autoencoder, <img src="https://latex.codecogs.com/gif.latex?\dpi{200}&space;\fn_phv&space;\small&space;p_{model}(z)" title="\small p_{model}(z)" /> is specified as a standard Normal distribution with mean zero and variance one. If the encoder outputs representations that are different than those from a standard normal distribution, it will receive a penalty in the loss.
+In the variational autoencoder, <img src="https://latex.codecogs.com/gif.latex?\dpi{200}&space;\fn_phv&space;\small&space;p_{model}(z)" title="\small p_{model}(z)" /> is specified as a standard Normal distribution with mean zero and variance one. If the encoder outputs representations that are different than those from a standard normal distribution, it will receive a penalty in the loss. 
+
+With this expression we are effectively maximizing the variational lower bound _L(q)_ associated with data point _x_.
 
 
 
