@@ -70,5 +70,5 @@ Generating new images/sounds/text is now easy: all we need to do is sample a lat
 <img src="var_autoencoders/intuition_new.png" alt="Image not found" width="600"/>
 ======
 
-__Fig.3__: Intuition behind the use of autoencoders as generative models
+__Fig.3__: Intuition behind the use of autoencoders as generative models. Generating new images/sounds/text is now easy: all we need to do is sample a latent vector from the unit gaussian and pass it into the decoder
 
