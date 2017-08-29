@@ -67,5 +67,8 @@ In the variational autoencoder, <img src="https://latex.codecogs.com/gif.latex?\
 
 Generating new images/sounds/text is now easy: all we need to do is sample a latent vector from the unit gaussian and pass it into the decoder.
 
+<img src="var_autoencoders/autoencoder.png" alt="Image not found" width="600"/>
+======
 
+__Fig.3__: Intuition behind the use of autoencoder as generative models
 
