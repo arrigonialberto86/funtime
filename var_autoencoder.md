@@ -65,7 +65,7 @@ Mathematically, this is done by supplying an 'addendum' to the loss function we 
 
 In the variational autoencoder, <img src="https://latex.codecogs.com/gif.latex?\dpi{200}&space;\fn_phv&space;\small&space;p_{model}(z)" title="\small p_{model}(z)" /> is specified as a standard Normal distribution with mean zero and variance one. If the encoder outputs representations that are different than those from a standard normal distribution, it will receive a penalty in the loss. 
 
-With this expression we are effectively maximizing the variational lower bound _L(q)_ associated with data point _x_.
+Generating new images/sounds/text is now easy: all we need to do is sample a latent vector from the unit gaussian and pass it into the decoder.
 
 
 
