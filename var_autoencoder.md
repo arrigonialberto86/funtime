@@ -4,6 +4,8 @@
 ### Autoencoders in brief 
 An autoencoder is a neural network that consists of two parts, an encoder and a decoder. The encoder reads the input and compresses it to a compact representation (stored in the hidden layer _h_), while the decoder reads the compact representation and recreates the input from it.
 
+<img src="var_autoencoders/autoencoder.png" alt="Image not found" width="600"/>
+======
 **Fig.1**: The general structure of an autoencoder, mapping an input x to an output (called reconstruction) r through an internal representation or code h. The autoencoder has two components: the encoder _f_ (mapping _x_ to _h_) and the decoder _g_ (mapping _h_ to
 _r_) ('Deep learning book', Goodfellow et al., 2017)
 
@@ -39,6 +41,8 @@ What autoencoders learn is a function mapping between the data points _x_ and an
 
 The vector produced by the function that maps a single observation to the _representation_ space is called 'embedding', and can be used to build a nearest neighbour graph of training examples connected by 'proximity' arcs (Gong et al., 2000).
 
+<img src="var_autoencoders/manifold.png" alt="Image not found" width="600"/>
+======
 **Fig.2**: Each training example is represented by a tangent plane of the manifold. Different examples can be tiled/interpolated to produce a continous density function representing the manifold
 
 As in k-NN, the generalization of the structure of the manifold is performed by interpolating neighboring points, which may result in inaccurate representations when dealing with manifolds with many 'peaks' and 'twists' (Bengio and Monperrus, 2005)
