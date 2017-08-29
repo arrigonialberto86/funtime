@@ -51,14 +51,16 @@ As in k-NN, the generalization of the structure of the manifold is performed by 
 
 ### Variational autoencoders
 
-As I mentioned in the previous section, one particular 'flavour' of autoencoder models is getting a lot of attention from the deep learning community.
+As I mentioned in the previous section, one particular type of autoencoder models is getting a lot of attention from the deep learning community.
 From the description I have given in the last paragraphs of autoencoders their most appealing application seems to be related to the possibility of performing non-linear dimensionality reduction on input data. 
 Except there is a way to turn autoencoders into generative models (e.g. to generate new images, sounds, text).
-This is achieved by adding a constraint on the encoding network  that forces it to generate latent vectors that roughly follow a unit gaussian distribution.
+This is achieved by adding a constraint on the encoding network  that forces it to generate latent vectors that follow a unit gaussian distribution.
 In order to generate new images/sounds/text we now just need to sample a latent vector from the unit gaussian and pass it into the decoder.
 
 Mathematically, this is done by supplying an 'addendum' to the loss function we have encountered before, similarly to what is done for regularization. 
-The new component is the Kullbach-Leibner divergence 
+The new component is the Kullbach-Leibner divergence, which for our purposes can simply be regarded as a dissimilarity metric between two distributions.
+
+In the variational autoencoder, is specified as a standard Normal distribution with mean zero and variance one. If the encoder outputs representations that are different than those from a standard normal distribution, it will receive a penalty in the loss.
 
 
 
