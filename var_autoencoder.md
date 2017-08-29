@@ -6,7 +6,8 @@ An autoencoder is a neural network that consists of two parts, an encoder and a 
 
 <img src="var_autoencoders/autoencoder.png" alt="Image not found" width="600"/>
 ======
-**Fig.1**: The general structure of an autoencoder, mapping an input x to an output (called reconstruction) r through an internal representation or code h. The autoencoder has two components: the encoder _f_ (mapping _x_ to _h_) and the decoder _g_ (mapping _h_ to
+
+__Fig.1__: The general structure of an autoencoder, mapping an input x to an output (called reconstruction) r through an internal representation or code h. The autoencoder has two components: the encoder _f_ (mapping _x_ to _h_) and the decoder _g_ (mapping _h_ to
 _r_) ('Deep learning book', Goodfellow et al., 2017)
 
 One way to obtain useful features from the autoencoder is to constrain _h_ to have smaller dimension than _x_. An autoencoder whose code dimension is less than the input dimension is called 'undercomplete'. Learning an undercomplete representation forces the autoencoder to capture the most salient features of the training data, similarly to what other dimensionality reduction techniques do (e.g. PCA and multidimensional scaling). Thus, the loss function to be minimized is the following (using the notation reported in Fig.1):
@@ -43,7 +44,8 @@ The vector produced by the function that maps a single observation to the _repre
 
 <img src="var_autoencoders/manifold.png" alt="Image not found" width="600"/>
 ======
-**Fig.2**: Each training example is represented by a tangent plane of the manifold. Different examples can be tiled/interpolated to produce a continous density function representing the manifold
+
+__Fig.2__: Each training example is represented by a tangent plane of the manifold. Different examples can be tiled/interpolated to produce a continous density function representing the manifold
 
 As in k-NN, the generalization of the structure of the manifold is performed by interpolating neighboring points, which may result in inaccurate representations when dealing with manifolds with many 'peaks' and 'twists' (Bengio and Monperrus, 2005)
 
