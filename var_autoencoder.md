@@ -45,7 +45,7 @@ The vector produced by the function that maps a single observation to the _repre
 <img src="var_autoencoders/manifold.png" alt="Image not found" width="600"/>
 ======
 
-__Fig.2__: Each training example is represented by a tangent plane of the manifold. Different examples can be tiled/interpolated to produce a continous density function representing the manifold
+__Fig.2__: Each training example is represented by a tangent plane of the manifold. Different examples can be tiled/interpolated to produce a continous density function representing the manifold (the shaded plane)
 
 As in k-NN, the generalization of the structure of the manifold is performed by interpolating neighboring points, which may result in inaccurate representations when dealing with manifolds with many 'peaks' and 'twists' (Bengio and Monperrus, 2005)
 
