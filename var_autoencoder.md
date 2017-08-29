@@ -57,10 +57,11 @@ Except there is a way to turn autoencoders into generative models (e.g. to gener
 This is achieved by adding a constraint on the encoding network  that forces it to generate latent vectors that follow a unit gaussian distribution.
 In order to generate new images/sounds/text we now just need to sample a latent vector from the unit gaussian and pass it into the decoder.
 
-Mathematically, this is done by supplying an 'addendum' to the loss function we have encountered before, similarly to what is done for regularization. 
-The new component is the Kullbach-Leibner divergence, which for our purposes can simply be regarded as a dissimilarity metric between two distributions.
+Mathematically, this is done by supplying an 'addendum' to the loss function we have encountered before, similarly to what is done for regularization. The new component is the Kullbach-Leibner divergence, which for our purposes can simply be regarded as a dissimilarity metric between two distributions.
 
-In the variational autoencoder, is specified as a standard Normal distribution with mean zero and variance one. If the encoder outputs representations that are different than those from a standard normal distribution, it will receive a penalty in the loss.
+<img src="https://latex.codecogs.com/gif.latex?\dpi{200}&space;\fn_phv&space;\small&space;L(q)&space;=&space;\DeclareMathOperator{\EX}{\mathbb{E}}_{z&space;\sim&space;q(z|x)}logp_{model}(x|z)&space;-&space;D_{KL}(q(z|x)||p_{model}(z))" title="\small L(q) = \DeclareMathOperator{\EX}{\mathbb{E}}_{z \sim q(z|x)}logp_{model}(x|z) - D_{KL}(q(z|x)||p_{model}(z))" />
+
+In the variational autoencoder, <img src="https://latex.codecogs.com/gif.latex?\dpi{200}&space;\fn_phv&space;\small&space;p_{model}(z)" title="\small p_{model}(z)" /> is specified as a standard Normal distribution with mean zero and variance one. If the encoder outputs representations that are different than those from a standard normal distribution, it will receive a penalty in the loss.
 
 
 
