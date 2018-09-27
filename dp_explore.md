@@ -1,13 +1,13 @@
 # The Choose-Explore-Unchoose pattern for backtracking
 ## On how a simple exercise can help you to tackle backtracking questions
 
-Backtracking is  
-I will just start with a simple definition from Wikipedia:
+Backtracking tries to find out the solution to a given problem by moving in various directions (or tree paths) and rejecting those directions that do not give us the required solution.
+I will just start with a simple (yet more rigorous) definition from Wikipedia:
 
 *Backtracking is a general algorithm for finding all (or some) solutions to some computational problems, that incrementally builds candidates to the solutions, and abandons each partial candidate (“backtracks”) as soon as it determines that the candidate cannot possibly be completed to a valid solution.*
 
-This definition may seem pretty straightforward if you have had some experience with backtracking, but the truth is that backtracking questions can get pretty difficult to solve without some proper method.
-For this reason I would like to propose a real-world example (at least, in the coding-interview world) and solve it with a method that can help you spot and easily frame backtracking problems.
+This definition may seem pretty straightforward if you have had some experience with backtracking, but the truth is that backtracking questions can get pretty difficult to solve sometimes.
+For this reason I would like to propose a real-world example (at least, in the coding-interview world) and solve it with a method that can help you spot and easily frame backtracking exercises.
 The problem I am referencing [here](https://leetcode.com/problems/permutations/description/) from Leetcode is the classical '**permutations problem**', i.e. given an array containing n numbers or letters generate all the possible permutations (we know from statistics that the number of permutations for n objects is equal to the factorial of n, n!).
 
 Statement of the problem:
@@ -100,4 +100,4 @@ class Solution:
             partial_list.pop() # UNCHOOSE
 ```
 The implementation is very similar to what we saw for permutations, although now we do not need to state a termination condition at the beginning of the helper function. We introduce a 'start_index' variable that is used inside the iterator: the index is increaased at every step of recursion, which means that after n steps is going to be equal to length of 'nums' and just stops. 
-What kind of other problems can we tackle by using this approach to backtracking? Well, examples that come to mind are 
+What kind of other problems can we tackle by using this approach to backtracking? Well, examples that come to mind are the [maze exploration](https://gist.github.com/shlomibabluki/4524141) (another classical algorithm of this class) and the [eight queens puzzle](https://en.wikipedia.org/wiki/Eight_queens_puzzle), but (unless I will be proven wrong) this approach can be extended to all algorithms where backtracking/dynamic programming is required.
