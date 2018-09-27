@@ -1,12 +1,14 @@
 # The Choose-Explore-Unchoose pattern for backtracking
 ## On how a simple exercise can help you to tackle backtracking questions
 
-In terms of mathematical optimization, dynamic programming (dp) usually refers to simplifying a decision by breaking it down into a sequence of decision steps over time. It was invented by Richard Bellman in the 1950s and has found applications in numerous fields, from aerospace engineering to economics.
-You may have heard the same name when dealing with reinforcement learning applications, as the Bellman equation it is still at the center of modern techniques for RL problems optimization (although dynamic programming in this context has given way to other techniques, namely deep learning and Monte Carlo simulations).
-I will very briefly summarize the main concepts behind dp and present the implementation of a pattern that has changed the way I approach these type of problems, named "Choose-Explore-Unchoose".
+Backtracking is  
+I will just start with a simple definition from Wikipedia:
 
-DP is a method for solving problems by breaking it down into a collection of simpler sub-problems, solving each of those subproblems just once, and storing their solutions. What does it mean? Let us try to visualize one classical dp problem and come up with a simple (re-usable) solution that applies to different contexts.
-The problem I am referencing [here](https://leetcode.com/problems/permutations/description/) from Leetcode is the classical '**permutations problem**', i.e. given an array containing n numbers or letters generate all the possible permutations (whose number is the factorial of n, n!).
+*Backtracking is a general algorithm for finding all (or some) solutions to some computational problems, that incrementally builds candidates to the solutions, and abandons each partial candidate (“backtracks”) as soon as it determines that the candidate cannot possibly be completed to a valid solution.*
+
+This definition may seem pretty straightforward if you have had some experience with backtracking, but the truth is that backtracking questions can get pretty difficult to solve without some proper method.
+For this reason I would like to propose a real-world example (at least, in the coding-interview world) and solve it with a method that can help you spot and easily frame backtracking problems.
+The problem I am referencing [here](https://leetcode.com/problems/permutations/description/) from Leetcode is the classical '**permutations problem**', i.e. given an array containing n numbers or letters generate all the possible permutations (we know from statistics that the number of permutations for n objects is equal to the factorial of n, n!).
 
 Statement of the problem:
 ```
@@ -98,3 +100,4 @@ class Solution:
             partial_list.pop() # UNCHOOSE
 ```
 The implementation is very similar to what we saw for permutations, although now we do not need to state a termination condition at the beginning of the helper function. We introduce a 'start_index' variable that is used inside the iterator: the index is increaased at every step of recursion, which means that after n steps is going to be equal to length of 'nums' and just stops. 
+What kind of other problems can we tackle by using this approach to backtracking? Well, examples that come to mind are 
