@@ -60,3 +60,41 @@ class Solution:
                 partial_result.pop() # UNCHOOSE
 ```
 One thing to notice here is that we are using a Python list to hold the 'explored' solutions and then we are checking on line 17 if our number is already contained in it (we want to avoid repetition in permutations). Unfortunately, every time we execute this command Python needs to go through every item contained in the list, making this step O(n). Just use an extra Python set to hold the selected numbers, making this step O(1).
+
+Here is another exercise also taken from Leetcode where we need to generate the power set of a set of distinct numbers, i.e. the list of all possible subsets.
+```
+Input: nums = [1,2,3]
+Output:
+[
+  [3],
+  [1],
+  [2],
+  [1,2,3],
+  [1,3],
+  [2,3],
+  [1,2],
+  []
+]
+```
+And here is the solution using the same CHOOSE-EXPLORE-UNCHOOSE pattern:
+```python
+class Solution:
+    def subsets(self, nums):
+        """
+        :type nums: List[int]
+        :rtype: List[List[int]]
+        """
+        if not nums: return []
+        results = []
+        self.subset_helper(nums, results)
+        return results
+        
+    def subset_helper(self, nums, results, partial_list=[], start_index=0):
+        results.append(partial_list.copy())
+        for i in range(start_index, len(nums)):
+            partial_list.append(nums[i]) # CHOOSE
+            start_index+=1
+            self.subset_helper(nums, results, partial_list, start_index) # EXPLORE
+            partial_list.pop() # UNCHOOSE
+```
+The implementation is very similar to what we saw for permutations, although now we do not need to state a termination condition at the beginning of the helper function. We introduce a 'start_index' variable that is used inside the iterator: the index is increaased at every step of recursion, which means that after n steps is going to be equal to length of 'nums' and just stops. 
