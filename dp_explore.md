@@ -22,7 +22,7 @@ Output:
 ]
 ```
 Let us try to picture the different choices/permutations we get when dealing with permutations (fig.1):
-<img src="dp_choose_explore/54692.jpg" alt="Image not found" width="600"/>
+<img src="dp_choose_explore/54692.jpg" alt="Image not found" width="400"/>
 
 In this representation each 'chain' of subsequent numbers [[1,2,3], [3,2,1]...] represents a permutation that our program will explore and output. The green circle around the last position in the graph means that our program (when generating permutations) will stop when the length of the current branch is equal to the length of the input array [1,2,3]. This may sound trivial, but it is essentially what we need as a 'termination condition' of our recursive exploration.
 We also see that a simple strategy to generate all possible permutations is to put in the first position of our sequences the numbers of the input list in turn, and from there permute sub-sequences excluding the 'head of the chain', i.e. the selected number.
