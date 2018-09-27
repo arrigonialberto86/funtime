@@ -1,4 +1,4 @@
-# Backtracking
+# The Choose-Explore-Unchoose pattern for backtracking
 ## On how a simple exercise can help you to tackle backtracking questions
 
 In terms of mathematical optimization, dynamic programming (dp) usually refers to simplifying a decision by breaking it down into a sequence of decision steps over time. It was invented by Richard Bellman in the 1950s and has found applications in numerous fields, from aerospace engineering to economics.
