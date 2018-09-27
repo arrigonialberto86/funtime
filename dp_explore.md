@@ -59,4 +59,4 @@ class Solution:
                 self.explore_helper(alist, results, partial_result) # EXPLORE
                 partial_result.pop() # UNCHOOSE
 ```
-One thing to notice here is that we are using a Python list to hold the 'explored' solutions and then we are checking on line 17 if our number is already contained in it (we want to avoid repetition in permutations). Unfortunately, every time we execute this line Python needs to through every item contained in the list, making this step O(n). Just use an extra Python set to hold the selected numbers, making this step O(1).
+One thing to notice here is that we are using a Python list to hold the 'explored' solutions and then we are checking on line 17 if our number is already contained in it (we want to avoid repetition in permutations). Unfortunately, every time we execute this command Python needs to go through every item contained in the list, making this step O(n). Just use an extra Python set to hold the selected numbers, making this step O(1).
