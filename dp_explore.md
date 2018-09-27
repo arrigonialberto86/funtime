@@ -3,7 +3,7 @@
 
 In terms of mathematical optimization, dynamic programming (dp) usually refers to simplifying a decision by breaking it down into a sequence of decision steps over time. It was invented by Richard Bellman in the 1950s and has found applications in numerous fields, from aerospace engineering to economics.
 You may have heard the same name when dealing with reinforcement learning applications, as the Bellman equation it is still at the center of modern techniques for RL problems optimization (although dynamic programming in this context has given way to other techniques, namely deep learning and Monte Carlo simulations).
-I will briefly summarize the main concepts behind dp.
+I will very briefly summarize the main concepts behind dp and present the implementation of a pattern that has changed the way I approach these type of problems, named "Choose-Explore-Unchoose".
 
 DP is a method for solving problems by breaking it down into a collection of simpler sub-problems, solving each of those subproblems just once, and storing their solutions. What does it mean? Let us try to visualize one classical dp problem and come up with a simple (re-usable) solution that we will use in different contexts.
 The problem I am referencing here (https://leetcode.com/problems/permutations/description/) is the classical '**permutations problem**', i.e. given an array containing n numbers or letters generate all the possible permutations (whose number is the factorial of n, n!).
