@@ -5,8 +5,8 @@ In terms of mathematical optimization, dynamic programming (dp) usually refers t
 You may have heard the same name when dealing with reinforcement learning applications, as the Bellman equation it is still at the center of modern techniques for RL problems optimization (although dynamic programming in this context has given way to other techniques, namely deep learning and Monte Carlo simulations).
 I will very briefly summarize the main concepts behind dp and present the implementation of a pattern that has changed the way I approach these type of problems, named "Choose-Explore-Unchoose".
 
-DP is a method for solving problems by breaking it down into a collection of simpler sub-problems, solving each of those subproblems just once, and storing their solutions. What does it mean? Let us try to visualize one classical dp problem and come up with a simple (re-usable) solution that we will use in different contexts.
-The problem I am referencing here (https://leetcode.com/problems/permutations/description/) is the classical '**permutations problem**', i.e. given an array containing n numbers or letters generate all the possible permutations (whose number is the factorial of n, n!).
+DP is a method for solving problems by breaking it down into a collection of simpler sub-problems, solving each of those subproblems just once, and storing their solutions. What does it mean? Let us try to visualize one classical dp problem and come up with a simple (re-usable) solution that applies to different contexts.
+The problem I am referencing [here](https://leetcode.com/problems/permutations/description/) from Leetcode is the classical '**permutations problem**', i.e. given an array containing n numbers or letters generate all the possible permutations (whose number is the factorial of n, n!).
 
 Statement of the problem:
 ```
@@ -24,10 +24,10 @@ Output:
 Let us try to picture the different choices/permutations we get when dealing with permutations (fig.1):
 <img src="dp_choose_explore/54692.jpg" alt="Image not found" width="600"/>
 
-In this representation each 'chain' of subsequent numbers represent a permutation that our program will explore and output. The green circle around the last position in the graph means that our program (when generating permutations) will stop when the current length of the current branch is equal to the length of the input array [1,2,3]. This may sound trivial, but it is essentially what we need as a 'termination' condition of our recursive exploration.
-We see that a simple strategy to generate all possible permutations is to put in the first position of our sequences the numbers of the input list in turn, and from there permute sub-sequences excluding the 'head of the chain', i.e. the selected number.
+In this representation each 'chain' of subsequent numbers [[1,2,3], [3,2,1]...] represents a permutation that our program will explore and output. The green circle around the last position in the graph means that our program (when generating permutations) will stop when the length of the current branch is equal to the length of the input array [1,2,3]. This may sound trivial, but it is essentially what we need as a 'termination condition' of our recursive exploration.
+We also see that a simple strategy to generate all possible permutations is to put in the first position of our sequences the numbers of the input list in turn, and from there permute sub-sequences excluding the 'head of the chain', i.e. the selected number.
 
-We know write the code using a simple yet very useful pattern for graph exploration (which I got from a lesson of the Stanford CS 106B course): it is called "choose-explore-unchoose", and can be described in the following way:
+We now write the code using a simple yet very useful pattern for graph exploration (which I got from a lesson of the Stanford CS 106B course): it is called "choose-explore-unchoose", and can be described in the following way:
 - Use an iterator to list all the possible starting points for our recursion (every number in our list) (the 'for' loop in the explore_helper function below)
 - 'Choose': select one number by adding it to a stack that holds the current branch 
 - 'Explore': recursively call the 'explore_helper' function which will carry on the recursion and pass along the stack which contains the numbers chosen in the current branch
