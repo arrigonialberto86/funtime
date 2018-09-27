@@ -1,5 +1,5 @@
-# Dynamic programming
-## On how a simple exercise can help you to tackle dp questions
+# Backtracking
+## On how a simple exercise can help you to tackle backtracking questions
 
 In terms of mathematical optimization, dynamic programming (dp) usually refers to simplifying a decision by breaking it down into a sequence of decision steps over time. It was invented by Richard Bellman in the 1950s and has found applications in numerous fields, from aerospace engineering to economics.
 You may have heard the same name when dealing with reinforcement learning applications, as the Bellman equation it is still at the center of modern techniques for RL problems optimization (although dynamic programming in this context has given way to other techniques, namely deep learning and Monte Carlo simulations).
@@ -34,9 +34,9 @@ We now write the code using a simple yet very useful pattern for graph explorati
 - 'Unchoose': remove the recently added number and go back to step 1 to explore another sub-branch.
 The termination condition that will stop the recursion and add the current branch to the 'results' list is given (as previously stated) by the comparison between the length of the branch and the length of the original list to permute ([1,2,3])
 
-With this code we are recursively exploring a graph just by selecting an item (choose), calling a function that will carry on the recursion (explore) and going back to where we came from (unchoose) to explore another sub-branch of the graph until we are done.
+With this code we are recursively exploring a graph just by selecting an item (*choose*), calling a function that will carry on the recursion (*explore*) and going back to where we came from (*unchoose*) to explore another sub-branch of the graph until we are done. In this process we are keeping track of the paths we have chosen, saving only those ending with a 'terminal leaf' of the graph.
 
-This is the Python soution that passes the testcases in 25 ms (a bit slow, I will tell you later about performance):
+This is a Python solution that passes the test cases in 25 ms (a bit slow, I will tell you later about performance):
 ```python
 class Solution:
     def permute(self, nums):
