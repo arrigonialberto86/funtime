@@ -1,13 +1,17 @@
 # Scalable Bayesian inference in Python
 ## On how variational inference makes probabilistic programming 'sustainable'
 
+Last year I came across the [Edward project](http://edwardlib.org/) for probabilistic programming, which was later moved to a Tensorflow dev branch. Among the publications listed on the website, one caught my attention as it reported a truly innovative way (to my knowledge at least) to perform variational inference, titled: "Black box variational inference".
+When performing bayesian inference we wish to approximate the posterior distribution of the latent variables given some data/observations x (![latent](https://latex.codecogs.com/gif.latex?%5Cdpi%7B150%7D%20p%28z/x%29)), which is often intractable (just so you know, a latent variable is everything ranging from a discrete variable in a Gaussian mixture model to beta coefficients in a linear regression model or the scale parameter of the posterior distribution of a non-conjugate bayesian model). 
+Characterization of the posterior is usually performed using Markov Chain Monte Carlo methods (yes, they come in different flavors), by repeatedly sampling from the (possibly super-complex and multivariate) posterior.
+With variation inference instead, the basic idea is to pick an approximation ![q](https://latex.codecogs.com/gif.latex?%5Cdpi%7B150%7D%20q%28x%29) to the distribution from some tractable family, and then try to make this approximation as close as possible to the true posterior, [equal](https://latex.codecogs.com/gif.latex?%5Cdpi%7B150%7D%20p%5E%7B*%7D%28x%29%20%3D%20p%28x/D%29): this reduces inference to an optimization problem. The key idea is to introduce a family of distributions over z that depend on variational parameters λ, [q_lambda](https://latex.codecogs.com/gif.latex?%5Cdpi%7B150%7D%20q%28z/%5Clambda%29), and find the values of λ that minimize the KL divergence between [q_lambda](https://latex.codecogs.com/gif.latex?%5Cdpi%7B150%7D%20q%28z/%5Clambda%29) and [p_x](https://latex.codecogs.com/gif.latex?%5Cdpi%7B150%7D%20p%28z/x%29).
+
+So why is this "black box" model so convenient? Citing from the publication:
+"From the practitioner’s perspective, this method requires only that he or she write functions to evaluate the model log-likelihood. 
+The remaining calculations (properties of the variational distribution and evaluating the Monte Carlo estimate) are easily put into a library to share across models, which means our method can be quickly applied to new modeling settings."
 
 
-![formula_1](https://latex.codecogs.com/gif.latex?%5Cdpi%7B150%7D%20x%5E%7Ba%7D)
-
-Inline expression ![formula2](https://latex.codecogs.com/gif.latex?%5Cdpi%7B150%7D%20%5Cfn_phv%20x%5E%7Ba%7D) goes on
-
-I will show you now how to run a logistic regression example, i.e. how to turn the formulas you have seen above in executable Python code that uses Pymc3 as workhorse for optimization.
+I will show you now how to run a logistic regression example, i.e. how to turn the formulas you have seen above in executable Python code that uses Pymc3's ADVI implementation as workhorse for optimization.
 What is remarkable here is that performing variational inference with Pymc3 is as easy as running MCMC, as we just need to specificy the functional form of the distribution to sample from.
 
 We will generate some random data:
@@ -91,3 +95,6 @@ Clearly, ADVI does not capture (as expected) the interactions between variables,
 ## Conclusions
 ADVI is a very convenient inferential procedure that let us characterize complex posterior distributions in a very short time (if compared to Gibbs/MCMC sampling). The solution it finds is a distribution which approximate the posterior: for most cases this may not be a problem, but we may need to pay extra-attention in cases when the covariance structure of the variables we are analyzing is crucial (this example that uses [Gaussian mixture models](https://docs.pymc.io/notebooks/gaussian-mixture-model-advi.html) may even further clarify what I mean)
 
+## References
+- Black Box variational inference, Rajesh Ranganath, Sean Gerrish, David M. Blei, AISTATS 2014
+- [Keyonvafa's blog](http://keyonvafa.com/logistic-regression-bbvi/)
