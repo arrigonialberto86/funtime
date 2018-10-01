@@ -60,7 +60,7 @@ with model:
 
 draws = fit.sample(2_000) # This will automatically check parameters convergence
 ```
-ADVI is considerably faster than NUTS, but what about accuracy?
+ADVI is considerably **faster** than NUTS, but what about **accuracy**?
 Instead of plotting bell curves again let us use this command to confront NUTS and ADVI results:
 
 ```python
@@ -69,6 +69,19 @@ az.plot_forest([draws, trace])
 ```
 <img src="variational_inference/confront.png" alt="Image not found" width="600"/>
 
-##Conclusions
+ADVI is clearly underestimating the **variance**, but it is fairly close for the **mean** of each parameter. Let us try to visualize the covariance structure of the model to understand where this lack of precision may come from (a big thank to [colcarroll](https://stackoverflow.com/users/2620170/colcarroll) for pointing [this](https://stackoverflow.com/questions/52558826/why-is-pymc3-advi-worse-than-mcmc-in-this-logistic-regression-example) out):
+```python
+az.plot_pair(trace, figsize=(5, 5)) # Covariance plots for the NUTS trace
+```
+<img src="variational_inference/covariance.png" alt="Image not found" width="600"/>
+
+```python
+az.plot_pair(draws, figsize=(5, 5)) # Covariance plots for the NUTS trace
+```
+<img src="variational_inference/covariance_advi.png" alt="Image not found" width="400"/>
+
+Clearly, ADVI does not capture (as expected) the interactions between variables, and so it underestimated the overall variance by far (be advised: this is a particularly tricky example chosen to highlight this kind of behavior). 
+
+## Conclusions
 ADVI is a very convenient inferential procedure that let us characterize complex posterior distributions in a very short time (if compared to Gibbs/MCMC sampling). The solution it finds is a distribution which approximate the posterior: for most cases this may not be a problem, but we may need to pay extra-attention in cases when the covariance structure of the variables we are analyzing is crucial (this example that uses [Gaussian mixture models](https://docs.pymc.io/notebooks/gaussian-mixture-model-advi.html) may even further clarify what I mean)
 
