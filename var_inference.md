@@ -1,6 +1,16 @@
 # Scalable Bayesian inference
 ## On how variational inference makes probabilistic programming 'sustainable'
 
+
+~~~math #maxwellEq
+\left.\begin{aligned}
+B'&=-\partial\times E\\
+E'&=\partial\times B - 4\pi j
+\end{aligned}
+\right\}
+\qquad \text{Maxwell's equations}
+~~~
+
 I will show you now how to run a logistic regression example, i.e. how to turn the formulas you have seen above in executable Python code that uses Pymc3 as workhorse for optimization.
 What is remarkable here is that performing variational inference with Pymc3 is as easy as running MCMC, as we just need to specificy the functional form of the distribution to sample from.
 
