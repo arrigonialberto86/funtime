@@ -4,7 +4,8 @@
 
 
 ![formula_1](https://latex.codecogs.com/gif.latex?%5Cdpi%7B150%7D%20x%5E%7Ba%7D)
-Inline expression ![formula2](https://latex.codecogs.com/gif.latex?%5Cdpi%7B150%7D%20x%5E%7Ba%7D)
+
+Inline expression ![formula2](https://latex.codecogs.com/gif.latex?%5Cdpi%7B150%7D%20x%5E%7Ba%7D) goes on
 
 I will show you now how to run a logistic regression example, i.e. how to turn the formulas you have seen above in executable Python code that uses Pymc3 as workhorse for optimization.
 What is remarkable here is that performing variational inference with Pymc3 is as easy as running MCMC, as we just need to specificy the functional form of the distribution to sample from.
