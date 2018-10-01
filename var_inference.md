@@ -67,7 +67,7 @@ Instead of plotting bell curves again let us use this command to confront NUTS a
 import arviz as az
 az.plot_forest([draws, trace])
 ```
-<img src="variational_inference/confront.png" alt="Image not found" width="400"/>
+<img src="variational_inference/confront.png" alt="Image not found" width="500"/>
 
 ADVI is clearly underestimating the **variance**, but it is fairly close for the **mean** of each parameter. Let us try to visualize the covariance structure of the model to understand where this lack of precision may come from (a big thank to [colcarroll](https://stackoverflow.com/users/2620170/colcarroll) for pointing [this](https://stackoverflow.com/questions/52558826/why-is-pymc3-advi-worse-than-mcmc-in-this-logistic-regression-example) out):
 ```python
