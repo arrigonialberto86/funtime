@@ -5,11 +5,18 @@ Last year I came across the [Edward project](http://edwardlib.org/) for probabil
 When performing bayesian inference we wish to approximate the posterior distribution of the latent variables given some data/observations x (![latent](https://latex.codecogs.com/gif.latex?%5Cdpi%7B150%7D%20p%28z/x%29)), which is often intractable (just so you know, a latent variable is everything ranging from a discrete variable in a Gaussian mixture model to beta coefficients in a linear regression model or the scale parameter of the posterior distribution of a non-conjugate bayesian model). 
 Characterization of the posterior is usually performed using Markov Chain Monte Carlo methods (yes, they come in different flavors), by repeatedly sampling from the (possibly super-complex and multivariate) posterior.
 With variation inference instead, the basic idea is to pick an approximation ![q](https://latex.codecogs.com/gif.latex?%5Cdpi%7B150%7D%20q%28x%29) to the distribution from some tractable family, and then try to make this approximation as close as possible to the true posterior, ![equal](https://latex.codecogs.com/gif.latex?%5Cdpi%7B150%7D%20p%5E%7B*%7D%28x%29%20%3D%20p%28x/D%29): this reduces inference to an optimization problem. The key idea is to introduce a family of distributions over z that depend on variational parameters λ, ![q_lambda](https://latex.codecogs.com/gif.latex?%5Cdpi%7B150%7D%20q%28z/%5Clambda%29), and find the values of λ that minimize the KL divergence between ![q_lambda](https://latex.codecogs.com/gif.latex?%5Cdpi%7B150%7D%20q%28z/%5Clambda%29) and ![p_x](https://latex.codecogs.com/gif.latex?%5Cdpi%7B150%7D%20p%28z/x%29).
+The most common model used in this context is the *mean field approximation*, where q factors into conditionally independent distributions each governed by a set of parameters (represented here by λ): ![qz](https://latex.codecogs.com/gif.latex?%5Cdpi%7B150%7D%20q%28z/%5Clambda%29%20%3D%20%5Cprod_%7Bj%3D1%7D%5E%7Bm%7Dq_j%28z_j/%5Clambda%29). Minimizing the KL divergence between q(z/λ) and p(z/x) i.e. roughly said, making these distribution as similar as possible is equivalent to maximizing the Evidence Lower Bound (ELBO), calculated as:
+![lower bound](https://latex.codecogs.com/gif.latex?%5Cdpi%7B150%7D%20L%28%5Clambda%29%20%3D%20E%20%5Blog%20p%28x%2Cz%29%20-%20log%20q%28z%29%5D)
+
+
+
+So where is the catch? Deriving gradients for complex functions is a tedious process, and for sure it is one that **cannot easily be automated**.
 
 So why is this "black box" model so convenient? Citing from the publication:
 "From the practitioner’s perspective, this method requires only that he or she write functions to evaluate the model log-likelihood. 
 The remaining calculations (properties of the variational distribution and evaluating the Monte Carlo estimate) are easily put into a library to share across models, which means our method can be quickly applied to new modeling settings."
 
+Let us see how this works:
 
 I will show you now how to run a logistic regression example, i.e. how to turn the formulas you have seen above in executable Python code that uses Pymc3's ADVI implementation as workhorse for optimization.
 What is remarkable here is that performing variational inference with Pymc3 is as easy as running MCMC, as we just need to specificy the functional form of the distribution to sample from.
