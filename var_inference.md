@@ -9,15 +9,23 @@ The most common model used in this context is the *mean field approximation*, wh
 
 ![lower bound](https://latex.codecogs.com/gif.latex?%5Cdpi%7B150%7D%20L%28%5Clambda%29%20%3D%20E%20%5Blog%20p%28x%2Cz%29%20-%20log%20q%28z%29%5D)
 
+calculated w.r.t q(z).
 
+We just need to maximize this expression to find the parameters λ that make the KL divergence small and our q(z/λ) very similar to p(z/x). So where is the catch? Deriving gradients for complex functions is a tedious process, and for sure it is one that **cannot easily be automated**.
 
-So where is the catch? Deriving gradients for complex functions is a tedious process, and for sure it is one that **cannot easily be automated**.
-
-So why is this "black box" model so convenient? Citing from the publication:
+We can solve this problem by using a **"black box"** variational model? Citing from the publication:
 "From the practitioner’s perspective, this method requires only that he or she write functions to evaluate the model log-likelihood. 
 The remaining calculations (properties of the variational distribution and evaluating the Monte Carlo estimate) are easily put into a library to share across models, which means our method can be quickly applied to new modeling settings."
 
-Let us see how this works:
+Let us see how this works: the key idea from the publication is that we can write the gradient of the ELBO as an expectation:
+
+![logelbo](https://latex.codecogs.com/gif.latex?%5Cdpi%7B150%7D%20%5CDelta%20_%7B%5Clambda%7DL%28%5Clambda%29%20%3D%20E_q%20%5B%28%5CDelta_%5Clambda%20log%20q%28z/%5Clambda%29%29%20%28log%20p%28x%2Cz%29%20-%20log%20q%28z/%5Clambda%29%29%5D)
+
+We note that we can use Monte Carlo to obtain a noisy estimate of this gradient expression: we initialize the model parameters λ (randomly), we sample from q(z/λ) and for each sample we evaluate the entire expression (see below) and take the mean over different samples. We then use stochastic gradient descent to optimize the ELBO!
+
+Let us try to decompose the gradient of L(λ) to show that it is easy to evaluate it:
+- 
+
 
 I will show you now how to run a logistic regression example, i.e. how to turn the formulas you have seen above in executable Python code that uses Pymc3's ADVI implementation as workhorse for optimization.
 What is remarkable here is that performing variational inference with Pymc3 is as easy as running MCMC, as we just need to specificy the functional form of the distribution to sample from.
