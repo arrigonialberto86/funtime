@@ -23,11 +23,15 @@ Let us see how this works: the key idea from the publication is that we can writ
 
 We note that we can use Monte Carlo to obtain a noisy estimate of this gradient expression: we initialize the model parameters λ (randomly), we sample from q(z/λ) and for each sample we evaluate the entire expression (see below) and take the mean over different samples. We then use stochastic gradient descent to optimize the ELBO!
 
-Let us try to decompose the gradient of L(λ) to show that it is easy to evaluate it:
-- 
+Let us now build a simple model to solve **Bayesian logistic regression** using black box variational inference. In this context,the probability ![prob](https://latex.codecogs.com/gif.latex?%5Cdpi%7B150%7D%20P%28y_i/x_i%2C%20z%29) is distributed as a Bernoulli random variable, whose parameter p is determined by the latent variable z and the input data x (![bern](https://latex.codecogs.com/gif.latex?%5Cdpi%7B150%7D%20Bern%28%5Csigma%28z%5E%7BT%7Dx_i%29%29))  which goes through a sigmoid 'link' function.
+According to the *mean field* approximation, the distribution of q over z (![lambda](https://latex.codecogs.com/gif.latex?%5Cdpi%7B150%7D%20q%28z/%5Clambda%29)) is equal to the product of conditionally independent normal distributions (![normal](https://latex.codecogs.com/gif.latex?%5Cdpi%7B150%7D%20%5Cprod_%7Bj%3D1%7D%5E%7BP%7DN%28z_j/%5Cmu_j%2C%5Csigma%5E2_j%29)), each governed by parameters mu and sigma (![set](https://latex.codecogs.com/gif.latex?%5Cdpi%7B150%7D%20%5Clambda%20%3D%20%5C%7B%5Cmu_j%2C%20%5Csigma%5E2_j%5C%7D%5E%7BP%7D_%7Bj%3D1%7D))
+
+Let us try to decompose the gradient of L(λ) to show how we can evaluate it for logistic regression:
+- ![for](https://latex.codecogs.com/gif.latex?%5Cdpi%7B150%7D%20%5CDelta_%5Clambda%20log%20q%28z/%5Clambda%29): we need to derive the gradient of q w.r.t to mu and sigma. I will just show the gradient of mu, although the gradient of sigma follows the same concept: ![muu](https://latex.codecogs.com/gif.latex?%5Cdpi%7B150%7D%20%5CDelta_%5Cmu_j%20logq%28z/%5Clambda%29%20%3D%20%5CDelta_%5Cmu%20%5Csum_%7Bj%3D1%7D%5E%7BP%7D)![muuuu](https://latex.codecogs.com/gif.latex?%5Cdpi%7B150%7D%20-%5Cfrac%7Blog%28%5Csigma%5E2_j%29%7D%7B2%7D%20-%20%5Cfrac%7B%28z_i%20-%20%5Cmu_i%29%5E2%7D%7B2%5Csigma_i%5E2%7D%20%3D%20%5Cfrac%7Bz_j%20-%20%5Cmu_j%7D%7B%5Csigma_j%5E2%7D)
 
 
-I will show you now how to run a logistic regression example, i.e. how to turn the formulas you have seen above in executable Python code that uses Pymc3's ADVI implementation as workhorse for optimization.
+
+I will show you now how to run a Bayesian logistic regression example, i.e. how to turn the formulas you have seen above in executable Python code that uses Pymc3's ADVI implementation as workhorse for optimization.
 What is remarkable here is that performing variational inference with Pymc3 is as easy as running MCMC, as we just need to specificy the functional form of the distribution to sample from.
 
 We will generate some random data:
