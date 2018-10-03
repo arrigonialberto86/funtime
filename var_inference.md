@@ -31,8 +31,18 @@ Let us try to decompose the gradient of L(λ) to show how we can evaluate it for
 
 ![muu](https://latex.codecogs.com/gif.latex?%5Cdpi%7B150%7D%20%5CDelta_%5Cmu_j%20logq%28z/%5Clambda%29%20%3D%20%5CDelta_%5Cmu%20%5Csum_%7Bj%3D1%7D%5E%7BP%7D)![muuuu](https://latex.codecogs.com/gif.latex?%5Cdpi%7B150%7D%20-%5Cfrac%7Blog%28%5Csigma%5E2_j%29%7D%7B2%7D%20-%20%5Cfrac%7B%28z_i%20-%20%5Cmu_i%29%5E2%7D%7B2%5Csigma_i%5E2%7D%20%3D%20%5Cfrac%7Bz_j%20-%20%5Cmu_j%7D%7B%5Csigma_j%5E2%7D)
 
+With the gradient of q settled, the only term we are missing to calculate the gradient of the lower bound is the joint distribution log p(x, z). We observe that by using the chain rule of probability this expression is true: ![aaa](https://latex.codecogs.com/gif.latex?%5Cdpi%7B150%7D%20log%20p%28y%2C%20x%2C%20z%29%20%3D%20log%20p%28y/x%2C%20z%29%20&plus;%20log%20p%28z%29)
+It is now easy to calculate the following expression that we can use for inference (remember the formula for the logistic regression loss):
 
+![g](https://latex.codecogs.com/gif.latex?%5Cdpi%7B150%7D%20log%20p%28y%2Cx%2Cz%29%20%3D%20%5Csum_%7Bi%3D1%7D%5E%7BN%7D%5By_i%20log%20%5Csigma%28z%5ETx_i%29%20&plus;%20%281-y_i%29%28log%20%281%20-%20%5Csigma%28z%5ETx_i%29%29%5D%20&plus;%20%5Csum_%7Bj%3D1%7D%5E%7BP%7D%20log%20%5Cphi%28z_j%7C0%2C1%29)
 
+And to complete the ELBO expression:
+
+![bb](https://latex.codecogs.com/gif.latex?%5Cdpi%7B150%7D%20log%20q%28z/%5Clambda%29%20%3D%20%5Csum_%7Bj%3D1%7D%5E%7BP%7D%20log%20%5Cphi%28z_j/%5Cmu_j%2C%20%5Csigma%5E2_j%29)
+
+So, in order to calculate the gradient of the lower bound we just need to sample from q(z/λ) (initialized with parameters mu and sigma) and evaluate the expression we have just derived. We can do this in Tensorflow by using 'autodiff' and passing a custom expression for the gradient.
+
+Enough for theory, in recent years some libraries have been produced that do an amazing job at solving this kind of problems without starting from scratch (although I think it is always beneficial to try to understand things from first principles).
 I will show you now how to run a Bayesian logistic regression example, i.e. how to turn the formulas you have seen above in executable Python code that uses Pymc3's ADVI implementation as workhorse for optimization.
 What is remarkable here is that performing variational inference with Pymc3 is as easy as running MCMC, as we just need to specificy the functional form of the distribution to sample from.
 
