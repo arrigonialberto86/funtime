@@ -143,3 +143,4 @@ ADVI is a very convenient inferential procedure that let us characterize complex
 - [Keyonvafa's blog](http://keyonvafa.com/logistic-regression-bbvi/)
 - Machine learning, a probabilistic perspective, by Kevin Murphy
 - [GLM](https://docs.pymc.io/notebooks/GLM-logistic.html) in PyMC3
+- [ADVI](https://arxiv.org/pdf/1603.00788.pdf) publication on arXiv
