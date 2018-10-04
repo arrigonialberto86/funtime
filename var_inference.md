@@ -3,8 +3,8 @@
 
 Last year I came across the [Edward project](http://edwardlib.org/) for probabilistic programming, which was later moved into Tensorflow (in a dev branch). Among the publications listed on the website, one caught my attention as it reported a truly innovative way (to my knowledge at least) to perform variational inference. Its title speaks for itself: "Black box variational inference", Rajesh Ranganath, Sean Gerrish, David M. Blei.
 
-When performing Bayesian inference we wish to approximate the posterior distribution of the latent variables given some data/observations x (![latent](https://latex.codecogs.com/gif.latex?%5Cdpi%7B150%7D%20p%28z/x%29)): problem is, the integral is often intractable and numerical methods must be used (just so you know, a latent variable is everything ranging from a discrete variable in a Gaussian mixture model to beta coefficients in a linear regression model or the scale parameter of the posterior distribution of a non-conjugate bayesian model). 
-Characterization of the posterior is usually performed using Markov Chain Monte Carlo methods (yes, they come in different flavors), by repeatedly sampling from the (possibly super-complex and multivariate) posterior to build a reliable expectation value of the distribution.
+When performing Bayesian inference we wish to approximate the posterior distribution of the latent variables given some data/observations x (![latent](https://latex.codecogs.com/gif.latex?%5Cdpi%7B150%7D%20p%28z/x%29)): problem is, the integral is often intractable and numerical methods must be used (just so you know, a latent variable is everything ranging from a discrete variable for a Gaussian mixture model to beta coefficients in a linear regression model or the scale parameter of the posterior distribution of a non-conjugate bayesian model)... 
+Characterization of the posterior is usually performed using Markov Chain Monte Carlo methods (yes, they come in different flavors), by repeatedly sampling from the (possibly super-complex and multivariate) posterior to build a reliable expectation of the distribution.
 With variational inference instead, the basic idea is to pick an approximation ![q](https://latex.codecogs.com/gif.latex?%5Cdpi%7B150%7D%20q%28x%29) to the posterior distribution from some tractable family, and then try to make this approximation as close as possible to the true posterior, ![equal](https://latex.codecogs.com/gif.latex?%5Cdpi%7B150%7D%20p%5E%7B*%7D%28x%29%20%3D%20p%28x/D%29): this reduces inference to an optimization problem. 
 
 The key idea is to introduce a family of distributions over the latent variables z that depend on variational parameters λ, ![q_lambda](https://latex.codecogs.com/gif.latex?%5Cdpi%7B150%7D%20q%28z/%5Clambda%29), and find the values of λ that minimize the KL divergence between ![q_lambda](https://latex.codecogs.com/gif.latex?%5Cdpi%7B150%7D%20q%28z/%5Clambda%29) and ![p_x](https://latex.codecogs.com/gif.latex?%5Cdpi%7B150%7D%20p%28z/x%29).
@@ -40,8 +40,8 @@ Let us try to decompose the gradient of L(λ) to show how we can evaluate it for
 
 ![muu](https://latex.codecogs.com/gif.latex?%5Cdpi%7B150%7D%20%5CDelta_%5Cmu_j%20logq%28z/%5Clambda%29%20%3D%20%5CDelta_%5Cmu%20%5Csum_%7Bj%3D1%7D%5E%7BP%7D)![muuuu](https://latex.codecogs.com/gif.latex?%5Cdpi%7B150%7D%20-%5Cfrac%7Blog%28%5Csigma%5E2_j%29%7D%7B2%7D%20-%20%5Cfrac%7B%28z_i%20-%20%5Cmu_i%29%5E2%7D%7B2%5Csigma_i%5E2%7D%20%3D%20%5Cfrac%7Bz_j%20-%20%5Cmu_j%7D%7B%5Csigma_j%5E2%7D)
 
-With the gradient of q settled, the only term we are missing to calculate the gradient of the lower bound is the joint distribution log p(x, z). We observe that by using the chain rule of probability this expression is true: ![aaa](https://latex.codecogs.com/gif.latex?%5Cdpi%7B150%7D%20log%20p%28y%2C%20x%2C%20z%29%20%3D%20log%20p%28y/x%2C%20z%29%20&plus;%20log%20p%28z%29)
-It is now easy to calculate the following expression that we can use for inference (remember the formula for the logistic regression loss):
+With the gradient of q settled, the only term we are still missing (inside the gradient of the lower bound) is the joint distribution log p(x, z). We observe that by using the chain rule of probability this expression is true: ![aaa](https://latex.codecogs.com/gif.latex?%5Cdpi%7B150%7D%20log%20p%28y%2C%20x%2C%20z%29%20%3D%20log%20p%28y/x%2C%20z%29%20&plus;%20log%20p%28z%29)
+It is now easy to calculate the following expression that we can use for inference (remember the formula of the logistic regression loss):
 
 ![g](https://latex.codecogs.com/gif.latex?%5Cdpi%7B150%7D%20log%20p%28y%2Cx%2Cz%29%20%3D%20%5Csum_%7Bi%3D1%7D%5E%7BN%7D%5By_i%20log%20%5Csigma%28z%5ETx_i%29%20&plus;%20%281-y_i%29%28log%20%281%20-%20%5Csigma%28z%5ETx_i%29%29%5D%20&plus;%20%5Csum_%7Bj%3D1%7D%5E%7BP%7D%20log%20%5Cphi%28z_j%7C0%2C1%29)
 
@@ -49,7 +49,7 @@ And to complete the ELBO expression:
 
 ![bb](https://latex.codecogs.com/gif.latex?%5Cdpi%7B150%7D%20log%20q%28z/%5Clambda%29%20%3D%20%5Csum_%7Bj%3D1%7D%5E%7BP%7D%20log%20%5Cphi%28z_j/%5Cmu_j%2C%20%5Csigma%5E2_j%29)
 
-So, in order to calculate the gradient of the lower bound we just need to sample from q(z/λ) (initialized with parameters mu and sigma) and evaluate the expression we have just derived. We can do this in Tensorflow by using 'autodiff' and passing a custom expression for the gradient.
+So, in order to calculate the gradient of the lower bound we just need to sample from q(z/λ) (initialized with parameters mu and sigma) and evaluate the expression we have just derived (we could do this in Tensorflow by using 'autodiff' and passing a custom expression for gradient calculation)
 
 ## Variational inference in PyMC3
 
