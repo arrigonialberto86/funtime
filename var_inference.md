@@ -1,7 +1,7 @@
 # Scalable Bayesian inference in Python
 ## On how variational inference makes probabilistic programming 'sustainable'
 
-**View this on [Medium] too (https://medium.com/@albertoarrigoni/scalable-bayesian-inference-in-python-a6690c7061a3)**
+**View this on [Medium](https://medium.com/@albertoarrigoni/scalable-bayesian-inference-in-python-a6690c7061a3)** too
 
 Last year I came across the [Edward project](http://edwardlib.org/) for probabilistic programming, which was later moved into Tensorflow (in a dev branch). Among the publications listed on the website, one caught my attention as it reported a truly innovative way (to my knowledge at least) to perform variational inference. Its title speaks for itself: "Black box variational inference", Rajesh Ranganath, Sean Gerrish, David M. Blei.
 
