@@ -34,7 +34,7 @@ Let us now build a simple model to solve **Bayesian logistic regression** using 
 According to the *mean field* approximation, the distribution of q over z (![lambda](https://latex.codecogs.com/gif.latex?%5Cdpi%7B150%7D%20q%28z/%5Clambda%29)) is equal to the product of conditionally independent normal distributions (![normal](https://latex.codecogs.com/gif.latex?%5Cdpi%7B150%7D%20%5Cprod_%7Bj%3D1%7D%5E%7BP%7DN%28z_j/%5Cmu_j%2C%5Csigma%5E2_j%29)), each governed by parameters mu and sigma (![set](https://latex.codecogs.com/gif.latex?%5Cdpi%7B150%7D%20%5Clambda%20%3D%20%5C%7B%5Cmu_j%2C%20%5Csigma%5E2_j%5C%7D%5E%7BP%7D_%7Bj%3D1%7D))
 
 Let us try to decompose the gradient of L(λ) to show how we can evaluate it for logistic regression:
-- ![for](https://latex.codecogs.com/gif.latex?%5Cdpi%7B150%7D%20%5CDelta_%5Clambda%20log%20q%28z/%5Clambda%29): we need to derive the gradient of q w.r.t to mu and sigma. I will just show the gradient of mu, although the gradient of sigma follows the same concept: 
+- ![for](https://latex.codecogs.com/gif.latex?%5Cdpi%7B150%7D%20%5CDelta_%5Clambda%20log%20q%28z/%5Clambda%29): we need to derive the gradient of q w.r.t to mu and sigma. I only report here the gradient of mu (the gradient of sigma follows the same concept and can be found [here](http://keyonvafa.com/logistic-regression-bbvi/)): 
 
 ![muu](https://latex.codecogs.com/gif.latex?%5Cdpi%7B150%7D%20%5CDelta_%5Cmu_j%20logq%28z/%5Clambda%29%20%3D%20%5CDelta_%5Cmu%20%5Csum_%7Bj%3D1%7D%5E%7BP%7D)![muuuu](https://latex.codecogs.com/gif.latex?%5Cdpi%7B150%7D%20-%5Cfrac%7Blog%28%5Csigma%5E2_j%29%7D%7B2%7D%20-%20%5Cfrac%7B%28z_i%20-%20%5Cmu_i%29%5E2%7D%7B2%5Csigma_i%5E2%7D%20%3D%20%5Cfrac%7Bz_j%20-%20%5Cmu_j%7D%7B%5Csigma_j%5E2%7D)
 
