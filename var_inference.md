@@ -53,7 +53,7 @@ So, in order to calculate the gradient of the lower bound we just need to sample
 
 ## Variational inference in PyMC3
 
-Enough for theory, in recent years some libraries have been produced that do an amazing job at solving this kind of problems without starting from scratch (although I think it is always beneficial to try to understand things from first principles).
+Enough for theory, we can solve this kind of problems without starting from scratch (although I think it is always beneficial (to try) to understand things from first principles).
 I will show you now how to run a Bayesian logistic regression model, i.e. how to turn the formulas you have seen above in executable Python code that uses Pymc3's ADVI implementation as workhorse for optimization.
 What is remarkable here is that performing variational inference with Pymc3 is as easy as running MCMC, as we just need to specificy the functional form of the distribution to characterize.
 
@@ -136,7 +136,7 @@ az.plot_pair(draws, figsize=(5, 5)) # Covariance plots for the NUTS trace
 Clearly, ADVI does not capture (as expected) the interactions between variables because of the *mean field* approximation, and so it underestimates the overall variance by far (be advised: this is a particularly tricky example chosen to highlight this kind of behavior). 
 
 ## Conclusions
-ADVI is a very convenient inferential procedure that let us characterize complex posterior distributions in a very short time (if compared to Gibbs/MCMC sampling). The solution it finds is a distribution which approximate the posterior, although it may not converge to the real posterior: for most cases this may not be a problem, but we may need to pay extra-attention in cases where the covariance structure of the variables is crucial (this example that uses [Gaussian mixture models](https://docs.pymc.io/notebooks/gaussian-mixture-model-advi.html) may even further clarify what I mean)
+ADVI is a very convenient inferential procedure that let us characterize complex posterior distributions in a very short time (if compared to Gibbs/MCMC sampling). The solution it finds is a distribution which approximate the posterior, although it may not converge to the real posterior: for most cases this may not be a problem, but we may need to pay extra-attention in cases where the covariance structure of the variables is crucial (this example that uses [Gaussian mixture models](https://docs.pymc.io/notebooks/gaussian-mixture-model-advi.html) may clarify this concept)
 
 ## References
 - Black Box variational inference, Rajesh Ranganath, Sean Gerrish, David M. Blei, AISTATS 2014
