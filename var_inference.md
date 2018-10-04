@@ -18,9 +18,9 @@ Minimizing the KL divergence between q(z/λ) and p(z/x) i.e. roughly said, makin
 
 calculated w.r.t q(z).
 
-We just need to maximize this expression to find the parameters λ that make the KL divergence small and our q(z/λ) very similar to p(z/x). So where is the catch? Deriving gradients for complex functions is a tedious process, and for sure it is one that **cannot easily be automated**.
+We just need to maximize this expression to find the parameters λ that make the KL divergence small and our q(z/λ) very similar to p(z/x). So where is the catch? Deriving gradients for complex functions is a tedious process, and for sure it is one that **cannot be easily automated**.
 
-We can solve this problem by using a **"black box"** variational model? Citing from the publication:
+We can solve this problem by using the **"black box"** variational model reported in the publication cited above:
 "From the practitioner’s perspective, this method requires only that he or she write functions to evaluate the model log-likelihood. 
 The remaining calculations (properties of the variational distribution and evaluating the Monte Carlo estimate) are easily put into a library to share across models, which means our method can be quickly applied to new modeling settings."
 
@@ -28,7 +28,9 @@ Let us see how this works: the key idea from the publication is that we can writ
 
 ![logelbo](https://latex.codecogs.com/gif.latex?%5Cdpi%7B150%7D%20%5CDelta%20_%7B%5Clambda%7DL%28%5Clambda%29%20%3D%20E_q%20%5B%28%5CDelta_%5Clambda%20log%20q%28z/%5Clambda%29%29%20%28log%20p%28x%2Cz%29%20-%20log%20q%28z/%5Clambda%29%29%5D)
 
-We note that we can use Monte Carlo to obtain a noisy estimate of this gradient expression: we initialize the model parameters λ (randomly), we sample from q(z/λ) and for each sample we evaluate the entire expression (see below) and take the mean over different samples. We then use stochastic gradient descent to optimize the ELBO!
+And here come the good part: we can use Monte Carlo to obtain a noisy estimate of this gradient expression: we initialize the model parameters λ (randomly), we sample from q(z/λ), we evaluate the entire expression (see below) and take the mean over different samples. We then use stochastic gradient descent to optimize (maximize) the ELBO!
+
+## Black box variational inference for logistic regression
 
 Let us now build a simple model to solve **Bayesian logistic regression** using black box variational inference. In this context,the probability ![prob](https://latex.codecogs.com/gif.latex?%5Cdpi%7B150%7D%20P%28y_i/x_i%2C%20z%29) is distributed as a Bernoulli random variable, whose parameter p is determined by the latent variable z and the input data x (![bern](https://latex.codecogs.com/gif.latex?%5Cdpi%7B150%7D%20Bern%28%5Csigma%28z%5E%7BT%7Dx_i%29%29))  which goes through a sigmoid 'link' function.
 According to the *mean field* approximation, the distribution of q over z (![lambda](https://latex.codecogs.com/gif.latex?%5Cdpi%7B150%7D%20q%28z/%5Clambda%29)) is equal to the product of conditionally independent normal distributions (![normal](https://latex.codecogs.com/gif.latex?%5Cdpi%7B150%7D%20%5Cprod_%7Bj%3D1%7D%5E%7BP%7DN%28z_j/%5Cmu_j%2C%5Csigma%5E2_j%29)), each governed by parameters mu and sigma (![set](https://latex.codecogs.com/gif.latex?%5Cdpi%7B150%7D%20%5Clambda%20%3D%20%5C%7B%5Cmu_j%2C%20%5Csigma%5E2_j%5C%7D%5E%7BP%7D_%7Bj%3D1%7D))
@@ -48,6 +50,8 @@ And to complete the ELBO expression:
 ![bb](https://latex.codecogs.com/gif.latex?%5Cdpi%7B150%7D%20log%20q%28z/%5Clambda%29%20%3D%20%5Csum_%7Bj%3D1%7D%5E%7BP%7D%20log%20%5Cphi%28z_j/%5Cmu_j%2C%20%5Csigma%5E2_j%29)
 
 So, in order to calculate the gradient of the lower bound we just need to sample from q(z/λ) (initialized with parameters mu and sigma) and evaluate the expression we have just derived. We can do this in Tensorflow by using 'autodiff' and passing a custom expression for the gradient.
+
+## Variational inference in PyMC3
 
 Enough for theory, in recent years some libraries have been produced that do an amazing job at solving this kind of problems without starting from scratch (although I think it is always beneficial to try to understand things from first principles).
 I will show you now how to run a Bayesian logistic regression model, i.e. how to turn the formulas you have seen above in executable Python code that uses Pymc3's ADVI implementation as workhorse for optimization.
