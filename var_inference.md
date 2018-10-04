@@ -1,6 +1,8 @@
 # Scalable Bayesian inference in Python
 ## On how variational inference makes probabilistic programming 'sustainable'
 
+**View this on [Medium] too (https://medium.com/@albertoarrigoni/scalable-bayesian-inference-in-python-a6690c7061a3)**
+
 Last year I came across the [Edward project](http://edwardlib.org/) for probabilistic programming, which was later moved into Tensorflow (in a dev branch). Among the publications listed on the website, one caught my attention as it reported a truly innovative way (to my knowledge at least) to perform variational inference. Its title speaks for itself: "Black box variational inference", Rajesh Ranganath, Sean Gerrish, David M. Blei.
 
 When performing Bayesian inference we wish to approximate the posterior distribution of the latent variables given some data/observations x (![latent](https://latex.codecogs.com/gif.latex?%5Cdpi%7B150%7D%20p%28z/x%29)): problem is, the integral is often intractable and numerical methods must be used (just so you know, a latent variable is everything ranging from a discrete variable for a Gaussian mixture model to beta coefficients in a linear regression model or the scale parameter of the posterior distribution of a non-conjugate bayesian model)... 
