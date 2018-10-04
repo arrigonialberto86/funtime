@@ -141,3 +141,4 @@ ADVI is a very convenient inferential procedure that let us characterize complex
 ## References
 - Black Box variational inference, Rajesh Ranganath, Sean Gerrish, David M. Blei, AISTATS 2014
 - [Keyonvafa's blog](http://keyonvafa.com/logistic-regression-bbvi/)
+- Machine learning, a probabilistic perspective, by Kevin Murphy
