@@ -133,7 +133,7 @@ az.plot_pair(draws, figsize=(5, 5)) # Covariance plots for the NUTS trace
 ```
 <img src="variational_inference/covariance_advi.png" alt="Image not found" width="400"/>
 
-Clearly, ADVI does not capture (as expected) the interactions between variables, and so it underestimated the overall variance by far (be advised: this is a particularly tricky example chosen to highlight this kind of behavior). 
+Clearly, ADVI does not capture (as expected) the interactions between variables because of the *mean field* approximation, and so it underestimates the overall variance by far (be advised: this is a particularly tricky example chosen to highlight this kind of behavior). 
 
 ## Conclusions
 ADVI is a very convenient inferential procedure that let us characterize complex posterior distributions in a very short time (if compared to Gibbs/MCMC sampling). The solution it finds is a distribution which approximate the posterior, although it may not converge to the real posterior: for most cases this may not be a problem, but we may need to pay extra-attention in cases where the covariance structure of the variables is crucial (this example that uses [Gaussian mixture models](https://docs.pymc.io/notebooks/gaussian-mixture-model-advi.html) may even further clarify what I mean)
