@@ -193,8 +193,10 @@ plt.plot([i for i in x_ax], [pow_fun(i) for i in x_ax], 'y', linewidth = 2)
 <img src="deep_ensembles/third.png" alt="Image not found" width="600" />
 
 We now introduce the concept of 'ensembling' in the context of uncertainty estimation. One of the most widely known strategies is *bagging* (bootstrap aggregating), where different weak learners are trained on random subsets of selected data (with replacement). The authors suggest instead to train different NNs on the same data (the whole training set) with random initialization (although it is straightforward to use a random subsample if needed).
+
 Ensemble results are then treated as a uniformly-weighted mixture model, although for simplicity the ensemble prediction is approximated to be a Gaussian whose mean and variance are respectively the mean and variance of the mixture. 
-Mean and variance of the mixture then are given by:
+
+ Mixture parameters are then given by:
 
 ![mu_mix](https://latex.codecogs.com/gif.latex?%5Cdpi%7B150%7D%20%5Cmu_*%28x%29%3DM%5E%7B-1%7D%5Csum_%7Bm%7D%20%5Cmu_%5Ctheta_m%28x%29)
 
@@ -269,7 +271,7 @@ Intuitively, we add small perturbations to `x` (a training input feature vector)
 ![adv](https://latex.codecogs.com/gif.latex?%5Cdpi%7B150%7D%20x%27%20%3D%20x%20&plus;%20%5Cepsilon%20sign%28%5CDelta_x%20l%28%5Ctheta%2C%20x%2C%20y%29%29)
 
 The adversarial examples are then used as additional training example, and these procedure is known as *adversarial training*.
-I am reporting here only the snippet I wrote for adversarial examples generation, while much of the remaining code is the same as in the previous section.
+I am reporting here the snippet I wrote for adversarial examples generation, while much of the remaining code is the same as in the previous section.
 
 ```python
 # Multiple networks with adversarial examples
@@ -315,7 +317,7 @@ And this is what we get:
 
 <img src="deep_ensembles/fifth.png" alt="Image not found" width="600" />
 
-The results we get by using adversarial inputs + ensembling are similar that what we obtained with pure ensembling, although we need to consider that the number of adversarial inputs and the parameter `epsilon` need to carefully tuned.
+The results we get by using adversarial inputs + ensembling are similar to what we obtained with pure ensembling, although we need to consider that the number of adversarial inputs and the parameter `epsilon` need to be carefully tuned.
 I have not given much thought to the advantages of using adversarial training for regression. For images classification (and in general for classification purposes) the advantages are obvious, but in this context intuition gets a bit more elusive.
 Anyway, I am interested in hearing what you think about this!
 
