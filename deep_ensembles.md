@@ -2,7 +2,7 @@
 ## Simple and Scalable Predictive Uncertainty Estimation using Deep Ensembles 
 
 The thing we love about probabilistic programming is of course the possibility to model the uncertainty of model predictions. This convenient property comes with a cost unfortunately, as the calculations needed to perform e.g. Markov Chain Monte Carlo are very expensive.
-In this short but insightful paper Lakshminarayanan et al., report a simple method to assess model uncertainty using NNs, which compares well even to Bayesian networks (as they demonstrate in the paper).
+In this short but insightful paper Lakshminarayanan et al., report a simple method to assess model uncertainty using neural networks, which compares well even to Bayesian networks (as they demonstrate in the paper).
 These are the key insights presented in the paper:
 - Use of a proper scoring rule as the training criterion
 - Training of an *ensemble* of NNs
