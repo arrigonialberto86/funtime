@@ -22,7 +22,7 @@ I'll take a step back to generate some data we can use to observe the properties
 
 ```
 
-<img src="deep_ensembles/first.png" alt="Image not found" width="600"/>
+<img src="deep_ensembles/first.png" alt="Image not found" width="600"  display= 'block' margin-left= 'auto' margin-right="auto" width="50%"/>
  
  
 
