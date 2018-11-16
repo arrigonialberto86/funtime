@@ -165,4 +165,28 @@ plt.plot([i[0] for i in train_x], [i for i in lower], 'r', linewidth = 3)
 plt.plot([i[0] for i in train_x], [pow_fun(i[0]) for i in train_x], 'y', linewidth = 2)
 ```
 (Quite surprisingly) the model is great at modeling the variance and correctly represents the increase in variance for values < 0:
+
 <img src="deep_ensembles/second.png" alt="Image not found" width="600" />
+
+The previous graph depicts how our model performs on the training set. But how will it model regions outside that interval?
+```python
+x_ax = np.linspace(-4, 4, num=200)
+preds, sigmas = [], []
+for j in range(len(x_ax)):
+    
+    mu, sigma = get_intermediate([[np.array([x_ax[j]])]])
+    preds.append(mu.reshape(1,)[0])
+    sigmas.append(sigma.reshape(1,)[0])
+
+plt.figure(1, figsize=(15, 9))
+plt.plot([i for i in x_ax], [i for i in preds], 'b', linewidth=3)
+upper = [i+k for i,k in zip(preds, sigmas)]
+lower = [i-k for i,k in zip(preds, sigmas)]
+
+plt.plot([i for i in x_ax], [i for i in upper], 'r', linewidth = 3)
+plt.plot([i for i in x_ax], [i for i in lower], 'r', linewidth = 3)
+plt.plot([i for i in x_ax], [pow_fun(i) for i in x_ax], 'y', linewidth = 2)
+```
+<img src="deep_ensembles/third.png" alt="Image not found" width="600" />
+
+We now introduce the concept of 'ensembling' in the context of uncertainty estimation. One of the most widely known strategies is *bagging* (bootstrap aggregating), where different weak learners are trained on random subsets of selected data (with replacement). The authors suggest instead to train different NNs on the same data (the whole training set) with random initialization (although it is straightforward to use a random subsample if needed). 
