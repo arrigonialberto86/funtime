@@ -73,8 +73,9 @@ plt.show()
 
 <img src="deep_ensembles/first.png" alt="Image not found" width="600" />
  
-The blue vertical line represents the point on the x-axis (0) where we have increased the dispersion of the generated data. We will try to understand if a model like the one presented in the paper can adequately represent the change in dispersion and vary the output sigma accordingly (on the training set).
-At this point we need to generate the loss function and the custom layer:
+The blue vertical line represents the point on the x-axis (0) where we have increased the dispersion of the generated data. We will try to understand if a model like the one presented in the paper can adequately capture the change in dispersion and modulate the output sigma accordingly (on the training set).
+
+And this is the code that generates the loss function and the custom layer:
 ```python
 import tensorflow as tf
 from keras import backend as K
@@ -124,8 +125,9 @@ class GaussianLayer(Layer):
 
 ```
 
-The implementation of the custom loss function is straightforward (although with a twist!): we need to encapsulate the loss function `gaussian_loss` into another function in order to pass the second parameter it needs to computer the log-likelihood (`sigma`).
-Then, we can subclass Keras' `Layer` to produce our custom layer. There is an extensive documentation on this, see [Keras documentation](https://keras.io/layers/writing-your-own-keras-layers/), here I will just skip the details and say that we need to implement three methods: `build`, `call`, `compute_output_shape` that are called by the framework. 
+The implementation of the custom loss function is straightforward (although with a twist): we need to encapsulate the loss function `gaussian_loss` into another function in order to pass the second parameter (`sigma`) it needs to compute the log-likelihood (`sigma`).
+Then, we can subclass Keras' `Layer` to produce our custom layer. There is an extensive documentation on this, see [Keras documentation](https://keras.io/layers/writing-your-own-keras-layers/), here I will skip the details and just say that we need to implement three methods: `build`, `call`, `compute_output_shape` that are required by the framework. 
+
 In the `build` method we define the two weight matrices + bias we need to perform the forward propagation in the `call` method. Just remember to set the correct output shape (since we are returning a list of elements) in `compute_output_shape`.
 
 We are now ready to train the model and see if it can handle a simple cubic function with added dispersion:
@@ -142,7 +144,7 @@ model.compile(loss=custom_loss(sigma), optimizer='adam')
 model.fit(train_x, train_y, epochs=400)
 
 ```
-And we need to create a custom Keras function (which we call `get_intermediate`) to extract mu and sigma results in prediction mode.
+We also need to create a custom Keras function (which we call `get_intermediate`) to extract mu and sigma results in prediction mode.
 ```python
 layer_name = 'main_output' # Where to extract the output from
 get_intermediate = K.function(inputs=[model.input], outputs=model.get_layer(layer_name).output)
@@ -165,11 +167,11 @@ plt.plot([i[0] for i in train_x], [i for i in upper], 'r', linewidth = 3)
 plt.plot([i[0] for i in train_x], [i for i in lower], 'r', linewidth = 3)
 plt.plot([i[0] for i in train_x], [pow_fun(i[0]) for i in train_x], 'y', linewidth = 2)
 ```
-(Quite surprisingly) the model is great at modeling the variance and correctly represents the increase in variance for values < 0:
+(Quite surprisingly) the model is great at representing the variance and correctly captures the increased variance for values < 0:
 
 <img src="deep_ensembles/second.png" alt="Image not found" width="600" />
 
-The previous graph depicts how our model performs on the training set. But how will it model regions outside that interval?
+The previous graph depicts how our model performs on the training set. But how will it model regions outside of that interval?
 ```python
 x_ax = np.linspace(-4, 4, num=200)
 preds, sigmas = [], []
