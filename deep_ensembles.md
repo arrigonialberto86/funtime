@@ -3,9 +3,10 @@
 
 The thing we love about probabilistic programming is of course the possibility to model the uncertainty of model predictions. This convenient property comes with a cost unfortunately, as the calculations needed to perform e.g. Markov Chain Monte Carlo are very expensive.
 In this short but insightful paper Lakshminarayanan et al., report a simple method to assess model uncertainty using NNs, which compares well even to Bayesian networks (as they demonstrate in the paper).
-Let us start by listing the key highlights of this paper:
-- The authors identify a scoring rule for uncertainty estimation in NNs
-- They use ensembles of NNs + adversarial training examples and evaluate the predictions in different contexts.
+These are the key insights presented in the paper:
+- Use of a proper scoring rule as the training criterion
+- Training of an *ensemble* of NNs
+- Use of adversarial training to smooth the predictive distributions
 
 ## The scoring rule
 Scoring rules assess the quality of probabilistic forecasts, by assigning a numerical score based on the predictive distribution and on the event or value that generates. ()You may want to check out this nice review [Gneiting et al., 2007] for more information on scoring functions, but it is not required to follow the rest of this post).
@@ -314,3 +315,5 @@ And this is what we get:
 The results we get by using adversarial inputs + ensembling are similar that what we obtained with pure ensembling, although we need to consider that the number of adversarial inputs and the parameter `epsilon` need to carefully tuned.
 I have not given much thought to the advantages of using adversarial training for regression. For images classification (and in general for classification purposes) the advantages are obvious, but in this context intuition gets a bit more elusive.
 Anyway, I am interested in hearing what you think about this!
+
+You can find the original paper [here](https://arxiv.org/pdf/1612.01474.pdf)
