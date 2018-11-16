@@ -197,6 +197,9 @@ Mean and variance of the mixture then are given by:
 
 ![sigma_mix](https://latex.codecogs.com/gif.latex?%5Cdpi%7B150%7D%20%5Csigma_*%5E2%28x%29%3DM%5E%7B-1%7D%5Csum_%7Bm%7D%20%28%5Csigma_%5Ctheta_m%5E2%28x%29%20&plus;%20%5Cmu%5E2_%5Ctheta_m%28x%29%29%20-%20%5Cmu%5E2_*%28x%29)
 
+
+Let us first train the NNs ensemble:
+
 ```python
 # Train NNs ensemble
 
@@ -219,4 +222,52 @@ prediction_fns = []
 for i in range(10):
     prediction_fns.append(create_trained_network(train_x, train_y))
 ```
+The `create_trained_network` function instantiates a single network and directly return the `get_intermediate` function that we can use to extract `mu` and `sigma` outputs from the network.
+
+We can now plot the prediction of the model (with uncertainty estimates) on the training + test set:
+```python
+# Plot test with multiple networks
+
+x_ax = np.linspace(-6, 6, num=200)
+preds, sigmas = [], []
+for j in range(len(x_ax)):
+    
+    mu_sigma = [(prediction_fns[i]([[np.array([x_ax[j]])]])[0][0][0], \
+                prediction_fns[i]([[np.array([x_ax[j]])]])[1][0][0]) \
+                for i in range(len(prediction_fns))]
+    out_mus = [i for i,j in mu_sigma]
+    out_mu = np.mean(out_mus)
+    out_sigmas = [j for i,j in mu_sigma]
+    out_sigma = np.sqrt(np.mean(out_sigmas + np.square(out_mus)) - np.square(out_mu))
+
+    preds.append(out_mu.reshape(1,)[0])
+    sigmas.append(out_sigma.reshape(1,)[0])
+
+plt.figure(1, figsize=(15, 9))
+plt.plot([i for i in x_ax], [i for i in preds], 'b', linewidth=3)
+upper = [i+k for i,k in zip(preds, sigmas)]
+lower = [i-k for i,k in zip(preds, sigmas)]
+
+plt.fill_between(x_ax, upper, lower, color="orange", alpha=0.4)
+plt.plot([i for i in x_ax], [pow_fun(i) for i in x_ax], 'y', linewidth = 2)
+plt.ylim(-75, 75)
+plt.title('Fitting x^3')
+```
+
+<img src="deep_ensembles/fourth.png" alt="Image not found" width="600" />
+
+The last interesting point made in the paper is the use of adversarial training examples to smooth predictive distributions. 
+Adversarial training is a strategy devised specifically to counteract 'adversarial' attacks, i.e. data that is extremely 'close' to the original training examples, but it can nonetheless 'fool' the network into generating the wrong prediction.
+This is especially true for image classification, where random noise added to the original image (resulting in an image that for humans is indistinguishable from the original one) can trick the network into believing the subject of the image has changed.
+
+The method used in the paper for the generation of adversarial examples is the *fast gradient sign method*, which is a fast scheme first proposed by Goodfellow et al., 2011.
+Intuitively, we add small perturbations to `x` (a training input feature vector) along a direction which the network is likely to increase the loss, using the derivative of the loss function w.r.t. input data.
  
+![adv](https://latex.codecogs.com/gif.latex?%5Cdpi%7B150%7D%20x%27%20%3D%20x%20&plus;%20%5Cepsilon%20sign%28%5CDelta_x%20l%28%5Ctheta%2C%20x%2C%20y%29%29)
+
+The adversarial examples are then used as additional training example, and these procedure is known as *adversarial training*.
+I am reporting here only the snippet I wrote for adversarial examples generation, while much of the remaining code is the same as in the previous section.
+
+```python
+
+```
