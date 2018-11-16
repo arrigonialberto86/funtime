@@ -269,5 +269,46 @@ The adversarial examples are then used as additional training example, and these
 I am reporting here only the snippet I wrote for adversarial examples generation, while much of the remaining code is the same as in the previous section.
 
 ```python
+# Multiple networks with adversarial examples
 
+def create_trained_network_with_adv(train_x, train_y):
+    inputs = Input(shape=(1,))
+    outputs = Input(shape=(1,))
+    x = Dense(10, activation='relu')(inputs)
+    x = Dense(6, activation='relu')(x)
+    x = Dense(30, activation='relu')(x)
+    mu, sigma = GaussianLayer(1, name='main_output')(x)
+
+    model = Model(inputs, mu)
+    model.compile(loss=custom_loss(sigma), optimizer='adam')
+    model.fit(train_x, train_y, epochs=400, verbose=0)
+
+    def gaussian_loss(y_true, y_pred, sigma):
+        """
+        Util function used to derive gradients w.r.t. to input data (for adversarial examples generation)
+        """
+        return tf.reduce_mean(0.5*tf.log(sigma) + 0.5*tf.div(tf.square(y_true - y_pred), sigma)) + 1e-6
+
+    #### ADVERSARIAL TRAINING EXAMPLES GENERATION
+    loss_calc = gaussian_loss(outputs, mu, sigma)
+    loss_gradients = tf.gradients(loss_calc, inputs)
+    gr_sign = tf.sign(loss_gradients)
+    adversarial_input_data = tf.add(inputs, 0.4 * gr_sign)
+    ####
+
+    sess = tf.Session()
+    init_op = tf.global_variables_initializer()
+    sess.run(init_op)
+    adversarial_input_data = sess.run([adversarial_input_data], feed_dict={inputs: train_x, outputs: train_y})[0]
+
+    augmented_train_x = np.concatenate([train_x, adversarial_input_data.reshape(train_x.shape[0], 1)])
+    augmented_train_y = np.concatenate([train_y, train_y])
+    model.fit(augmented_train_x, augmented_train_y, epochs=400, verbose=0)
+
+    get_intermediate = K.function(inputs=[model.input], outputs=model.get_layer(layer_name).output)
+    return get_intermediate
 ```
+
+The results we get by using adversarial example data are not much dissimilar from what we obtained with pure ensembling
+not tuning
+simple example
