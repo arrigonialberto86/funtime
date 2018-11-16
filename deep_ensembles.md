@@ -308,7 +308,10 @@ def create_trained_network_with_adv(train_x, train_y):
     get_intermediate = K.function(inputs=[model.input], outputs=model.get_layer(layer_name).output)
     return get_intermediate
 ```
+And this is what we get:
 
-The results we get by using adversarial example data are not much dissimilar from what we obtained with pure ensembling
-not tuning
-simple example
+<img src="deep_ensembles/fifth.png" alt="Image not found" width="600" />
+
+The results we get by using adversarial inputs + ensembling are similar that what we obtained with pure ensembling, although we need to consider that the number of adversarial inputs and the parameter `epsilon` need to carefully tuned.
+I have not given much thought to the advantages of using adversarial training for regression. For images classification (and in general for classification purposes) the advantages are obvious, but in this context intuition gets a bit more elusive.
+I am interested in hearing what you think about this!
