@@ -9,6 +9,17 @@ Let us start by listing the key highlights of this paper:
 
 ## The scoring rule
 Scoring rules assess the quality of probabilistic forecasts, by assigning a numerical score based on the predictive distribution and on the event or value that generates. ()You may want to check out this nice review [Gneiting et al., 2007] for more information on scoring functions, but it is not required to follow the rest of this post).
-But let us concentrate on regression problems for a moment: in this context NNs output a single value (![mu](https://latex.codecogs.com/gif.latex?%5Cdpi%7B200%7D%20%5Cmu%28x%29)) and the weights are optimized via backprop to minimize the Mean Squared Error (MSE) on the training set. Thus, we are not taking into consideration predictive uncertainty at all. In order to change this, we can propose a slight modification of the final layer, so that it produces two outputs (mean ![mu](https://latex.codecogs.com/gif.latex?%5Cdpi%7B150%7D%20%5Cmu%28x%29)) and variance ![sigma](https://latex.codecogs.com/gif.latex?%5Cdpi%7B150%7D%20%5Csigma%5E2%28x%29).  
+But let us concentrate on regression problems for a moment: in this context NNs output a single value (![mu](https://latex.codecogs.com/gif.latex?%5Cdpi%7B150%7D%20%5Cmu%28x%29)) and the weights are optimized via backprop to minimize the Mean Squared Error (MSE) on the training set. Thus, we are not taking into consideration predictive uncertainty at all. In order to change this, we can propose a slight modification of the final layer, so that it produces two outputs (mean ![mu](https://latex.codecogs.com/gif.latex?%5Cdpi%7B150%7D%20%5Cmu%28x%29)) and variance ![sigma](https://latex.codecogs.com/gif.latex?%5Cdpi%7B150%7D%20%5Csigma%5E2%28x%29) (which of course must be grater than 0).
+We now minimize the negative log-likelihood criterion by treating the observed value as a sample from a Gaussian distribution with the predicted mean and variance:
+![gausssian_likelihood](https://latex.codecogs.com/gif.latex?%5Cdpi%7B150%7D%20-logp_%5Ctheta%28y_n/x_n%29%20%3D%20%5Cfrac%7Blog%20%5Csigma%5E2%28x%29%7D%7B2%7D&plus;%5Cfrac%7B%28y-%5Cmu_%5Ctheta%28x%29%29%5E2%7D%7B2%5Csigma%5E2%28x%29%29%7D)
+
+Thus, we need to implement the 1) custom loss function along with a 2) custom Keras layer that outputs both mu and sigma.
+I'll take a step back to generate some data we can use to observe the properties of the model and what it really means to predict uncertainty in this context.
+```python
+
+```
+
+ 
+ 
 
 
