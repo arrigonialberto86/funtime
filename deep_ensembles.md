@@ -124,4 +124,45 @@ class GaussianLayer(Layer):
 ```
 
 The implementation of the custom loss function is straightforward (although with a twist!): we need to encapsulate the loss function `gaussian_loss` into another function in order to pass the second parameter it needs to computer the log-likelihood (`sigma`).
-Then, we can subclass Keras' `Layer` to produce our custom layer. There is an extensive documentation on this, see [Keras documentation](https://keras.io/layers/writing-your-own-keras-layers/), so I will just skip the details and just say that we basically need to implement three methods: `build`, `call`, `compute_output_shape`.
+Then, we can subclass Keras' `Layer` to produce our custom layer. There is an extensive documentation on this, see [Keras documentation](https://keras.io/layers/writing-your-own-keras-layers/), here I will just skip the details and say that we need to implement three methods: `build`, `call`, `compute_output_shape` that are called by the framework. 
+In the `build` method we define the two weight matrices + bias we need to perform the forward propagation in the `call` method. Just remember to set the correct output shape (since we are returning a list of elements) in `compute_output_shape`.
+
+We are now ready to train the model and see if it can handle a simple cubic function with added dispersion:
+
+```python
+inputs = Input(shape=(1,))
+x = Dense(10, activation='relu')(inputs)
+x = Dense(6, activation='relu')(x)
+x = Dense(30, activation='relu')(x)
+mu, sigma = GaussianLayer(1, name='main_output')(x)
+
+model = Model(inputs, mu)
+model.compile(loss=custom_loss(sigma), optimizer='adam')
+model.fit(train_x, train_y, epochs=400)
+
+```
+And we need to create a custom Keras function (which we call `get_intermediate`) to extract mu and sigma results in prediction mode.
+```python
+layer_name = 'main_output' # Where to extract the output from
+get_intermediate = K.function(inputs=[model.input], outputs=model.get_layer(layer_name).output)
+```
+And plot the results when predicting in the training interval:
+```python
+preds, sigmas = [], []
+for j in range(len(train_x)):
+    mu, sigma = get_intermediate([[train_x[j]]])
+    preds.append(mu.reshape(1,)[0])
+    sigmas.append(sigma.reshape(1,)[0])
+
+plt.figure(1, figsize=(15, 9))
+plt.plot([i[0] for i in train_x], [i for i in train_y])
+plt.plot([i[0] for i in train_x], [i for i in preds], 'b', linewidth=3)
+upper = [i+k for i,k in zip(preds, sigmas)]
+lower = [i-k for i,k in zip(preds, sigmas)]
+
+plt.plot([i[0] for i in train_x], [i for i in upper], 'r', linewidth = 3)
+plt.plot([i[0] for i in train_x], [i for i in lower], 'r', linewidth = 3)
+plt.plot([i[0] for i in train_x], [pow_fun(i[0]) for i in train_x], 'y', linewidth = 2)
+```
+(Quite surprisingly) the model is great at modeling the variance and correctly represents the increase in variance for values < 0:
+<img src="deep_ensembles/second.png" alt="Image not found" width="600" />
