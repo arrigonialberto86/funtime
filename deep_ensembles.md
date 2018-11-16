@@ -73,7 +73,7 @@ plt.show()
 
 <img src="deep_ensembles/first.png" alt="Image not found" width="600" />
  
-The blue vertical line represents the point on the x-axis (0) where we have increased the dispersion of the generated data. We will try to understand if a model like the one presented here can adequately model the change in dispersion and vary the output sigma accordingly (on the training set).
+The blue vertical line represents the point on the x-axis (0) where we have increased the dispersion of the generated data. We will try to understand if a model like the one presented in the paper can adequately represent the change in dispersion and vary the output sigma accordingly (on the training set).
 At this point we need to generate the loss function and the custom layer:
 ```python
 import tensorflow as tf
