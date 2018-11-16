@@ -33,7 +33,6 @@ data_range = 3
 data_step = 0.005
 data_sigma1 = 2
 data_sigma2 = 1
-num_data = 1
 
 def pow_fun(x):
     return np.power(x, 3)
