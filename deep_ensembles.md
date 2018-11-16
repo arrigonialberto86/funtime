@@ -189,4 +189,34 @@ plt.plot([i for i in x_ax], [pow_fun(i) for i in x_ax], 'y', linewidth = 2)
 ```
 <img src="deep_ensembles/third.png" alt="Image not found" width="600" />
 
-We now introduce the concept of 'ensembling' in the context of uncertainty estimation. One of the most widely known strategies is *bagging* (bootstrap aggregating), where different weak learners are trained on random subsets of selected data (with replacement). The authors suggest instead to train different NNs on the same data (the whole training set) with random initialization (although it is straightforward to use a random subsample if needed). 
+We now introduce the concept of 'ensembling' in the context of uncertainty estimation. One of the most widely known strategies is *bagging* (bootstrap aggregating), where different weak learners are trained on random subsets of selected data (with replacement). The authors suggest instead to train different NNs on the same data (the whole training set) with random initialization (although it is straightforward to use a random subsample if needed).
+Ensemble results are then treated as a uniformly-weighted mixture model, although for simplicity the ensemble prediction is approximated to be a Gaussian whose mean and variance are respectively the mean and variance of the mixture. 
+Mean and variance of the mixture then are given by:
+
+![mu_mix](https://latex.codecogs.com/gif.latex?%5Cdpi%7B150%7D%20%5Cmu_*%28x%29%3DM%5E%7B-1%7D%5Csum_%7Bm%7D%20%5Cmu_%5Ctheta_m%28x%29)
+
+![sigma_mix](https://latex.codecogs.com/gif.latex?%5Cdpi%7B150%7D%20%5Csigma_*%5E2%28x%29%3DM%5E%7B-1%7D%5Csum_%7Bm%7D%20%28%5Csigma_%5Ctheta_m%5E2%28x%29%20&plus;%20%5Cmu%5E2_%5Ctheta_m%28x%29%29%20-%20%5Cmu%5E2_*%28x%29)
+
+```python
+# Train NNs ensemble
+
+def create_trained_network(train_x, train_y):
+    inputs = Input(shape=(1,))
+    x = Dense(10, activation='relu')(inputs)
+    x = Dense(6, activation='relu')(x)
+    x = Dense(30, activation='relu')(x)
+    mu, sigma = GaussianLayer(1, name='main_output')(x)
+
+    model = Model(inputs, mu)
+    model.compile(loss=custom_loss(sigma), optimizer='adam')
+    model.fit(train_x, train_y, epochs=400)
+
+    layer_name = 'main_output' # Where to extract the output from
+    get_intermediate = K.function(inputs=[model.input], outputs=model.get_layer(layer_name).output)
+    return get_intermediate
+
+prediction_fns = []
+for i in range(10):
+    prediction_fns.append(create_trained_network(train_x, train_y))
+```
+ 
