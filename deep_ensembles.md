@@ -16,11 +16,13 @@ We now minimize the negative log-likelihood criterion by treating the observed v
 ![gausssian_likelihood](https://latex.codecogs.com/gif.latex?%5Cdpi%7B150%7D%20-logp_%5Ctheta%28y_n/x_n%29%20%3D%20%5Cfrac%7Blog%20%5Csigma%5E2%28x%29%7D%7B2%7D&plus;%5Cfrac%7B%28y-%5Cmu_%5Ctheta%28x%29%29%5E2%7D%7B2%5Csigma%5E2%28x%29%29%7D)
 
 Thus, we need to implement the 1) custom loss function along with a 2) custom Keras layer that outputs both mu and sigma.
-I'll take a step back to generate some data we can use to observe the properties of the model and what it really means to predict uncertainty in this context.
+I'll take a step back to generate some data we can use to observe the properties of the model and what it really means to predict uncertainty in this context. Let us use the same function referenced in the paper:
+
 ```python
 
 ```
 
+<img src="deep_ensembles/first.png" alt="Image not found" width="600"/>
  
  
 
