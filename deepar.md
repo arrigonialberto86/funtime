@@ -38,12 +38,12 @@ means that in the end can calculate e.g. quantiles of the output distribution or
 
 We now turn to the likelihood model, which can be both Gaussian (with parametrization mu and sigma):
 
-<img src="deepar/gaussian.png" alt="Image not found" width="800" />
+<img src="deepar/gaussian.png" alt="Image not found" width="600" />
 
 or negative binomial when dealing with counts data. In case you have never used this kind of model, just think of it as an extension of a Poisson GLM
 where we need to model the variance too (in Poisson models the mean is assumed to be equal to the variance, although when this is not the case we need some extra help to model "overdispersion"):
 
-<img src="deepar/negative_binomial.png" alt="Image not found" width="800" />
+<img src="deepar/negative_binomial.png" alt="Image not found" width="600" />
 
 The bottom line here is that the network is estimating the parameters through a custom layer which returns the likelihood parameters:
 
