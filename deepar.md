@@ -210,9 +210,9 @@ def ts_generator(ts_obj, n_steps):
 
 ```
 
-This is all for the model: we now have a custom "Gaussian" layer and an object handling the training + (custom) prediction of the network. 
-We now need a `TimeSeries` object to hold the dataset and return batches of data to the generator. `TimeSeries` is a subclass of the Dataset abstract
-class which implements `next_batch`
+This is all we need for the model: we have a custom "Gaussian" layer and an object handling the training + (custom) prediction of the network. 
+We now need a `TimeSeries` object to incapsulate the dataset and return batches of data to the generator. `TimeSeries` is a subclass of the Dataset abstract
+class which implements the `next_batch` method.
 
 ```python
 from deepar.dataset import Dataset
@@ -307,15 +307,12 @@ class TimeSeries(Dataset):
                     sampled_cat_data = self._sample_ts(pandas_df=cat_data,
                                                        desired_len=n_steps)
                 sampled.append(sampled_cat_data)
-                if verbose:
-                    logger.debug('Sampled data for {}'.format(cat))
-                    logger.debug(sampled_cat_data)
         rnn_output = pd.concat(sampled).drop(columns=self.grouping_variable).reset_index(drop=True)
 
         if self.scaler:
             batch_scaler = self.scaler()
             n_rows = rnn_output.shape[0]
-            # Scaling will have to be extended to handle multiple variables!
+            # Scaling must be extended to handle multivariate time series!
             rnn_output['feature_1'] = rnn_output.feature_1.astype('float')
             rnn_output[target_var] = rnn_output[target_var].astype('float')
 
@@ -325,3 +322,4 @@ class TimeSeries(Dataset):
         return rnn_output.drop(target_var, 1).as_matrix().reshape(batch_size, n_steps, -1), \
                rnn_output[target_var].as_matrix().reshape(batch_size, n_steps, 1)
 ```
+
