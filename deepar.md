@@ -14,7 +14,7 @@ I would like to briefly summarize here the critical points I have been facing in
 There are many strategies to solve these problems (some of them are mentioned in the paper, 
 such as matrix factorization methods [Yu et al.] and Bayesian approaches with hierarchical priors [Chapados et al.]), but none of them is easily scalable and handles *all* the problems listed above.
 
-##The model##
+##The model
 
 What the authors suggest instead of fitting separate models for each time series is to create a *global* model from related time series to handle widely-varying scales through rescaling and velocity-based sampling.
 They use an RNN architecture which incorporates a Gaussian/Negative Binomial likelihood to produce probabilistic forecasting and outperforms traditional single-item forecasting (the authors demonstrate this on several real-world data sets).
@@ -48,14 +48,14 @@ where we need to model the variance too (in Poisson models the mean is assumed t
 
 The bottom line here is that the network is estimating the parameters through a custom layer which returns the likelihood parameters:
 
-##About the covariates (feature)##
+##About the covariates (feature)
 
 Features (x_i in paper and fig.1 notation) can be used to provide additional information about the item or the time point (e.g. week of year) to the model
 They can also be used to include covariates that one expects to influence the outcome (e.g. price or promotion
 status in the demand forecasting setting), as long as the features’ values are available also in the
 prediction range.
 
-##...and now some code##
+##...and now some code
 
 Let us now turn to some code to implement using Tensorflow  
 
