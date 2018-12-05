@@ -20,7 +20,7 @@ What the authors suggest instead of fitting separate models for each time series
 They use an RNN architecture which incorporates a Gaussian/Negative Binomial likelihood to produce probabilistic forecasting and outperforms traditional single-item forecasting (the authors demonstrate this on several real-world data sets).
 The figure below reports the architecture they use for training/prediction:
 
-<img src="deepar/deepar_arch.png" alt="Image not found" width="800" />
+<img src="deepar/deepar_arch.png" alt="Image not found" width="900" />
 
 Fig. 1 (left):
 The idea behind this architecture is straightforward: the goal here is to predict at each time step the following (horizon=1). 
@@ -429,7 +429,7 @@ for batch in X_batches:
         ress.append(scaler.inverse_transform([unscaled_prediction])[0])
     predictions.append(ress)
 
-# Concatenate batches and plo the whole time series
+# Concatenate batches and plot the whole time series
 prediction_concat = np.concatenate(predictions, axis=1, )
 ground_truth = np.concatenate(y, axis=0)
 plot_uncertainty(ress = prediction_concat, ground_truth=ground_truth, 
