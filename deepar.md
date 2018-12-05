@@ -48,14 +48,14 @@ where we need to model the variance too (in Poisson models the mean is assumed t
 
 The bottom line here is that the network is estimating the parameters through a custom layer which returns the likelihood parameters:
 
-##About the covariates (feature)
+## About the covariates (feature)
 
 Features (x_i in paper and fig.1 notation) can be used to provide additional information about the item or the time point (e.g. week of year) to the model
 They can also be used to include covariates that one expects to influence the outcome (e.g. price or promotion
 status in the demand forecasting setting), as long as the features’ values are available also in the
 prediction range.
 
-##...and now some code
+## ...and now some code
 
 Let us now turn to some code to implement using Tensorflow  
 
