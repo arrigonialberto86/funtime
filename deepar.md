@@ -407,7 +407,7 @@ def plot_uncertainty(ress, ground_truth, n_steps=20, figsize=(9, 6),
 plot_uncertainty(ress, batch[1])
 ```
 
-<img src="deepar/batch.png" alt="Image not found" width="600" />
+<img src="deepar/batch.png" alt="Image not found" width="400" />
 
 In a similar way we evaluate the training fit on the whole time series:
 
@@ -436,4 +436,4 @@ plot_uncertainty(ress = prediction_concat, ground_truth=ground_truth,
                  n_steps=140, figsize=(15, 9), prediction_dots=False)
 ```
 
-<img src="deepar/whole.png" alt="Image not found" width="600" />
+<img src="deepar/whole.png" alt="Image not found" width="800" />
