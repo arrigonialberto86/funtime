@@ -429,7 +429,7 @@ for batch in X_batches:
         ress.append(scaler.inverse_transform([unscaled_prediction])[0])
     predictions.append(ress)
 
-# Concatenate batched and plot whole time series
+# Concatenate batches and plo the whole time series
 prediction_concat = np.concatenate(predictions, axis=1, )
 ground_truth = np.concatenate(y, axis=0)
 plot_uncertainty(ress = prediction_concat, ground_truth=ground_truth, 
