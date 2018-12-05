@@ -323,3 +323,117 @@ class TimeSeries(Dataset):
                rnn_output[target_var].as_matrix().reshape(batch_size, n_steps, 1)
 ```
 
+## The mandatory AirPassengers example
+
+Now that we have an API to hold our dataset and train our custom Keras model, we just need an example to show that we can make this work.
+The example I have chosen is of course not a perfect fit for two reasons: 1) DeepAR shines when dealing with multiple (possibly inter-related time series)
+2) this is a univariate time series, although I said before that the power of this algorithm lies in "features" treatment and covariates.
+Despite this, we go ahead and load this famous dataset:
+
+```python
+import pandas as pd
+
+air = pd.read_csv("AirPassengers.csv")['#Passengers'].values
+source_df = pd.DataFrame({'feature_1': air[:-1], 'target': air[1:]})
+source_df['category'] = ['1' for i in range(source_df.shape[0])]
+```
+
+In order to comply with the TimeSeries API for batches generation, we add a `category` column that tells the model that we only have one time series here.
+Then, we just use the default network structure (which we have defined in the `basic_structure` method above) to train our model on the data.
+The sampling scheme reported in the default network architecture uses 20 points (i.e. the network's input shape is 20), so that the model model can learn the
+correlation in this time frame between subsequent observations. We scale the 20-points batches using the `MinMaxScaler` so that we avoid handling scale difference 
+between batches.
+
+
+```python
+from deepar.dataset.time_series import TimeSeries
+from deepar.model.lstm import DeepAR
+from sklearn.preprocessing import MinMaxScaler
+
+ts = TimeSeries(source_df, scaler=MinMaxScaler)
+dp_model = DeepAR(ts, epochs=100)
+dp_model.instantiate_and_fit()
+```
+
+Now that we have a model trained of the whole time series we can sample a random batch from training data and evaluate the fit.
+What we need to do is to sample from the output joint distribution multiple times (the Monte Carlo traces I have mentioned before).
+The function `get_sample_prediction` samples from a Gaussian distribution parametrized by `mu` and `sigma` predicted by the LSTM network.
+
+```python
+%matplotlib inline
+from numpy.random import normal
+import tqdm
+import pandas as pd
+from matplotlib import pyplot as plt
+import numpy as np
+
+batch = ts.next_batch(1, 20)
+
+def get_sample_prediction(sample, prediction_fn):
+    sample = np.array(sample).reshape(1, 20, 1)
+    output = prediction_fn([sample])
+    samples = []
+    for mu,sigma in zip(output[0].reshape(20), output[1].reshape(20)):
+        samples.append(normal(loc=mu, scale=np.sqrt(sigma), size=1)[0])
+    return np.array(samples)
+
+ress = []
+for i in tqdm.tqdm(range(300)):
+    pred = get_sample_prediction(batch[0], dp_model.predict_theta_from_input)
+    ress.append(pred)
+
+def plot_uncertainty(ress, ground_truth, n_steps=20, figsize=(9, 6), 
+                     prediction_dots=True, title='Prediction on training set'):
+    
+    res_df = pd.DataFrame(ress).T
+    tot_res = res_df
+
+    plt.figure(figsize=figsize)
+    plt.plot(ground_truth.reshape(n_steps), linewidth=6, label='Original data')
+    tot_res['mu'] = tot_res.apply(lambda x: np.mean(x), axis=1)
+    tot_res['upper'] = tot_res.apply(lambda x: np.mean(x) + np.std(x), axis=1)
+    tot_res['lower'] = tot_res.apply(lambda x: np.mean(x) - np.std(x), axis=1)
+    tot_res['two_upper'] = tot_res.apply(lambda x: np.mean(x) + 2*np.std(x), axis=1)
+    tot_res['two_lower'] = tot_res.apply(lambda x: np.mean(x) - 2*np.std(x), axis=1)
+
+    plt.plot(tot_res.mu, linewidth=4)
+    if prediction_dots:
+        plt.plot(tot_res.mu, 'bo', label='Likelihood mean')
+    plt.fill_between(x = tot_res.index, y1=tot_res.lower, y2=tot_res.upper, alpha=0.5)
+    plt.fill_between(x = tot_res.index, y1=tot_res.two_lower, y2=tot_res.two_upper, alpha=0.5)
+    plt.title(title)
+    plt.legend()
+    
+plot_uncertainty(ress, batch[1])
+```
+
+<img src="deepar/batch.png" alt="Image not found" width="600" />
+
+In a similar way we evaluate the training fit on the whole time series:
+
+```python
+# Evaluate fit on training set
+from sklearn.preprocessing import MinMaxScaler
+
+source_df['feature_1'] = source_df.feature_1.astype('float')
+X_batches = source_df.feature_1.values[:-3].reshape(-1, 20)
+y = source_df.target.values[:-3].reshape(-1, 20)
+
+predictions = []
+for batch in X_batches:
+    scaler = MinMaxScaler()
+    scaled_batch = scaler.fit_transform(batch.reshape(20, 1))
+    ress = []
+    for i in tqdm.tqdm(range(300)):
+        unscaled_prediction = get_sample_prediction(scaled_batch, dp_model.predict_theta_from_input)
+        ress.append(scaler.inverse_transform([unscaled_prediction])[0])
+    predictions.append(ress)
+
+# Concatenate batched and plot whole time series
+prediction_concat = np.concatenate(predictions, axis=1, )
+ground_truth = np.concatenate(y, axis=0)
+plot_uncertainty(ress = prediction_concat, ground_truth=ground_truth, 
+                 n_steps=140, figsize=(15, 9), prediction_dots=False)
+```
+
+<img src="deepar/whole.png" alt="Image not found" width="600" />
