@@ -14,7 +14,7 @@ I would like to briefly summarize here the critical points I have been facing in
 There are many strategies to solve these problems (some of them are mentioned in the paper, 
 such as matrix factorization methods [Yu et al.] and Bayesian approaches with hierarchical priors [Chapados et al.]), but none of them is easily scalable and handles *all* the problems listed above.
 
-##The model
+### The model
 
 What the authors suggest instead of fitting separate models for each time series is to create a *global* model from related time series to handle widely-varying scales through rescaling and velocity-based sampling.
 They use an RNN architecture which incorporates a Gaussian/Negative Binomial likelihood to produce probabilistic forecasting and outperforms traditional single-item forecasting (the authors demonstrate this on several real-world data sets).
@@ -48,7 +48,7 @@ where we need to model the variance too (in Poisson models the mean is assumed t
 
 The bottom line here is that the network is estimating the parameters through a custom layer which returns the likelihood parameters:
 
-## About the covariates (feature)
+## About the covariates (features)
 
 Features (x_i in paper and fig.1 notation) can be used to provide additional information about the item or the time point (e.g. week of year) to the model
 They can also be used to include covariates that one expects to influence the outcome (e.g. price or promotion
@@ -57,7 +57,271 @@ prediction range.
 
 ## ...and now some code
 
-Let us now turn to some code to implement using Tensorflow  
+Let us now turn to some code to implement the basics of DeepAR using Tensorflow. Let us start from the likelihood function 
+(I am reporting here only the Gaussian, although it is straightforward to implement the Negative Binomial using the formula above):
+
+```python
+import tensorflow as tf
+
+def gaussian_likelihood(sigma):
+    def gaussian_loss(y_true, y_pred):
+        return tf.reduce_mean(0.5*tf.log(sigma) + 0.5*tf.div(tf.square(y_true - y_pred), sigma)) + 1e-6 + 6
+    return gaussian_loss
+```
+
+And this is the GaussianLayer we need to output *mu* and *sigma* at every training step (which I have already used in [this blog post](https://arrigonialberto86.github.io/funtime/deep_ensembles.html)):
+
+```python
+from keras import backend as K
+from keras.initializers import glorot_normal
+from keras.layers import Layer
 
 
+class GaussianLayer(Layer):
+    def __init__(self, output_dim, **kwargs):
+        self.output_dim = output_dim
+        self.kernel_1, self.kernel_2, self.bias_1, self.bias_2 = [], [], [], []
+        super(GaussianLayer, self).__init__(**kwargs)
 
+    def build(self, input_shape):
+        n_weight_rows = input_shape[2]
+        self.kernel_1 = self.add_weight(name='kernel_1',
+                                        shape=(n_weight_rows, self.output_dim),
+                                        initializer=glorot_normal(),
+                                        trainable=True)
+        self.kernel_2 = self.add_weight(name='kernel_2',
+                                        shape=(n_weight_rows, self.output_dim),
+                                        initializer=glorot_normal(),
+                                        trainable=True)
+        self.bias_1 = self.add_weight(name='bias_1',
+                                      shape=(self.output_dim,),
+                                      initializer=glorot_normal(),
+                                      trainable=True)
+        self.bias_2 = self.add_weight(name='bias_2',
+                                      shape=(self.output_dim,),
+                                      initializer=glorot_normal(),
+                                      trainable=True)
+        super(GaussianLayer, self).build(input_shape)
+
+    def call(self, x):
+        output_mu = K.dot(x, self.kernel_1) + self.bias_1
+        output_sig = K.dot(x, self.kernel_2) + self.bias_2
+        output_sig_pos = K.log(1 + K.exp(output_sig)) + 1e-06
+        return [output_mu, output_sig_pos]
+
+    def compute_output_shape(self, input_shape):
+        """
+        The assumption is the output ts is always one-dimensional
+        """
+        return [(input_shape[0], self.output_dim), (input_shape[0], self.output_dim)]
+```
+
+And here I have packaged the network structure (which is itself an initialization parameter) with a training (fit) method. In case you are wondering where the deepar model 
+referenced below comes from you can find it [here](https://github.com/arrigonialberto86/deepar/blob/master/deepar/model/lstm.py), 
+where I stored all the prototypical code used in this blog post:
+
+```python
+from deepar.model import NNModel
+from deepar.model.layers import GaussianLayer
+from keras.layers import Input, Dense, Input
+from keras.models import Model
+from keras.layers import LSTM
+from keras import backend as K
+import logging
+from deepar.model.loss import gaussian_likelihood
+
+logger = logging.getLogger('deepar')
+
+
+class DeepAR(NNModel):
+    def __init__(self, ts_obj, steps_per_epoch=50, epochs=100, loss=gaussian_likelihood,
+                 optimizer='adam', with_custom_nn_structure=None):
+
+        self.ts_obj = ts_obj
+        self.inputs, self.z_sample = None, None
+        self.steps_per_epoch = steps_per_epoch
+        self.epochs = epochs
+        self.loss = loss
+        self.optimizer = optimizer
+        self.keras_model = None
+        if with_custom_nn_structure:
+            self.nn_structure = with_custom_nn_structure
+        else:
+            self.nn_structure = DeepAR.basic_structure
+        self._output_layer_name = 'main_output'
+        self.get_intermediate = None
+
+    @staticmethod
+    def basic_structure():
+        """
+        This is the method that needs to be patched when changing NN structure
+        :return: inputs_shape (tuple), inputs (Tensor), [loc, scale] (a list of theta parameters
+        of the target likelihood)
+        """
+        input_shape = (20, 1)
+        inputs = Input(shape=input_shape)
+        x = LSTM(4, return_sequences=True)(inputs)
+        x = Dense(3, activation='relu')(x)
+        loc, scale = GaussianLayer(1, name='main_output')(x)
+        return input_shape, inputs, [loc, scale]
+
+    def instantiate_and_fit(self, verbose=False):
+        input_shape, inputs, theta = self.nn_structure()
+        model = Model(inputs, theta[0])
+        model.compile(loss=self.loss(theta[1]), optimizer=self.optimizer)
+        model.fit_generator(ts_generator(self.ts_obj,
+                                         input_shape[0]),
+                            steps_per_epoch=self.steps_per_epoch,
+                            epochs=self.epochs)
+        if verbose:
+            logger.debug('Model was successfully trained')
+        self.keras_model = model
+        self.get_intermediate = K.function(inputs=[self.model.input],
+                                           outputs=self.model.get_layer(self._output_layer_name).output)
+
+    @property
+    def model(self):
+        return self.keras_model
+
+    def predict_theta_from_input(self, input_list):
+        """
+        This function takes an input of size equal to the n_steps specified in 'Input' when building the
+        network
+        :param input_list:
+        :return: [[]], a list of list. E.g. when using Gaussian layer this returns a list of two list,
+        corresponding to [[mu_values], [sigma_values]]
+        """
+        if not self.get_intermediate:
+            raise ValueError('TF model must be trained first!')
+
+        return self.get_intermediate(input_list)
+
+
+def ts_generator(ts_obj, n_steps):
+    """
+    This is a util generator function for Keras
+    :param ts_obj: a Dataset child class object that implements the 'next_batch' method
+    :param n_steps: parameter that specifies the length of the net's input tensor
+    :return:
+    """
+    while 1:
+        batch = ts_obj.next_batch(1, n_steps)
+        yield batch[0], batch[1]
+
+```
+
+This is all for the model: we now have a custom "Gaussian" layer and an object handling the training + (custom) prediction of the network. 
+We now need a `TimeSeries` object to hold the dataset and return batches of data to the generator. `TimeSeries` is a subclass of the Dataset abstract
+class which implements `next_batch`
+
+```python
+from deepar.dataset import Dataset
+import numpy as np
+import pandas as pd
+
+
+class TimeSeries(Dataset):
+    def __init__(self, pandas_df, one_hot_root_list=None, grouping_variable='category', scaler=None):
+        super().__init__()
+        self.data = pandas_df
+        self.one_hot_root_list = one_hot_root_list
+        self.grouping_variable = grouping_variable
+        if self.data is None:
+            raise ValueError('Must provide a Pandas df to instantiate this class')
+        self.scaler = scaler
+
+    def _one_hot_padding(self, pandas_df, padding_df):
+        """
+        Util padding function
+        :param padding_df:
+        :param one_hot_root_list:
+        :return:
+        """
+        for one_hot_root in self.one_hot_root_list:
+            one_hot_columns = [i for i in pandas_df.columns   # select columns equal to 1
+                               if i.startswith(one_hot_root) and pandas_df[i].values[0] == 1]
+            for col in one_hot_columns:
+                padding_df[col] = 1
+        return padding_df
+
+    def _pad_ts(self, pandas_df, desired_len, padding_val=0):
+        """
+        Add padding int to the time series
+        :param pandas_df:
+        :param desired_len: (int)
+        :param padding_val: (int)
+        :return: X (feature_space), y
+        """
+        pad_length = desired_len - pandas_df.shape[0]
+        padding_df = pd.concat([pd.DataFrame({col: padding_val for col in pandas_df.columns},
+                                             index=[i for i in range(pad_length)])])
+
+        if self.one_hot_root_list:
+            padding_df = self._one_hot_padding(pandas_df, padding_df)
+
+        return pd.concat([padding_df, pandas_df]).reset_index(drop=True)
+
+    @staticmethod
+    def _sample_ts(pandas_df, desired_len):
+        """
+        :param pandas_df: input pandas df with 'target' columns e features
+        :param desired_len: desired sample length (number of rows)
+        :param padding_val: default is 0
+        :param initial_obs: how many observations to skip at the beginning
+        :return: a pandas df (sample)
+        """
+        if pandas_df.shape[0] < desired_len:
+            raise ValueError('Desired sample length is greater than df row len')
+        if pandas_df.shape[0] == desired_len:
+            return pandas_df
+
+        start_index = np.random.choice([i for i in range(0, pandas_df.shape[0] - desired_len + 1)])
+        return pandas_df.iloc[start_index: start_index+desired_len, ]
+
+    def next_batch(self, batch_size, n_steps,
+                   target_var='target', verbose=False,
+                   padding_value=0):
+        """
+        :param batch_size: how many time series to be sampled in this batch (int)
+        :param n_steps: how many RNN cells (int)
+        :param target_var: (str)
+        :param verbose: (boolean)
+        :param padding_value: (float)
+        :return: X (feature space), y
+        """
+
+        # Select n_batch time series
+        groups_list = self.data[self.grouping_variable].unique()
+        np.random.shuffle(groups_list)
+        selected_groups = groups_list[:batch_size]
+        input_data = self.data[self.data[self.grouping_variable].isin(set(selected_groups))]
+
+        # Initial padding for each selected time series to reach n_steps
+        sampled = []
+        for cat, cat_data in input_data.groupby(self.grouping_variable):
+                if cat_data.shape[0] < n_steps:
+                    sampled_cat_data = self._pad_ts(pandas_df=cat_data,
+                                                    desired_len=n_steps,
+                                                    padding_val=padding_value)
+                else:
+                    sampled_cat_data = self._sample_ts(pandas_df=cat_data,
+                                                       desired_len=n_steps)
+                sampled.append(sampled_cat_data)
+                if verbose:
+                    logger.debug('Sampled data for {}'.format(cat))
+                    logger.debug(sampled_cat_data)
+        rnn_output = pd.concat(sampled).drop(columns=self.grouping_variable).reset_index(drop=True)
+
+        if self.scaler:
+            batch_scaler = self.scaler()
+            n_rows = rnn_output.shape[0]
+            # Scaling will have to be extended to handle multiple variables!
+            rnn_output['feature_1'] = rnn_output.feature_1.astype('float')
+            rnn_output[target_var] = rnn_output[target_var].astype('float')
+
+            rnn_output['feature_1'] = batch_scaler.fit_transform(rnn_output.feature_1.values.reshape(n_rows, 1)).reshape(n_rows)
+            rnn_output[target_var] = batch_scaler.fit_transform(rnn_output[target_var].values.reshape(n_rows, 1)).reshape(n_rows)
+
+        return rnn_output.drop(target_var, 1).as_matrix().reshape(batch_size, n_steps, -1), \
+               rnn_output[target_var].as_matrix().reshape(batch_size, n_steps, 1)
+```
