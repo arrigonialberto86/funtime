@@ -328,7 +328,7 @@ class TimeSeries(Dataset):
 Now that we have an API to hold our dataset and train our custom Keras model, we just need an example to show that we can make this work.
 The example I have chosen is of course not a perfect fit for two reasons: 1) DeepAR shines when dealing with multiple (possibly inter-related time series)
 2) this is a univariate time series, although I said before that the power of this algorithm lies in "features" treatment and covariates.
-Despite this, we go ahead and load this famous dataset:
+Despite this, we go ahead and load the (in)famous dataset:
 
 ```python
 import pandas as pd
@@ -355,7 +355,7 @@ dp_model = DeepAR(ts, epochs=100)
 dp_model.instantiate_and_fit()
 ```
 
-Now that we have a model trained of the whole time series we can sample a random batch from training data and evaluate the fit.
+Now that we have a model trained on the whole time series we can sample a random batch from training data and evaluate the fit.
 What we need to do is to sample from the output joint distribution multiple times (the Monte Carlo traces I have mentioned before).
 The function `get_sample_prediction` samples from a Gaussian distribution parametrized by `mu` and `sigma` predicted by the LSTM network.
 
