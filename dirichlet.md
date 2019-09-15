@@ -21,7 +21,7 @@ Let's naively start modeling our dataset by supposing that there are K clusters 
 I'll now use a notation which may be easier to understand for those already familiar with mixture models. 
 The following is the generative model for data points ![v_i](https://latex.codecogs.com/gif.latex?%5Cdpi%7B200%7D%20%5Clarge%20v_i):
 
-![Pv_i](https://latex.codecogs.com/gif.latex?%5Cdpi%7B200%7D%20%5Clarge%20P%28v_i%20%7C%20z_i%20%3D%20k%2C%20%5Cmu_k%29%20%5Csim%20N%28%5Cmu_k%2C%20%5Csigma%5E2%29)
+![Pv_i](https://latex.codecogs.com/gif.latex?%5Cdpi%7B200%7D%20P%28v_i%20%7C%20z_i%20%3D%20k%2C%20%5Cmu_k%29%20%5Csim%20N%28%5Cmu_k%2C%20%5Csigma%5E2%29)
 
 
 ## How to calculate the posterior (from book)
