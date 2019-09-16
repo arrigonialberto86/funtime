@@ -72,8 +72,16 @@ Now remember that a Dirichlet process is defined as a distribution over distribu
 
 ![G_draw](https://latex.codecogs.com/gif.latex?%5Cdpi%7B150%7D%20%5Cfn_phv%20G%20%5Csim%20DP%28H%28%5Clambda%29%2C%20%5Calpha%29)
 
+Now, a discrete prior distribution with an infinite number of components may constitute an interesting mind experiment, but of course we need to find a way to sample from this distribution, 
+and moreover given a dataset `D` we would like to derive the posterior distribution ![post](https://latex.codecogs.com/gif.latex?%5Cdpi%7B150%7D%20%5Cfn_phv%20P%28%5Cpi%2C%20%5Cmu%20%7C%20D%29).
+Let's start by 
+
+## The stick-breaking process: how to sample from a DP 
+
+As we have seen in the previous paragraph, draws from a Dirichlet process are distributions over a set S
 
 
+# // add part of code that simulate random draws from a DP process
 
 ## How to calculate the posterior (from book)
 
@@ -85,7 +93,7 @@ Now remember that a Dirichlet process is defined as a distribution over distribu
 
 ## Inference on the number of clusters
     https://www.ritchievink.com/blog/2018/06/05/clustering-data-with-dirichlet-mixtures-in-edward-and-pymc3/
-    does not work properly
+
     
     
     
