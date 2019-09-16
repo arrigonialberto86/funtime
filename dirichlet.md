@@ -74,14 +74,64 @@ Now remember that a Dirichlet process is defined as a distribution over distribu
 
 Now, a discrete prior distribution with an infinite number of components may constitute an interesting mind experiment, but of course we need to find a way to sample from this distribution, 
 and moreover given a dataset `D` we would like to derive the posterior distribution ![post](https://latex.codecogs.com/gif.latex?%5Cdpi%7B150%7D%20%5Cfn_phv%20P%28%5Cpi%2C%20%5Cmu%20%7C%20D%29).
-Let's start by 
 
 ## The stick-breaking process: how to sample from a DP 
 
-As we have seen in the previous paragraph, draws from a Dirichlet process are distributions over a set S
+As we have seen in the previous paragraph, draws from a Dirichlet process are distributions over a set S which is infinite in size, so what we do is to truncate its dimension to a lower value, keeping
+in mind that higher the value slower the convergence once of our model. 
+Having said that, let's try to understand what the stick-breaking process does to approximate a sample draw from a DP. As noted earlier, this is the function we need to approximate:
 
+![approx](https://latex.codecogs.com/gif.latex?%5Cdpi%7B150%7D%20%5Cfn_phv%20f%28%5Ctheta%29%20%3D%20%5Csum%20%5E%7B%5Cinfty%7D_%7Bk%3D1%7D%20%5Cbeta_k%20*%20%5Cdelta_%7B%5Ctheta_k%7D%28%5Ctheta%29)
 
-# // add part of code that simulate random draws from a DP process
+We note that this random variable is in turn parametrized by two sets of random variables: the location parameters ![curly](https://latex.codecogs.com/gif.latex?%5Cdpi%7B150%7D%20%5Cfn_phv%20%5C%7B%5Ctheta_k%5C%7D%5E%5Cinfty_%7Bk%3D1%7D) 
+(e.g. ![m](https://latex.codecogs.com/gif.latex?%5Cdpi%7B150%7D%20%5Cfn_phv%20%5Cmu_k)) and the corresponding probabilities ![betas](https://latex.codecogs.com/gif.latex?%5Cdpi%7B150%7D%20%5Cfn_phv%20%5C%7B%5Cbeta_k%5C%7D_%7Bk%3D1%7D%5E%7B%5Cinfty%7D)
+We already know how sample ![theta](https://latex.codecogs.com/gif.latex?%5Cdpi%7B150%7D%20%5Cfn_phv%20%5Ctheta) from and H distribution (which may as well be a Normal distribution), but generating the (potentially infinite) vector ![bet](https://latex.codecogs.com/gif.latex?%5Cdpi%7B150%7D%20%5Cfn_phv%20%5Cbeta)
+is more difficult. The rather brilliant solution to this problem is provided by the stick-breaking process, that samples K (which again is a very large - potentially infinite - number) numbers from a Beta distribution parametrized by 1 and a ![alpha](https://latex.codecogs.com/gif.latex?%5Cdpi%7B150%7D%20%5Cfn_phv%20%5Calpha) of our choice.
+Then, it recursively breaks a stick of unitary length by the sampled beta draws, in this way:
+
+![rec](https://latex.codecogs.com/gif.latex?%5Cdpi%7B150%7D%20%5Cfn_phv%20%5Cbeta_k%3D%5Cbeta_k%5E%7B%27%7D%20.%20%5Cprod_%7Bi%3D1%7D%5E%7Bk-1%7D%281%20-%20%5Cbeta_i%5E%7B%27%7D%29)
+
+We note that the smaller the ![alpha](https://latex.codecogs.com/gif.latex?%5Cdpi%7B150%7D%20%5Cfn_phv%20%5Calpha) is, the less of the stick will be left for subsequent values (on average), yielding more concentrated distributions.
+
+Having all the building blocks in place, we can try to sample from a Dirichlet process, keeping in mind that the distribution `G` (which is a sample from a DP) is parametrized by ![pi](https://latex.codecogs.com/gif.latex?%5Cdpi%7B150%7D%20%5Cfn_phv%20%5Cpi) 
+(which is the potentially infinite vector resulting from the stick-breaking process) and ![theta](https://latex.codecogs.com/gif.latex?%5Cdpi%7B150%7D%20%5Cfn_phv%20%5Ctheta) (the 'locations' vector resulting from repeated sampling of the base distribution H).
+
+```python
+def DP(h, alpha):
+    n = max(int(5 * alpha + 2), 500)
+    pi = stats.beta(1, alpha).rvs(size=n) # sample weights
+    pi[1:] = pi[1:] * (1 - pi[:-1]).cumprod() # stick-breaking
+    theta = h(size=n) # random draws from h
+    return pi, theta # return parameters of G
+        
+def plot_normal_dp_approximation(alpha, n=2):
+    pi, theta = DP(stats.norm.rvs, alpha)
+    x = np.linspace(-3, 3, 100)
+    
+    plt.figure(figsize=(14, 4))
+    plt.suptitle(r'Two samples from DP($\alpha$). $\alpha$ = {}'.format(alpha))
+    plt.ylabel(r'$\pi$')
+    plt.xlabel(r'$\theta$')
+    pltcount = int('1' + str(n) + '0')
+    
+    for i in range(n):
+        pltcount += 1
+        plt.subplot(pltcount)
+        pi, theta = dirichlet_process(stats.norm.rvs, alpha)
+        pi = pi * (stats.norm.pdf(0) / pi.max())
+        plt.vlines(theta, 0, pi, alpha=0.5)
+        plt.ylim(0, 1)
+        plt.plot(x, stats.norm.pdf(x))
+
+np.random.seed(3)
+for alpha in [1, 10, 100]:
+    plot_normal_dp_approximation(alpha)
+
+```
+
+<img src="dirichlet_process/alpha_01.png" alt="Image not found" width="500"/>
+<img src="dirichlet_process/alpha_1.png" alt="Image not found" width="500"/>
+<img src="dirichlet_process/alpha_10.png" alt="Image not found" width="500"/>
 
 ## How to calculate the posterior (from book)
 
@@ -99,3 +149,6 @@ As we have seen in the previous paragraph, draws from a Dirichlet process are di
     
 ## Equation editor
 - https://www.codecogs.com/latex/eqneditor.php (char is Helvetica, 10pts, 150 dpi)
+
+## References:
+- https://www.ritchievink.com/blog/2018/06/05/clustering-data-with-dirichlet-mixtures-in-edward-and-pymc3/
