@@ -129,9 +129,9 @@ for alpha in [1, 10, 100]:
 
 ```
 
-<img src="dirichlet_process/alpha_01.png" alt="Image not found" width="500"/>
-<img src="dirichlet_process/alpha_1.png" alt="Image not found" width="500"/>
-<img src="dirichlet_process/alpha_10.png" alt="Image not found" width="500"/>
+<img src="dirichlet_process/alpha_01.png" alt="Image not found" width="650"/>
+<img src="dirichlet_process/alpha_1.png" alt="Image not found" width="650"/>
+<img src="dirichlet_process/alpha_10.png" alt="Image not found" width="650"/>
 
 ## How to calculate the posterior (from book)
 
