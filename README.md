@@ -4,6 +4,7 @@
 ## FunTime
 
 Posts list:
+- [Dirichlet processes (DP) and the Chinese Restaurant Process (CRP)](dirichlet.md)
 - [Uncertainty estimation with deep ensembles](deep_ensembles.md)
 - [Amazon DeepAR: a Tensorflow implementation](deepar.md)
 - [Scalable Bayesian inference in Python](var_inference.md)
