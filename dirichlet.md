@@ -19,9 +19,18 @@ By using a Dirichlet process we circumvent the need to specify the number of clu
 
 Let's naively start modeling our dataset by supposing that there are K clusters of normally distributed expression patterns (as in microarray experiments) and that the variance `sigma` is known. 
 I'll now use a notation which may be easier to understand for those already familiar with mixture models. 
-The following is the generative model for data points ![v_i](https://latex.codecogs.com/gif.latex?%5Cdpi%7B200%7D%20%5Clarge%20v_i):
+The following is the generative model for data points ![v_i](https://latex.codecogs.com/gif.latex?%5Cdpi%7B150%7D%20%5Cfn_phv%20v_i):
 
 ![Pv_i](https://latex.codecogs.com/gif.latex?%5Cdpi%7B150%7D%20%5Cfn_phv%20P%28v_i%20%7C%20z_i%20%3D%20k%2C%20%5Cmu_k%29%20%5Csim%20N%28%5Cmu_k%2C%20%5Csigma%5E2%29)
+
+And the probability that ![z_i](https://latex.codecogs.com/gif.latex?%5Cdpi%7B150%7D%20%5Cfn_phv%20z_i) is equal to k is equal to ![pi](https://latex.codecogs.com/gif.latex?%5Cdpi%7B150%7D%20%5Cfn_phv%20%5Cpi_k), which can be regarded
+as a prior on the cluster k as with Gaussian mixture models:
+
+![pz_i](https://latex.codecogs.com/gif.latex?%5Cdpi%7B150%7D%20%5Cfn_phv%20P%28z_i%20%3D%20k%29%20%3D%20%5Cpi_k)
+
+This prior is drawn from a Dirichlet distribution which is symmetric (we have no initial information distinguishing the clusters):
+
+![pr]()
 
 
 ## How to calculate the posterior (from book)
@@ -35,3 +44,8 @@ The following is the generative model for data points ![v_i](https://latex.codec
 ## Inference on the number of clusters
     https://www.ritchievink.com/blog/2018/06/05/clustering-data-with-dirichlet-mixtures-in-edward-and-pymc3/
     does not work properly
+    
+    
+    
+## Equation editor
+- https://www.codecogs.com/latex/eqneditor.php (char is Helvetica, 10pts, 150 dpi)
