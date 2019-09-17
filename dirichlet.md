@@ -135,6 +135,11 @@ for alpha in [1, 10, 100]:
 
 ## How to calculate the posterior (from book)
 
+-- Dirichlet-multinomial conjugate posterior: https://stats.stackexchange.com/questions/44494/why-is-the-dirichlet-distribution-the-prior-for-the-multinomial-distribution
+-- For the posterior form: http://www.stats.ox.ac.uk/~teh/research/npbayes/Teh2010a.pdf
+
+-- For the predictive posterior https://www.cs.cmu.edu/~epxing/Class/10708-14/scribe_notes/scribe_note_lecture19.pdf page 5
+
 ## The Chinese restaurant process 
 
     How to simulate the arrival process
