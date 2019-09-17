@@ -142,7 +142,7 @@ for alpha in [1, 10, 100]:
     
 
 ## Inference on the number of clusters
-    https://www.ritchievink.com/blog/2018/06/05/clustering-data-with-dirichlet-mixtures-in-edward-and-pymc3/
+    https://docs.pymc.io/notebooks/dp_mix.html
 
     
     
@@ -152,3 +152,4 @@ for alpha in [1, 10, 100]:
 
 ## References:
 - https://www.ritchievink.com/blog/2018/06/05/clustering-data-with-dirichlet-mixtures-in-edward-and-pymc3/
+- https://docs.pymc.io/notebooks/dp_mix.html
