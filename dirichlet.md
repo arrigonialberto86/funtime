@@ -135,6 +135,7 @@ for alpha in [1, 10, 100]:
 
 ## How to calculate the posterior (from book)
 
+Let's move on now to 
 -- Dirichlet-multinomial conjugate posterior: https://stats.stackexchange.com/questions/44494/why-is-the-dirichlet-distribution-the-prior-for-the-multinomial-distribution
 -- For the posterior form: http://www.stats.ox.ac.uk/~teh/research/npbayes/Teh2010a.pdf
 
@@ -142,9 +143,52 @@ for alpha in [1, 10, 100]:
 
 ## The Chinese restaurant process 
 
-    How to simulate the arrival process
-    https://github.com/crcrpar/crp/blob/master/crp.py
-    
+```python
+import random
+import matplotlib.pyplot as plt
+from pylab import rcParams
+rcParams['figure.figsize'] = 18, 6
+
+fig, axs = plt.subplots(1, 3)
+plot_count = 0
+fig.suptitle('Chinese Restaurant Process customers distribution')
+
+# Play with different concentrations
+for concentration in [0.1, 1.0, 10]:
+
+    # First customer always sits at the first table
+    tables = [1]
+
+    for n in range(2,100):
+
+        # Get random number 0~1
+        rand = random.random()
+
+        p_total = 0
+        existing_table = False
+
+        for index, count in enumerate(tables):
+
+            prob = count / (n + concentration)
+
+            p_total += prob
+            if rand < p_total:
+                tables[index] += 1
+                existing_table = True
+                break
+
+        # New table!!
+        if not existing_table:
+             tables.append(1)
+
+    axs[plot_count].bar([i for i in range(len(tables))], tables)
+    axs[plot_count].set_title(r'Concentration ($\alpha$) = {}'.format(concentration))
+    plot_count+= 1
+    for ax in axs.flat:
+        ax.set(xlabel='Table number', ylabel='N customers')
+```
+
+<img src="dirichlet_process/chinese_restaurant.png" alt="Image not found" width="800"/>
 
 ## Inference on the number of clusters
     https://docs.pymc.io/notebooks/dp_mix.html
