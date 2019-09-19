@@ -207,7 +207,7 @@ Let's now look at the results of our simulation by considering the effect of dif
 
 ## DP mixtures for density estimation
 
-The density of mixture models [I will only consider 'Gaussian' mixture models in this post although this approach can be easily extended to other parametric forms] is
+The density of mixture models [I will only consider 'Gaussian' mixture models in this post although this approach can be easily extended to other parametric forms]
 can be estimated by using Dirichlet process mixtures. 
 A Dirichlet process mixture uses component densities from a parametric family (we'll use a Normal distribution) and represents the mixture weights as a Dirichlet process. 
 Let's take a look at some data before delving into model description:
@@ -235,6 +235,8 @@ sns.distplot(y[:, 3], bins=20, kde=False, rug=True)
 ``` 
 
 <img src="dirichlet_process/iris.png" alt="Image not found" width="600"/>
+
+In the density plot above we can clearly distinguish two populations respectively centered at ~ -1 and ~ 0.5.
 
 Let's now build the following model:
 
