@@ -215,11 +215,11 @@ plt.ylabel('count')
 sns.distplot(y[:, 3], bins=20, kde=False, rug=True)
 ``` 
 
-<img src="dirichlet_process/iris.png" alt="Image not found" width="800"/>
+<img src="dirichlet_process/iris.png" alt="Image not found" width="600"/>
 
 Let's now build this model:
 
-<img src="dirichlet_process/graphviz.png" alt="Image not found" width="800"/>
+<img src="dirichlet_process/graphviz.png" alt="Image not found" width="600"/>
 
 ```python
 import pymc3 as pm
