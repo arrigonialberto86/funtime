@@ -141,7 +141,20 @@ Let's move on now to
 
 -- For the predictive posterior https://www.cs.cmu.edu/~epxing/Class/10708-14/scribe_notes/scribe_note_lecture19.pdf page 5
 
-## The Chinese restaurant process 
+## The Chinese restaurant process (CRP)
+
+We not get to the reason why this point was making reference to a Chinese restaurant. This metaphor arises from the fact that some Chinese restaurants seem to have
+an infinite series of tables available for seating, and new tables are seemingly created to accomodate whoever comes in.
+The infinite series as you can imagine is a reference to the infinite sum over discrete points in a DP process, and every single data point at our disposal is a 
+new customer that needs to be accomodated in our restaurant. It is interested to notice that DP processes are 'exchangeable', meaning that the order by which the customers
+enter the restaurant is not important, and results in the same 'clustering'. This property of CRPs stems from the ![de Finetti theorem](https://en.wikipedia.org/wiki/De_Finetti%27s_theorem),
+so that our overall strategy for assigning people to tables is exclusively based on the disposition of the customers that are already seated and we can use a very simple
+online algorithm to simulate the whole process.
+
+Let's simplify the problem by considering just one customer after the first (who just randomly occupied one table): the probability for him to sit at the same table
+as the first customer is ![seat](https://latex.codecogs.com/gif.latex?%5Cdpi%7B150%7D%20%5Cfn_phv%201%20/%20%281%20&plus;%20%5Calpha%29) (knowing that the number of
+people seated at that table is just one) and the probability of seating at another table is ![noseat](https://latex.codecogs.com/gif.latex?%5Cdpi%7B150%7D%20%5Cfn_phv%20%5Calpha%20/%20%281%20&plus;%20%5Calpha%29).
+The alpha parameter as we know from theory of DPs is something we would need to fine-tune, but apart from that the whole process is straightforward to implement in Python.
 
 ```python
 import random
