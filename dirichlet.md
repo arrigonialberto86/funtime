@@ -205,10 +205,13 @@ Let's now look at the results of our simulation by considering the effect of dif
 
 <img src="dirichlet_process/chinese_restaurant.png" alt="Image not found" width="900"/>
 
-## Inference on the number of clusters
+## DP mixtures for density estimation
 
+The density of mixture models [I will only consider 'Gaussian' mixture models in this post although this approach can be easily extended to other parametric forms] is
+can be estimated by using Dirichlet process mixtures. 
+A Dirichlet process mixture uses component densities from a parametric family (we'll use a Normal distribution) and represents the mixture weights as a Dirichlet process. 
+Let's take a look at some data before delving into model description:
 
-Let's download some data to cluster using mixture models:
 ```python
 from sklearn.datasets import load_iris
 import pandas as pd
@@ -219,7 +222,8 @@ y = df.values
 y = (y - y.mean(axis=0)) / y.std(axis=0)
 ```
    
-... let's plot the mixture density:
+...now let's plot the mixture density:
+
 ```python
 import seaborn as sns
 
@@ -232,7 +236,7 @@ sns.distplot(y[:, 3], bins=20, kde=False, rug=True)
 
 <img src="dirichlet_process/iris.png" alt="Image not found" width="600"/>
 
-Let's now build this model:
+Let's now build the following model:
 
 <img src="dirichlet_process/graphviz.png" alt="Image not found" width="600"/>
 
@@ -262,7 +266,9 @@ with model:
     trace = pm.sample(500, tune=500, init='advi', random_seed=35171, step=step)                          
 ```
 
-Draw sample from the posterior to evalute mixture model fit:
+We use the `stick_breaking` function we defined before to derive weights `w` and truncate K at 30 (which seems reasonable). We then use the `NormalMixture` function
+to define the likelihood and start variational inference sampling.
+We then draw samples from the posterior to evalute mixture model fit:
 
 ```python
 x_plot = np.linspace(-2.4, 2.4, 200)
