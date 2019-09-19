@@ -1,6 +1,8 @@
 # Dirichlet mixture processes
 ## Where do people sit in a Chinese restaurant?
 
+<img src="dirichlet_process/chinese_pic.png" alt="Image not found" width="900"/>
+
 ## Introduction and intuition
 I have been wanting to write about Dirichlet processes (DP) for some time now, but I have never had the chance to wrap my mind around this topic which I consider to be one the most challenging of modern statistics.
 In particular, I found hard to understand how the famous Chinese restaurant process (CRP) is intimately linked to the abstract concept behind a Dirichlet process.
