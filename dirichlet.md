@@ -145,10 +145,24 @@ prior to collecting the data, then, given observations ![xk](https://latex.codec
 
 ![posterior](https://latex.codecogs.com/gif.latex?%5Cdpi%7B150%7D%20%5Cfn_phv%20%28p_1%2C%20...%2C%20p_k%29%20%7C%20%28x_1%2C%20...%2C%20x_k%29%20%5Csim%20Dirichlet%28%5Calpha_1%20&plus;%20x_1%2C%20...%2C%20%5Calpha_k%20&plus;%20x_k%29)
 
+Knowing this, let's go back to DPs. We defined before the `G` distribution as ![g](https://latex.codecogs.com/gif.latex?%5Cdpi%7B150%7D%20%5Cfn_phv%20G%20%5Csim%20DP%28%5Calpha%2C%20H%29). 
+This is a random distribution, meaning that we can draw indipendent samples ![theta](https://latex.codecogs.com/gif.latex?%5Cdpi%7B150%7D%20%5Cfn_phv%20%5Ctheta_1%2C%20...%2C%20%5Ctheta_k) from it. 
+We are now interested in deriving the posterior distribution of `G` given observed values ![t](https://latex.codecogs.com/gif.latex?%5Cdpi%7B150%7D%20%5Cfn_phv%20%5Ctheta_1%2C%20...%2C%20%5Ctheta_n), 
+which given ![a](https://latex.codecogs.com/gif.latex?%5Cdpi%7B150%7D%20%5Cfn_phv%20A_1%2C%20...%2C%20A_r) partitions of our space ![s](https://latex.codecogs.com/gif.latex?%5Cdpi%7B150%7D%20%5Cfn_phv%20%5CTheta) and the conjugacy between the Dirichlet and the multinomial distribution is: 
+
+![post](https://latex.codecogs.com/gif.latex?%5Cdpi%7B150%7D%20%5Cfn_phv%20%28G%28A_1%29%2C%20...%2C%20G%28A_r%29%29%20%7C%20%5Ctheta_1%2C%20...%2C%20%5Ctheta_n%20%5Csim%20Dir%28%5Calpha%20H%28A_1%29%20&plus;%20n_1%2C%20...%2C%5Calpha%20H%28A_r%29%20&plus;%20n_r%20%29)
+
+which by definition is yet another a DP. 
+After some algebraic transformations, the posterior can be re-written as:
+
+![posterior_other](https://latex.codecogs.com/gif.latex?%5Cdpi%7B150%7D%20%5Cfn_phv%20G%20%7C%20%5Ctheta_1%2C%20...%2C%20%5Ctheta_n%20%5Csim%20DP%28%5Calpha%20&plus;%20n%2C%20%5Cfrac%7B%5Calpha%7D%7B%5Calpha%20&plus;%20n%7D%20H%20&plus;%20%5Cfrac%7Bn%7D%7B%5Calpha%20&plus;%20n%7D%20%5Cfrac%7B%5Csum_%7Bi%3D1%7D%5E%7Bn%7D%20%5Cdelta_%7B%5Ctheta_i%7D%7D%7Bn%7D%29)
+
+which makes it much more interpretable. Notice that the posterior base distribution is a weighted average between the
+prior base distribution `H` and the empirical distribution ![emp](https://latex.codecogs.com/gif.latex?%5Cdpi%7B150%7D%20%5Cfn_phv%20%5Cfrac%7B%5Csum_%7Bi%3D1%7D%5E%7Bn%7D%20%5Cdelta_%7B%5Ctheta_i%7D%7D%7Bn%7D). 
+The weight associated with the prior base distribution is proportional to ![alpha](https://latex.codecogs.com/gif.latex?%5Cdpi%7B150%7D%20%5Cfn_phv%20%5Calpha), while the empirical distribution has weight proportional to the number of observations `n`.
 
 
  
--- Dirichlet-multinomial conjugate posterior: https://stats.stackexchange.com/questions/44494/why-is-the-dirichlet-distribution-the-prior-for-the-multinomial-distribution
 -- For the posterior form: http://www.stats.ox.ac.uk/~teh/research/npbayes/Teh2010a.pdf
 
 -- For the predictive posterior https://www.cs.cmu.edu/~epxing/Class/10708-14/scribe_notes/scribe_note_lecture19.pdf page 5
