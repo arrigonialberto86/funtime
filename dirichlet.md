@@ -135,7 +135,19 @@ for alpha in [1, 10, 100]:
 
 ## How to calculate the posterior of a DP
 
-Let's move on now to 
+Despite being a fascinating subject, sampling from an overly complex prior distribution is not useful unless you learn how to sample from its posterior.
+Let's start by defining the Dirichlet-Multinomial conjugate model and its posterior. 
+Let ![ps](https://latex.codecogs.com/gif.latex?%5Cdpi%7B150%7D%20%5Cfn_phv%20%28p_1%2C%20p_2%20...%20p_k%29) be the vector of multinomial parameters (i.e. the probabilities for the different categories). If
+
+![prior](https://latex.codecogs.com/gif.latex?%5Cdpi%7B150%7D%20%5Cfn_phv%20%28p_1%2C%20...%2C%20p_k%29%20%5Csim%20Dirichlet%28%5Calpha_1%2C%20...%2C%20%5Calpha_k%29)
+
+prior to collecting the data, then, given observations ![xk](https://latex.codecogs.com/gif.latex?%5Cdpi%7B150%7D%20%5Cfn_phv%20%28x_1%2C%20...%2C%20x_k%29) in the different categories the posterior distribution is:
+
+![posterior](https://latex.codecogs.com/gif.latex?%5Cdpi%7B150%7D%20%5Cfn_phv%20%28p_1%2C%20...%2C%20p_k%29%20%7C%20%28x_1%2C%20...%2C%20x_k%29%20%5Csim%20Dirichlet%28%5Calpha_1%20&plus;%20x_1%2C%20...%2C%20%5Calpha_k%20&plus;%20x_k%29)
+
+
+
+ 
 -- Dirichlet-multinomial conjugate posterior: https://stats.stackexchange.com/questions/44494/why-is-the-dirichlet-distribution-the-prior-for-the-multinomial-distribution
 -- For the posterior form: http://www.stats.ox.ac.uk/~teh/research/npbayes/Teh2010a.pdf
 
