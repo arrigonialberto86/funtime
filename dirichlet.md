@@ -201,10 +201,12 @@ for concentration in [0.1, 1.0, 10]:
         ax.set(xlabel='Table number', ylabel='N customers')
 ```
 
+Let's now look at the results of our simulation by considering the effect of different alpha values we may choose:
+
 <img src="dirichlet_process/chinese_restaurant.png" alt="Image not found" width="800"/>
 
 ## Inference on the number of clusters
-    https://docs.pymc.io/notebooks/dp_mix.html
+
 
 Let's download some data to cluster using mixture models:
 ```python
@@ -299,7 +301,9 @@ plt.legend();
 - https://www.codecogs.com/latex/eqneditor.php (char is Helvetica, 10pts, 150 dpi)
 
 ## References:
-- https://www.ritchievink.com/blog/2018/06/05/clustering-data-with-dirichlet-mixtures-in-edward-and-pymc3/
-- https://docs.pymc.io/notebooks/dp_mix.html
 - http://www.stats.ox.ac.uk/~teh/research/npbayes/Teh2010a.pdf
 - https://www.cs.cmu.edu/~epxing/Class/10708-14/scribe_notes/scribe_note_lecture19.pdf
+- https://www.ritchievink.com/blog/2018/06/05/clustering-data-with-dirichlet-mixtures-in-edward-and-pymc3/
+- https://docs.pymc.io/notebooks/dp_mix.html
+- Machine learning: a probabilistic approach - Murphy 2012
+
