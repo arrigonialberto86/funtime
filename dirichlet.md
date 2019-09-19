@@ -133,7 +133,7 @@ for alpha in [1, 10, 100]:
 <img src="dirichlet_process/alpha_1.png" alt="Image not found" width="800"/>
 <img src="dirichlet_process/alpha_10.png" alt="Image not found" width="800"/>
 
-## How to calculate the posterior of a DP
+## The posterior of a DP
 
 Despite being a fascinating subject, sampling from an overly complex prior distribution is not useful unless you learn how to sample from its posterior.
 Let's start by defining the Dirichlet-Multinomial conjugate model and its posterior. 
@@ -160,12 +160,20 @@ After some algebraic transformations, the posterior can be re-written as:
 which makes it much more interpretable. Notice that the posterior base distribution is a weighted average between the
 prior base distribution `H` and the empirical distribution ![emp](https://latex.codecogs.com/gif.latex?%5Cdpi%7B150%7D%20%5Cfn_phv%20%5Cfrac%7B%5Csum_%7Bi%3D1%7D%5E%7Bn%7D%20%5Cdelta_%7B%5Ctheta_i%7D%7D%7Bn%7D). 
 The weight associated with the prior base distribution is proportional to ![alpha](https://latex.codecogs.com/gif.latex?%5Cdpi%7B150%7D%20%5Cfn_phv%20%5Calpha), while the empirical distribution has weight proportional to the number of observations `n`.
+For more information on this see ![here](http://www.stats.ox.ac.uk/~teh/research/npbayes/Teh2010a.pdf).
 
+## The posterior predictive distribution of a DP
+
+The Dirichlet distribution can be a prior for mixture models, thus the Dirichlet Process could be further used to cluster observations.
+A new data point can either join an existing cluster or start a new cluster (given that the first observation has been assigned randomly to one cluster to start with).
+Refer to [this document](https://www.cs.cmu.edu/~epxing/Class/10708-14/scribe_notes/scribe_note_lecture19.pdf) for the complete derivation of the predictive posterior distribution.
+Here I'll just report that we can calculate the probability of a new observation ![X](https://latex.codecogs.com/gif.latex?%5Cdpi%7B150%7D%20%5Cfn_phv%20X_%7Bn&plus;1%7D) of being part of cluster
+![theta_k](https://latex.codecogs.com/gif.latex?%5Cdpi%7B150%7D%20%5Cfn_phv%20%5Ctheta_k) given past values ![x_n](https://latex.codecogs.com/gif.latex?%5Cdpi%7B150%7D%20%5Cfn_phv%20X_1%2C%20...%2C%20X_n)
+in this way:
+
+![post_pred](https://latex.codecogs.com/gif.latex?%5Cdpi%7B150%7D%20%5Cfn_phv%20P%28X_%7Bn&plus;1%7D%20%3D%20%5Ctheta_k%20%7C%20X_1%2C%20...%2C%20X_n%29%20%3D%20%5Cleft%5C%7B%5Cbegin%7Bmatrix%7D%20%5Cfrac%7Bm_k%7D%7Bn&plus;%5Calpha%7D%20%26%20%5Ctext%7Bif%20%7D%20k%20%5Cleq%20K%5C%5C%20%5Cfrac%7B%5Calpha%7D%7Bn&plus;%5Calpha%7D%20%26%20%5Ctext%7Bfor%20a%20new%20cluster%7D%20%5Cend%7Bmatrix%7D%5Cright.)
 
  
--- For the posterior form: http://www.stats.ox.ac.uk/~teh/research/npbayes/Teh2010a.pdf
-
--- For the predictive posterior https://www.cs.cmu.edu/~epxing/Class/10708-14/scribe_notes/scribe_note_lecture19.pdf page 5
 
 ## The Chinese restaurant process (CRP)
 
