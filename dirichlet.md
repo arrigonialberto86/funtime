@@ -288,3 +288,5 @@ plt.legend();
 ## References:
 - https://www.ritchievink.com/blog/2018/06/05/clustering-data-with-dirichlet-mixtures-in-edward-and-pymc3/
 - https://docs.pymc.io/notebooks/dp_mix.html
+- http://www.stats.ox.ac.uk/~teh/research/npbayes/Teh2010a.pdf
+- https://www.cs.cmu.edu/~epxing/Class/10708-14/scribe_notes/scribe_note_lecture19.pdf
