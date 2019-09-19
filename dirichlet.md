@@ -133,7 +133,7 @@ for alpha in [1, 10, 100]:
 <img src="dirichlet_process/alpha_1.png" alt="Image not found" width="800"/>
 <img src="dirichlet_process/alpha_10.png" alt="Image not found" width="800"/>
 
-## How to calculate the posterior
+## How to calculate the posterior of a DP
 
 Let's move on now to 
 -- Dirichlet-multinomial conjugate posterior: https://stats.stackexchange.com/questions/44494/why-is-the-dirichlet-distribution-the-prior-for-the-multinomial-distribution
