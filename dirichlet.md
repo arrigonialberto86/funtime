@@ -344,7 +344,7 @@ plt.legend();
 <img src="dirichlet_process/iris_fitted.png" alt="Image not found" width="800"/>
 
 ## Equation editor
-- https://www.codecogs.com/latex/eqneditor.php (char is Helvetica, 10pts, 150 dpi)
+- https://www.codecogs.com/latex/eqneditor.php (Helvetica, 10pts, 150 dpi)
 
 ## References:
 - http://www.stats.ox.ac.uk/~teh/research/npbayes/Teh2010a.pdf
