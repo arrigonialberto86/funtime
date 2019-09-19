@@ -193,9 +193,95 @@ for concentration in [0.1, 1.0, 10]:
 ## Inference on the number of clusters
     https://docs.pymc.io/notebooks/dp_mix.html
 
-    
-    
-    
+Let's download some data to cluster using mixture models:
+```python
+from sklearn.datasets import load_iris
+import pandas as pd
+
+df = pd.DataFrame(load_iris()['data'])
+y = df.values
+# Standardize the data
+y = (y - y.mean(axis=0)) / y.std(axis=0)
+```
+   
+... let's plot the mixture density:
+```python
+import seaborn as sns
+
+plt.figure(figsize=(12, 6))
+plt.title('Histogram of the 3d column of the (standardized) Iris dataset.')
+plt.xlabel('x')
+plt.ylabel('count')
+sns.distplot(y[:, 3], bins=20, kde=False, rug=True)
+``` 
+
+<img src="dirichlet_process/iris.png" alt="Image not found" width="800"/>
+
+Let's now build this model:
+
+<img src="dirichlet_process/graphviz.png" alt="Image not found" width="800"/>
+
+```python
+import pymc3 as pm
+from theano import tensor as tt
+
+def stick_breaking(beta):
+    portion_remaining = tt.concatenate([[1], tt.extra_ops.cumprod(1 - beta)[:-1]])
+    return beta * portion_remaining
+
+K = 30
+
+with pm.Model() as model:
+    alpha = pm.Gamma('alpha', 1., 1.)
+    beta = pm.Beta('beta', 1., alpha, shape=K)
+    w = pm.Deterministic('w', stick_breaking(beta))
+
+    tau = pm.Gamma('tau', 1., 1., shape=K)
+    lambda_ = pm.Uniform('lambda', 0, 5, shape=K)
+    mu = pm.Normal('mu', 0, tau=lambda_ * tau, shape=K)
+    obs = pm.NormalMixture('obs', w, mu, tau=lambda_ * tau,
+                           observed=y[:, 2])
+                           
+with model: 
+    step = None
+    trace = pm.sample(500, tune=500, init='advi', random_seed=35171, step=step)                          
+```
+
+Draw sample from the posterior to evalute mixture model fit:
+
+```python
+x_plot = np.linspace(-2.4, 2.4, 200)
+# Calculate pdf for points in x_plot
+post_pdf_contribs = sp.stats.norm.pdf(np.atleast_3d(x_plot),
+                                      trace['mu'][:, np.newaxis, :],
+                                      1. / np.sqrt(trace['lambda'] * trace['tau'])[:, np.newaxis, :])
+# Weight (Gaussian) posterior probabilities by the posterior of w
+post_pdfs = (trace['w'][:, np.newaxis, :] * post_pdf_contribs).sum(axis=-1)
+```
+
+... and plot them ...
+
+```python
+import seaborn as sns
+
+# fig, ax = plt.subplots(figsize=(8, 6))
+rcParams['figure.figsize'] = 12, 6
+sns.distplot(y[:, 2], rug=True, label='Original dataset', bins=20)
+
+plt.plot(x_plot, post_pdfs[0],
+        c='#CD5C5C', label='Posterior samples'); # Add this to plot the legend
+plt.plot(x_plot, post_pdfs[::100].T, c='#CD5C5C');
+
+
+plt.xlabel('Iris dataset (3rd column values)');
+# plt.yticklabels([]);
+plt.ylabel('Density');
+
+plt.legend();
+```
+
+<img src="dirichlet_process/iris_fitted.png" alt="Image not found" width="800"/>
+
 ## Equation editor
 - https://www.codecogs.com/latex/eqneditor.php (char is Helvetica, 10pts, 150 dpi)
 
