@@ -203,7 +203,7 @@ for concentration in [0.1, 1.0, 10]:
 
 Let's now look at the results of our simulation by considering the effect of different alpha values we may choose:
 
-<img src="dirichlet_process/chinese_restaurant.png" alt="Image not found" width="800"/>
+<img src="dirichlet_process/chinese_restaurant.png" alt="Image not found" width="900"/>
 
 ## Inference on the number of clusters
 
