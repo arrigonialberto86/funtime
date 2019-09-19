@@ -173,7 +173,9 @@ in this way:
 
 ![post_pred](https://latex.codecogs.com/gif.latex?%5Cdpi%7B150%7D%20%5Cfn_phv%20P%28X_%7Bn&plus;1%7D%20%3D%20%5Ctheta_k%20%7C%20X_1%2C%20...%2C%20X_n%29%20%3D%20%5Cleft%5C%7B%5Cbegin%7Bmatrix%7D%20%5Cfrac%7Bm_k%7D%7Bn&plus;%5Calpha%7D%20%26%20%5Ctext%7Bif%20%7D%20k%20%5Cleq%20K%5C%5C%20%5Cfrac%7B%5Calpha%7D%7Bn&plus;%5Calpha%7D%20%26%20%5Ctext%7Bfor%20a%20new%20cluster%7D%20%5Cend%7Bmatrix%7D%5Cright.)
 
- 
+Given a sequence of observations then, it is straightforward to sample from the posterior predictive distribution and see how the next observation is going to 
+cluster. This nice property of DPs makes possible to derive a Collapsed Gibbs Sampler (for the Chinese restaurant process) and a Blocked Gibbs Sampler (that uses 
+a truncated stick-breaking process to approximate G).
 
 ## The Chinese restaurant process (CRP)
 
