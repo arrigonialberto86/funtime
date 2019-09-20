@@ -50,7 +50,7 @@ our prior knowledge of the system we are modeling.
 
 ### ... to infinity and beyond
 
-What written in the paragraph above refers to a Dirichlet mixture model of K component, i.e. we must know the number of clusters in advance in order to assign observations to clusters.
+What written in the paragraph above refers to a Dirichlet mixture model of K component, i.e. we must know in advance the number of clusters in order to assign observations to clusters.
 In order to understand what a DP is though, we need to rewrite our model using a slightly different notation:
 
 ![v_inew](https://latex.codecogs.com/gif.latex?%5Cdpi%7B150%7D%20%5Cfn_phv%20P%28v_i%20%7C%20%5Ctilde%5Cmu_i%29%20%5Csim%20N%28%5Ctilde%5Cmu_i%2C%20%5Csigma%5E2%29)
@@ -62,7 +62,7 @@ Let's stop to think for a second about the subscript `i`: we are not reasoning a
 
 
 Where ![deltamu](https://latex.codecogs.com/gif.latex?%5Cdpi%7B150%7D%20%5Cfn_phv%20%5Cdelta_%7B%5Cmu_k%7D) is the Dirac delta, which is basically an indicator function centered on ![indi](https://latex.codecogs.com/gif.latex?%5Cdpi%7B150%7D%20%5Cfn_phv%20%5Cmu_k)
-And again, we draw ![pi](https://latex.codecogs.com/gif.latex?%5Cdpi%7B150%7D%20%5Cfn_phv%20%5Cpi) from a symmetric Dirichlet distribution:
+and again we draw ![pi](https://latex.codecogs.com/gif.latex?%5Cdpi%7B150%7D%20%5Cfn_phv%20%5Cpi) from a symmetric Dirichlet distribution:
 
 ![pr](https://latex.codecogs.com/gif.latex?%5Cdpi%7B150%7D%20%5Cfn_phv%20P%28%5Cpi%20/%20%5Calpha%29%20%5Csim%20Dir%28%5Cfrac%7B%5Calpha%7D%7BK%7D%20*%20%5Ctextbf%7B1%7D_K%29)
 
@@ -70,14 +70,14 @@ And again, we draw ![pi](https://latex.codecogs.com/gif.latex?%5Cdpi%7B150%7D%20
 
 ![mu_k](https://latex.codecogs.com/gif.latex?%5Cdpi%7B150%7D%20%5Cfn_phv%20%5Cmu_k%20%5Csim%20H%28%5Clambda%29)
 
-We now have all the tools to describe a Dirichlet process, just by extending the sum in the G distribution definition to an infinite number of clusters K: ![infinity](https://latex.codecogs.com/gif.latex?%5Cdpi%7B150%7D%20%5Cfn_phv%20G%28%5Ctilde%5Cmu_i%29%20%3D%20%5Csum_%7Bk%3D1%7D%5E%7B%5Cinfty%7D%20%5Cpi_k%20%5Cdelta_%7B%5Cmu_k%7D%28%5Ctilde%5Cmu_i%29)
-And we represent the overall model in a more compact way:
+We now have all the tools to describe a Dirichlet process, just by extending the sum in the G distribution definition to an infinite number of clusters K: ![infinity](https://latex.codecogs.com/gif.latex?%5Cdpi%7B150%7D%20%5Cfn_phv%20G%28%5Ctilde%5Cmu_i%29%20%3D%20%5Csum_%7Bk%3D1%7D%5E%7B%5Cinfty%7D%20%5Cpi_k%20%5Cdelta_%7B%5Cmu_k%7D%28%5Ctilde%5Cmu_i%29).
+Thus, we represent the overall model in a more compact way:
 
 ![v_inew](https://latex.codecogs.com/gif.latex?%5Cdpi%7B150%7D%20%5Cfn_phv%20P%28v_i%20%7C%20%5Ctilde%5Cmu_i%29%20%5Csim%20N%28%5Ctilde%5Cmu_i%2C%20%5Csigma%5E2%29)
 
 ![mui](https://latex.codecogs.com/gif.latex?%5Cdpi%7B150%7D%20%5Cfn_phv%20%5Ctilde%5Cmu_i%20%5Csim%20G)
 
-Now remember that a Dirichlet process is defined as a distribution over distributions Gs, so we can write:
+In light of this and the fact that a Dirichlet process is defined as a distribution over distributions Gs we can write:
 
 ![G_draw](https://latex.codecogs.com/gif.latex?%5Cdpi%7B150%7D%20%5Cfn_phv%20G%20%5Csim%20DP%28H%28%5Clambda%29%2C%20%5Calpha%29)
 
