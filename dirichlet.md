@@ -191,8 +191,8 @@ a truncated stick-breaking process to approximate G).
 We haven't got yet to the reason why this post was making reference to a Chinese restaurant. This metaphor arises from the fact that some Chinese restaurants seem to have
 an infinite series of tables available for seating, and new tables are seemingly created to accomodate whoever comes in.
 The infinite series as you can imagine is a reference to the infinite sum over discrete points in a DP process, and every single data point at our disposal is a 
-new customer that needs to be accomodated in our restaurant. It is interested to notice that DP processes are 'exchangeable', meaning that the order by which the customers
-enter the restaurant is not important, and results in the same 'clustering'. This property of CRPs stems from the ![de Finetti theorem](https://en.wikipedia.org/wiki/De_Finetti%27s_theorem),
+new customer that needs to be accomodated in our restaurant. It is interesting to notice that DP processes are 'exchangeable', meaning that the order by which the customers
+enter the restaurant is not important, and results in the same partitioning of the space. This property of CRPs stems from the [de Finetti theorem](https://en.wikipedia.org/wiki/De_Finetti%27s_theorem),
 so that our overall strategy for assigning people to tables is exclusively based on the disposition of the customers that are already seated and we can use a very simple
 online algorithm to simulate the whole process.
 
