@@ -6,7 +6,7 @@
 ## Introduction
 I have been wanting to write about Dirichlet processes (DP) for some time now, but I have never had the chance to wrap my mind around this topic which I consider to be truly fascinating.
 In particular, I found hard to understand how the famous Chinese restaurant process (CRP) is intimately linked to the abstract concept behind Dirichlet processes (DPs).
-This was until I read Chapter 25 of ![this](https://www.amazon.com/Machine-Learning-Probabilistic-Perspective-Computation-ebook/dp/B00AF1AYTQ) book, 
+This was until I read Chapter 25 of [this](https://www.amazon.com/Machine-Learning-Probabilistic-Perspective-Computation-ebook/dp/B00AF1AYTQ) book, 
 where the author shows how the CRP is a natural descendant (or literally the same thing) as a Dirichlet process.
 
 From these, the author shows how DPs are intimately related to clustering, a class of algorithms for which the number of clusters is defined by the process itself and its parametrization. 
@@ -21,7 +21,11 @@ The number of co-expression patterns is not known, moreover clustering itself is
 By using a Dirichlet process we circumvent the need to specify the number of clusters ahead of time.
 
 Let's naively start modeling our dataset by supposing that there are K clusters of normally distributed expression patterns (as in microarray experiments) and that the variance `sigma` is known. 
-I'll use a notation which may be easier to understand for those already familiar with mixture models. 
+[I'll use a notation which may be easier to understand for those already familiar with mixture models]
+This is the overall model we are going to describe:
+
+<img src="dirichlet_process/model_plate.png" alt="Image not found" width="800"/>
+
 The following is the generative model for data points ![v_i](https://latex.codecogs.com/gif.latex?%5Cdpi%7B150%7D%20%5Cfn_phv%20v_i):
 
 ![Pv_i](https://latex.codecogs.com/gif.latex?%5Cdpi%7B150%7D%20%5Cfn_phv%20P%28v_i%20%7C%20z_i%20%3D%20k%2C%20%5Cmu_k%29%20%5Csim%20N%28%5Cmu_k%2C%20%5Csigma%5E2%29)
