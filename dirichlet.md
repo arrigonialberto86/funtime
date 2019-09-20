@@ -86,15 +86,15 @@ and moreover given a dataset `D` we would like to derive the posterior distribut
 
 ## The stick-breaking process: how to sample from a DP 
 
-As we have seen in the previous paragraph, draws from a Dirichlet process are distributions over a set S which is infinite in size, so what we do is to truncate its dimension to a lower value, keeping
-in mind that higher the value slower the convergence once of our model. 
-Having said that, let's try to understand what the stick-breaking process does to approximate a sample draw from a DP. As noted earlier, this is the function we need to approximate:
+As we have seen in the previous paragraphs, draws from a Dirichlet process are distributions over a set S which is infinite in size, so what we do in practice is to truncate its dimension to a lower value
+to simulate a DP process.
+Having said that, let's try to understand how the \textbf{\textit{stick-breaking}} process approximates a sample draw from a DP. As noted earlier, this is the function we need to approximate:
 
 ![approx](https://latex.codecogs.com/gif.latex?%5Cdpi%7B150%7D%20%5Cfn_phv%20f%28%5Ctheta%29%20%3D%20%5Csum%20%5E%7B%5Cinfty%7D_%7Bk%3D1%7D%20%5Cbeta_k%20*%20%5Cdelta_%7B%5Ctheta_k%7D%28%5Ctheta%29)
 
 We note that this random variable is in turn parametrized by two sets of random variables: the location parameters ![curly](https://latex.codecogs.com/gif.latex?%5Cdpi%7B150%7D%20%5Cfn_phv%20%5C%7B%5Ctheta_k%5C%7D%5E%5Cinfty_%7Bk%3D1%7D) 
-(e.g. ![m](https://latex.codecogs.com/gif.latex?%5Cdpi%7B150%7D%20%5Cfn_phv%20%5Cmu_k)) and the corresponding probabilities ![betas](https://latex.codecogs.com/gif.latex?%5Cdpi%7B150%7D%20%5Cfn_phv%20%5C%7B%5Cbeta_k%5C%7D_%7Bk%3D1%7D%5E%7B%5Cinfty%7D)
-We already know how sample ![theta](https://latex.codecogs.com/gif.latex?%5Cdpi%7B150%7D%20%5Cfn_phv%20%5Ctheta) from and H distribution (which may as well be a Normal distribution), but generating the (potentially infinite) vector ![bet](https://latex.codecogs.com/gif.latex?%5Cdpi%7B150%7D%20%5Cfn_phv%20%5Cbeta)
+(e.g. ![m](https://latex.codecogs.com/gif.latex?%5Cdpi%7B150%7D%20%5Cfn_phv%20%5Cmu_k)) and the corresponding probabilities ![betas](https://latex.codecogs.com/gif.latex?%5Cdpi%7B150%7D%20%5Cfn_phv%20%5C%7B%5Cbeta_k%5C%7D_%7Bk%3D1%7D%5E%7B%5Cinfty%7D).
+We already know how sample ![theta](https://latex.codecogs.com/gif.latex?%5Cdpi%7B150%7D%20%5Cfn_phv%20%5Ctheta) from an `H` distribution (which may as well be a Normal distribution), but generating the (potentially infinite) vector ![bet](https://latex.codecogs.com/gif.latex?%5Cdpi%7B150%7D%20%5Cfn_phv%20%5Cbeta)
 is more difficult. The rather brilliant solution to this problem is provided by the stick-breaking process, that samples K (which again is a very large - potentially infinite - number) numbers from a Beta distribution parametrized by 1 and a ![alpha](https://latex.codecogs.com/gif.latex?%5Cdpi%7B150%7D%20%5Cfn_phv%20%5Calpha) of our choice.
 Then, it recursively breaks a stick of unitary length by the sampled beta draws, in this way:
 
@@ -103,7 +103,7 @@ Then, it recursively breaks a stick of unitary length by the sampled beta draws,
 We note that the smaller the ![alpha](https://latex.codecogs.com/gif.latex?%5Cdpi%7B150%7D%20%5Cfn_phv%20%5Calpha) is, the less of the stick will be left for subsequent values (on average), yielding more concentrated distributions.
 
 Having all the building blocks in place, we can try to sample from a Dirichlet process, keeping in mind that the distribution `G` (which is a sample from a DP) is parametrized by ![pi](https://latex.codecogs.com/gif.latex?%5Cdpi%7B150%7D%20%5Cfn_phv%20%5Cpi) 
-(which is the potentially infinite vector resulting from the stick-breaking process) and ![theta](https://latex.codecogs.com/gif.latex?%5Cdpi%7B150%7D%20%5Cfn_phv%20%5Ctheta) (the 'locations' vector resulting from repeated sampling of the base distribution H).
+(which is the potentially infinite vector resulting from the stick-breaking process) and ![theta](https://latex.codecogs.com/gif.latex?%5Cdpi%7B150%7D%20%5Cfn_phv%20%5Ctheta) (the 'locations' vector resulting from repeated sampling from the base distribution H).
 
 ```python
 def DP(h, alpha):
@@ -144,7 +144,7 @@ for alpha in [1, 10, 100]:
 
 ## The posterior of a DP
 
-Despite being a fascinating subject, sampling from an overly complex prior distribution is not useful unless you learn how to sample from its posterior.
+Despite being a fascinating subject, sampling from an overly complicated prior distribution is not useful unless you learn how to sample from its posterior.
 Let's start by defining the Dirichlet-Multinomial conjugate model and its posterior. 
 Let ![ps](https://latex.codecogs.com/gif.latex?%5Cdpi%7B150%7D%20%5Cfn_phv%20%28p_1%2C%20p_2%20...%20p_k%29) be the vector of multinomial parameters (i.e. the probabilities for the different categories). If
 
@@ -169,7 +169,7 @@ After some algebraic transformations, the posterior can be re-written as:
 which makes it much more interpretable. Notice that the posterior base distribution is a weighted average between the
 prior base distribution `H` and the empirical distribution ![emp](https://latex.codecogs.com/gif.latex?%5Cdpi%7B150%7D%20%5Cfn_phv%20%5Cfrac%7B%5Csum_%7Bi%3D1%7D%5E%7Bn%7D%20%5Cdelta_%7B%5Ctheta_i%7D%7D%7Bn%7D). 
 The weight associated with the prior base distribution is proportional to ![alpha](https://latex.codecogs.com/gif.latex?%5Cdpi%7B150%7D%20%5Cfn_phv%20%5Calpha), while the empirical distribution has weight proportional to the number of observations `n`.
-For more information on this see ![here](http://www.stats.ox.ac.uk/~teh/research/npbayes/Teh2010a.pdf).
+For more information on this see [here](http://www.stats.ox.ac.uk/~teh/research/npbayes/Teh2010a.pdf).
 
 ## The posterior predictive distribution of a DP
 
@@ -183,12 +183,12 @@ in this way:
 ![post_pred](https://latex.codecogs.com/gif.latex?%5Cdpi%7B150%7D%20%5Cfn_phv%20P%28X_%7Bn&plus;1%7D%20%3D%20%5Ctheta_k%20%7C%20X_1%2C%20...%2C%20X_n%29%20%3D%20%5Cleft%5C%7B%5Cbegin%7Bmatrix%7D%20%5Cfrac%7Bm_k%7D%7Bn&plus;%5Calpha%7D%20%26%20%5Ctext%7Bif%20%7D%20k%20%5Cleq%20K%5C%5C%20%5Cfrac%7B%5Calpha%7D%7Bn&plus;%5Calpha%7D%20%26%20%5Ctext%7Bfor%20a%20new%20cluster%7D%20%5Cend%7Bmatrix%7D%5Cright.)
 
 Given a sequence of observations then, it is straightforward to sample from the posterior predictive distribution and see how the next observation is going to 
-cluster. This nice property of DPs makes possible to derive a Collapsed Gibbs Sampler (for the Chinese restaurant process) and a Blocked Gibbs Sampler (that uses 
+cluster. This nice property of DPs makes possible to derive a Collapsed Gibbs Sampler version (for the Chinese restaurant process) and a Blocked Gibbs Sampler version (that uses 
 a truncated stick-breaking process to approximate G).
 
 ## The Chinese restaurant process (CRP)
 
-We not get to the reason why this point was making reference to a Chinese restaurant. This metaphor arises from the fact that some Chinese restaurants seem to have
+We haven't got yet to the reason why this post was making reference to a Chinese restaurant. This metaphor arises from the fact that some Chinese restaurants seem to have
 an infinite series of tables available for seating, and new tables are seemingly created to accomodate whoever comes in.
 The infinite series as you can imagine is a reference to the infinite sum over discrete points in a DP process, and every single data point at our disposal is a 
 new customer that needs to be accomodated in our restaurant. It is interested to notice that DP processes are 'exchangeable', meaning that the order by which the customers
