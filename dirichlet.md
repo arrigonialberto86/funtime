@@ -1,4 +1,4 @@
-# Dirichlet mixture processes
+# Dirichlet processes
 ## Where do people sit in a Chinese restaurant?
 
 <img src="dirichlet_process/chinese_pic.png" alt="Image not found" width="900"/>
