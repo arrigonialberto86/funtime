@@ -25,6 +25,7 @@ Let's naively start modeling our dataset by supposing that there are K clusters 
 This is the overall model we are going to describe:
 
 <img src="dirichlet_process/model_plate.png" alt="Image not found" width="800"/>
+- Two different representations of a finite mixture model. Left: traditional representation. Right: representation where parameters are samples from G, a discrete measure.
 
 The following is the generative model for data points ![v_i](https://latex.codecogs.com/gif.latex?%5Cdpi%7B150%7D%20%5Cfn_phv%20v_i):
 
