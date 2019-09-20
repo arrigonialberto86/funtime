@@ -48,6 +48,8 @@ and that according to what we know they are all equally probable, as indicated b
 The parameters ![alpha](https://latex.codecogs.com/gif.latex?%5Cdpi%7B150%7D%20%5Cfn_phv%20%5Calpha) and ![lambda](https://latex.codecogs.com/gif.latex?%5Cdpi%7B150%7D%20%5Cfn_phv%20%5Clambda) are instead fixed parameters, reflecting
 our prior knowledge of the system we are modeling.
 
+### ... to infinity and beyond
+
 What written in the paragraph above refers to a Dirichlet mixture model of K component, i.e. we must know the number of clusters in advance in order to assign observations to clusters.
 In order to understand what a DP is though, we need to rewrite our model using a slightly different notation:
 
