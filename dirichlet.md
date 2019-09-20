@@ -254,7 +254,7 @@ Let's now look at the results of our simulation by considering the effect of dif
 
 The density of mixture models [I will only consider 'Gaussian' mixture models in this post although this approach can be easily extended to other parametric forms]
 can be estimated by using Dirichlet process mixtures. 
-A Dirichlet process mixture uses component densities from a parametric family (we'll use a Normal distribution) and represents the mixture weights as a Dirichlet process. 
+A Dirichlet process mixture uses component densities from a parametric family (I'll use a Normal distribution here) and represents the mixture weights as a Dirichlet process. 
 Let's take a look at some data before delving into model description:
 
 ```python
@@ -273,7 +273,7 @@ y = (y - y.mean(axis=0)) / y.std(axis=0)
 import seaborn as sns
 
 plt.figure(figsize=(12, 6))
-plt.title('Histogram of the 3d column of the (standardized) Iris dataset.')
+plt.title('Histogram of the 3rd column of the (standardized) Iris dataset.')
 plt.xlabel('x')
 plt.ylabel('count')
 sns.distplot(y[:, 3], bins=20, kde=False, rug=True)
