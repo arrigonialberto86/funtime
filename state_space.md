@@ -11,4 +11,50 @@ Let us start by defining the transition equation of our model:
 
 ![Pv_i](https://latex.codecogs.com/gif.latex?%5Cdpi%7B150%7D%20%5Clarge%20l_t%20%3D%20F_tl_%7Bt-1%7D%20&plus;%20g_t%20%5Cepsilon%20%5Ctextrm%7B%2C%7D%20%5Cquad%20%5Cepsilon%20%5Csim%20N%280%2C1%29)
 
+Here you see a deterministic transition matrix F_t and a random innovation component summarized in vector ![ge](https://latex.codecogs.com/gif.latex?%5Cdpi%7B150%7D%20%5Clarge%20g_t%5Cepsilon)
+As this is the general form of any SSM, we need to list the instantiation parameters of our simple level-trend model:
 
+![param](https://latex.codecogs.com/gif.latex?%5Cdpi%7B150%7D%20%5Clarge%20F_t%20%3D%20%5Cbegin%7Bbmatrix%7D%201%20%26%201%5C%5C%200%20%26%201%20%5Cend%7Bbmatrix%7D%20%5Ctextrm%7B%2C%7D%5Cquad%20g_t%3D%5Cbegin%7Bbmatrix%7D%20%5Calpha%5C%5C%20%5Cbeta%20%5Cend%7Bbmatrix%7D)
+
+The previous equation refers to the dynamics of evolution of the latent state, which in turn generats real observations z_t through an *observation* model:
+
+![obs](https://latex.codecogs.com/gif.latex?%5Cdpi%7B150%7D%20%5Clarge%20z_t%20%3D%20y_t%20&plus;%20%5Csigma%20%5Cepsilon%20%5Ctextrm%7B%2C%7D%20%5Cquad%20y_t%20%3D%20a%5ETl_%7Bt%20-%201%7D%20&plus;%20b%20%5Ctextrm%7B%2C%7D%20%5Cquad%20%5Cepsilon%20%5Csim%20N%280%2C%201%29)
+
+The parameters that specify this model are assumed to be fixed in time for our purposes, although in recent papers such as [this](https://papers.nips.cc/paper/8004-deep-state-space-models-for-time-series-forecasting.pdf) the parameters are predicted by a RNN at each time point, effectively creating a time-varying Deep State Space Model.
+The backpropagation is simply performed by perfoming Kalman filtering (more on that later) and calculating the negative log likelihood at each time point using the Gaussian distribution defined by the observation model above. 
+
+Let us start our description by simulating some time series using the generative model reported above and PyTorch:
+
+```python
+import torch
+import matplotlib.pyplot as plt
+%matplotlib inline
+fig= plt.figure(figsize=(12,6))
+
+def next_obs(current_l=torch.Tensor([0, 0]), a=torch.Tensor([1, 1]), 
+             F = torch.Tensor([[1, 1], [0, 1]]), alpha=0.6, beta=0.6, 
+             sigma_t=torch.Tensor([3])): 
+    g = torch.Tensor([alpha, beta])
+    y_t = torch.matmul(a.T, current_l)
+    z_t = y_t + sigma_t * torch.empty(1).normal_(mean=0,std=1)
+    next_l = torch.matmul(F, current_l) + g * torch.empty(1).normal_(mean=0,std=1)
+    return next_l, z_t
+
+def simulate_single_ts(n_obs = 39):
+    sim_list = []
+    current_obs = torch.Tensor([0, 3])
+    for i in range(n_obs):
+        current_obs, z_t = next_obs(current_l=current_obs)
+        sim_list.append(z_t)
+    return sim_list
+
+for i in range(39):
+    plt.plot(simulate_single_ts())
+plt.title('Random generation of time series using a linear state-space model')
+```
+
+<img src="state_space/random_ts.png" alt="Image not found" width="600"/>
+
+
+## Equation editor
+- https://www.codecogs.com/latex/eqneditor.php (Latin Modern, 12pts, 150 dpi)
