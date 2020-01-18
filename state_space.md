@@ -222,7 +222,7 @@ plt.plot(ts_sim, 'bo')
 plt.plot(ts_sim)
 ```
 
-<img src="state_space/quadratic.png" alt="Image not found" width="400"/>
+<img src="state_space/quadratic.png" alt="Image not found" width="300"/>
 
 Let us use the default init parameters [0, 0] of the class we wrote above to filter the function:
 
@@ -256,7 +256,7 @@ plt.legend(loc='upper center')
 plt.title('SSM filtering and prediction')
 ```
 
-<img src="state_space/simple_fit.png" alt="Image not found" width="400"/>
+<img src="state_space/simple_fit.png" alt="Image not found" width="600"/>
 
 We now exploit PyTorch to calculate the log-likehood function for different initialization parameters:
 
@@ -284,11 +284,11 @@ plt.axvline(x=26, label='Max log-likelihood: 26')
 plt.legend()
 ```
 
-<img src="state_space/log_lik.png" alt="Image not found" width="400"/>
+<img src="state_space/log_lik.png" alt="Image not found" width="300"/>
 
 Of course by updating the initial parameters according to what we found the fitting procedure works much better:
 
-<img src="state_space/ok_fit.png" alt="Image not found" width="400"/>
+<img src="state_space/ok_fit.png" alt="Image not found" width="600"/>
 
 ## Equation editor
 - https://www.codecogs.com/latex/eqneditor.php (Latin Modern, 12pts, 150 dpi)
