@@ -288,6 +288,12 @@ plt.legend()
 
 Of course by updating the initial parameters according to what we found the fitting procedure works much better:
 
+```python
+ssm = LevelTrendSSM(ts_data)
+ssm.filter_ts(f_0=torch.Tensor([26, -1]))  # Let's settle for a decreasing trend, -1
+f_prediction = ssm.predict(prediction_horizon)
+```
+
 <img src="state_space/ok_fit.png" alt="Image not found" width="600"/>
 
 ## References
