@@ -78,7 +78,140 @@ Then (to be clear) sample from the forecast distribution by assuming a Gaussian 
 
 ![cov_pred](https://latex.codecogs.com/gif.latex?%5Cdpi%7B150%7D%20%5Clarge%20S_%7Bt&plus;1%7D%20%3D%20FS_tF%5ET%20&plus;%20gg%5ET)
 
+We can now simply translate these equations to PyTorch by writing the `LevelTrendSSM` class:
 
+```python
+from torch import Tensor
+from torch.distributions.normal import Normal
+
+class LevelTrendSSM:
+  def __init__(self, ts_data: Tensor):
+    self.ts_data = ts_data
+    self.g, sigma_t = None, None
+    self.prediction_list, self.states_list = [], []
+
+  @property
+  def predictions(self):
+    return self.prediction_list
+  
+  @property
+  def states(self):
+    return self.states_list
+
+  # Linear-trend SSM dynamics
+  a, F = torch.Tensor([1, 1]), torch.Tensor([[1, 1], [0, 1]])
+
+  def _filter_init(self, alpha=1, beta=1, 
+                   sigma_t=torch.Tensor([3]), 
+                   f_0=torch.Tensor([0, 0]), 
+                   S_0=torch.diag(torch.Tensor([1, 1]))):
+    # Dispersion parameter of the hidden state update step
+    self.g = torch.Tensor([alpha, beta])
+    self.sigma_t = sigma_t
+
+    # First prediction step using Gaussian prior for the hidden state l~N(f_0, S_0)
+    z_mu = torch.matmul(self.a.T, f_0) 
+    z_S = torch.matmul(torch.matmul(self.a.T, S_0), self.a) + torch.pow(sigma_t, 2)
+
+    # Update according to real data
+    residual = self.ts_data[0] - z_mu
+    f_current = f_0 + torch.matmul(S_0, self.a) * 1/z_S * residual
+    S_current = S_0 - torch.matmul(torch.matmul(S_0, self.a) * 1/z_S, self.a.T) * S_0 
+
+    return z_mu, z_S, f_current, S_current
+
+  def filter_ts(self, alpha=1, beta=1, 
+                sigma_t=torch.Tensor([3]), 
+                f_0=torch.Tensor([0, 0]), 
+                S_0=torch.diag(torch.Tensor([3, 3]))):
+
+    # Initialize data holder lists
+    self.prediction_list, self.states_list = [], []
+
+    z_mu, z_S, f_current, S_current = self._filter_init(alpha=alpha, beta=beta, 
+                                                        sigma_t=sigma_t, 
+                                                        f_0=f_0, 
+                                                        S_0=S_0)
+    self.prediction_list.append([z_mu, z_S])
+    self.states_list.append([f_current, S_current])
+
+    for datum in self.ts_data[1:]:
+      # State prediction
+      f_current = torch.matmul(self.F, f_current)
+      S_current = torch.matmul(torch.matmul(self.F, S_current), self.F.T) + torch.matmul(self.g, self.g.T)
+
+      # Forecasting step
+      mu_predicted = torch.matmul(self.a.T, f_current)
+      sigma_predicted = torch.matmul(torch.matmul(self.a.T, S_current), self.a) + torch.pow(self.sigma_t, 2)
+
+      self.prediction_list.append([mu_predicted, sigma_predicted])
+      
+      # Update with real data
+      residual = datum - mu_predicted
+      f_current = f_current + torch.matmul(S_current, self.a) * 1/sigma_predicted * residual
+      S_current = S_current - torch.matmul(torch.matmul(S_current, self.a) * 1/sigma_predicted, self.a.T) * S_current
+
+      self.states_list.append([f_current, S_current])
+
+  def predict(self, horizon: int) -> Tensor:
+    assert horizon >= 1
+    if not self.states_list:
+      raise ValueError('You should call the "filter_ts" instance method first!')
+    output_list = []
+    f_current, S_current = self.states_list[-1][0], self.states_list[-1][1]
+
+    for p in range(horizon): 
+      # State prediction
+      f_current = torch.matmul(self.F, f_current)
+      S_current = torch.matmul(torch.matmul(self.F, S_current), self.F.T) + torch.matmul(self.g, self.g.T)
+
+      # Forecasting step
+      mu_predicted = torch.matmul(self.a.T, f_current)
+      sigma_predicted = torch.matmul(torch.matmul(self.a.T, S_current), self.a) + torch.pow(self.sigma_t, 2)
+
+      output_list.append([mu_predicted, sigma_predicted])
+    return output_list
+```
+
+And the some code to call the class and fit a randomly generated time series:
+
+```python
+fig = plt.figure(figsize=(12,9))
+
+# Simulate a ts
+ts_len = len(ts_data)
+ts_data = simulate_single_ts(n_obs=ts_len)
+plt.plot(ts_data, 'bo', label='Original data')
+
+# Filter and predict random ts 'ts_data'
+prediction_horizon=4
+ssm = LevelTrendSSM(ts_data)
+ssm.filter_ts()
+f_prediction = ssm.predict(prediction_horizon)
+
+plt.plot([i[0] for i in ssm.prediction_list], label='SSM Kalman filtering')
+plt.plot([i[0] for i in ssm.prediction_list], 'ro', label='t+1 prediction', alpha=0.4)
+plt.fill_between(x=[i for i in range(ts_len)], 
+                 y1=[i[0]-torch.sqrt(i[1]) for i in ssm.prediction_list], 
+                 y2=[i[0]+torch.sqrt(i[1]) for i in ssm.prediction_list], alpha=.2, label=r'$\mu +/- \sigma$ confidence interval')
+
+plt.plot([i for i in range(ts_len, ts_len+prediction_horizon)], 
+         [i[0] for i in f_prediction], 'ro', alpha=0.6)
+plt.fill_between(x=[i for i in range(ts_len, ts_len+prediction_horizon)], 
+                 y1=[i[0]-torch.sqrt(i[1]) for i in f_prediction], 
+                 y2=[i[0]+torch.sqrt(i[1]) for i in f_prediction], alpha=.2)
+
+plt.legend(loc='center left')
+plt.title('SSM filtering and prediction')
+```
+
+<img src="state_space/preds.png" alt="Image not found" width="600"/>
+
+As expected, the system is dinamically reacting to the observations it receives from the external environment and adjusts the trajectory we observe.
+
+## A matter of parameters initialization
+
+SSMs 
 
 ## Equation editor
 - https://www.codecogs.com/latex/eqneditor.php (Latin Modern, 12pts, 150 dpi)
