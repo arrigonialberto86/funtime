@@ -6,7 +6,7 @@
 Posts list:
 - [Level-trend State Space Models: a PyTorch implementation from scratch](state_space.md)
 - [Dirichlet processes (DP) and the Chinese Restaurant Process (CRP)](dirichlet.md)
-- [Variational inference study notes extended (Google Colab)](Variational_inference_colab.ipynb)
+- [Variational inference study notes extended (Google Colab)](var_study_notes.md)
 - [Uncertainty estimation with deep ensembles](deep_ensembles.md)
 - [Amazon DeepAR: a Tensorflow implementation](deepar.md)
 - [Scalable Bayesian inference in Python](var_inference.md)
