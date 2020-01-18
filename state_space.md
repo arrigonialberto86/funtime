@@ -290,5 +290,9 @@ Of course by updating the initial parameters according to what we found the fitt
 
 <img src="state_space/ok_fit.png" alt="Image not found" width="600"/>
 
+## References
+- https://robjhyndman.com/uwafiles/9-StateSpaceModels.pdf
+- Rangapuram et al., Deep State Space Models for Time Series Forecasting, NIPS 2018
+
 ## Equation editor
 - https://www.codecogs.com/latex/eqneditor.php (Latin Modern, 12pts, 150 dpi)
