@@ -55,6 +55,26 @@ plt.title('Random generation of time series using a linear state-space model')
 
 <img src="state_space/random_ts.png" alt="Image not found" width="600"/>
 
+I have talked above about the Kalman filter. Although it is not in the scope of this post a detailed explanation of the mechanics of filtering I will just go ahead and list the formulas that will be implemented in the below.
+Kalman filtering is composed of three recurrent steps:
+
+## Forecasting
+
+![forecast](https://latex.codecogs.com/gif.latex?%5Cdpi%7B150%7D%20%5Clarge%20%5Cmu_t%20%3D%20a%5ET%20f_%7Bt%7D%20%5Cquad%20%5CSigma%20%3D%20a%5ET%20%5CSigma%20a%20&plus;%20%5Csigma_%7B1%7D%5E2)
+
+Then (to be clear) sample from the forecast distribution by assuming a Gaussian likelihood:
+
+![sample](https://latex.codecogs.com/gif.latex?%5Cdpi%7B150%7D%20%5Clarge%20x_t%20%5Csim%20N%28%5Cmu_t%2C%20%5Csigma_t%29)
+
+## Updating (state filtering)
+
+
+
+## State prediction
+
+
+
+
 
 ## Equation editor
 - https://www.codecogs.com/latex/eqneditor.php (Latin Modern, 12pts, 150 dpi)
