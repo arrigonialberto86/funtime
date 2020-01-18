@@ -60,7 +60,7 @@ Kalman filtering is composed of three recurrent steps:
 
 ## Forecasting
 
-![forecast](https://latex.codecogs.com/gif.latex?%5Cdpi%7B150%7D%20%5Clarge%20%5Cmu_t%20%3D%20a%5ET%20f_%7Bt%7D%20%5Cquad%20%5CSigma%20%3D%20a%5ET%20%5CSigma%20a%20&plus;%20%5Csigma_%7B1%7D%5E2)
+![forecast](https://latex.codecogs.com/gif.latex?%5Cdpi%7B150%7D%20%5Clarge%20%5Cmu_t%20%3D%20a%5E%7BT%7Df_t%20%5Ctexrm%7B%2C%7D%5Cquad%20%5CSigma%3Da%5E%7BT%7DSa%20&plus;%20%5Csigma%5E2_1)
 
 Then (to be clear) sample from the forecast distribution by assuming a Gaussian likelihood:
 
@@ -68,11 +68,15 @@ Then (to be clear) sample from the forecast distribution by assuming a Gaussian 
 
 ## Updating (state filtering)
 
+![mean update](https://latex.codecogs.com/gif.latex?%5Cdpi%7B150%7D%20%5Clarge%20f_t%20%3D%20f_%7Bt-1%7D%20&plus;%20S_%7Bt-1%7Da%5CSigma%5E%7B-1%7D%28z_%7Bobs%7D%20-%20%5Cmu_%7Bt-1%7D%29)
 
+![cov_update](https://latex.codecogs.com/gif.latex?%5Cdpi%7B150%7D%20%5Clarge%20S_t%20%3D%20S_%7Bt-1%7D%20-%20S_%7Bt-1%7Da%5CSigma%5E%7B-1%7Da%5E%7BT%7DS_%7Bt-1%7D)
 
 ## State prediction
 
+![mu pred](https://latex.codecogs.com/gif.latex?%5Cdpi%7B150%7D%20%5Clarge%20f_%7Bt&plus;1%7D%20%3D%20Fx_%7Bt%7D)
 
+![cov_pred](https://latex.codecogs.com/gif.latex?%5Cdpi%7B150%7D%20%5Clarge%20S_%7Bt&plus;1%7D%20%3D%20FS_tF%5ET%20&plus;%20gg%5ET)
 
 
 
