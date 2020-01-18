@@ -211,7 +211,84 @@ As expected, the system is dinamically reacting to the observations it receives 
 
 ## A matter of parameters initialization
 
-SSMs 
+It is often tricky to initialize SSMs parameters and the 'wrong' initialization can impair convergence, making the whole filtering process useless. 
+As I was saying before, the negative log likelihood of the Gaussian distributions generated from filtering can be used to identify the most suitable set of parameters (this is exactly what we would also use to identify ARIMA parameters).
+
+We first build a simple quadatic function to fit:
+
+```python
+ts_sim = [torch.pow(t, 2) + torch.empty(1).normal_(mean=0,std=1) for t in torch.linspace(-5, 5, 60)]
+plt.plot(ts_sim, 'bo')
+plt.plot(ts_sim)
+```
+
+<img src="state_space/quadratic.png" alt="Image not found" width="400"/>
+
+Let us use the default init parameters [0, 0] of the class we wrote above to filter the function:
+
+```python
+fig = plt.figure(figsize=(12,9))
+
+# Simulate a ts
+ts_len = len(ts_sim)
+ts_data = ts_sim
+plt.plot(ts_data, 'bo', label='Original data')
+
+# Filter and predict random ts 'ts_data'
+prediction_horizon=4
+ssm = LevelTrendSSM(ts_data)
+ssm.filter_ts(f_0=torch.Tensor([0, 0]))
+f_prediction = ssm.predict(prediction_horizon)
+
+plt.plot([i[0] for i in ssm.prediction_list], label='SSM Kalman filtering')
+plt.plot([i[0] for i in ssm.prediction_list], 'ro', label='t+1 prediction', alpha=0.4)
+plt.fill_between(x=[i for i in range(ts_len)], 
+                 y1=[i[0]-torch.sqrt(i[1]) for i in ssm.prediction_list], 
+                 y2=[i[0]+torch.sqrt(i[1]) for i in ssm.prediction_list], alpha=.2, label=r'$\mu +/- \sigma$ confidence interval')
+
+plt.plot([i for i in range(ts_len, ts_len+prediction_horizon)], 
+         [i[0] for i in f_prediction], 'ro', alpha=0.6)
+plt.fill_between(x=[i for i in range(ts_len, ts_len+prediction_horizon)], 
+                 y1=[i[0]-torch.sqrt(i[1]) for i in f_prediction], 
+                 y2=[i[0]+torch.sqrt(i[1]) for i in f_prediction], alpha=.2)
+
+plt.legend(loc='upper center')
+plt.title('SSM filtering and prediction')
+```
+
+<img src="state_space/simple_fit.png" alt="Image not found" width="400"/>
+
+We now exploit PyTorch to calculate the log-likehood function for different initialization parameters:
+
+```python
+def log_lik(actual: Tensor, predictions: Tensor):
+  """
+  :param actual -> simulated time series data
+  :param predictions -> List[[mu, sigma]]
+  """
+  return torch.Tensor([Normal(i[0], i[1]).log_prob(j) 
+                        for i,j in zip(predictions, actual)]).sum()
+```
+
+... and cycle through different values to obtain a likelihood profile:
+
+```python
+log_liks = []
+for i in range(40):
+  ssm = LevelTrendSSM(ts_sim)
+  ssm.filter_ts(f_0=torch.Tensor([i, -1]))
+  log_liks.append(log_lik(ts_sim, ssm.predictions))
+plt.plot([i for i in range(40)], log_liks)
+plt.plot([i for i in range(40)], log_liks, 'bo')
+plt.axvline(x=26, label='Max log-likelihood: 26')
+plt.legend()
+```
+
+<img src="state_space/log_lik.png" alt="Image not found" width="400"/>
+
+Of course by updating the initial parameters according to what we found the fitting procedure works much better:
+
+<img src="state_space/ok_fit.png" alt="Image not found" width="400"/>
 
 ## Equation editor
 - https://www.codecogs.com/latex/eqneditor.php (Latin Modern, 12pts, 150 dpi)
