@@ -9,7 +9,7 @@ The main components of a SSM are a **transition** model, which describes how the
 
 Let us start by defining the transition equation of our model:
 
-![Pv_i](https://latex.codecogs.com/gif.latex?%5Cdpi%7B150%7D%20%5Clarge%20l_t%20%3D%20F_tl_%7Bt-1%7D%20&plus;%20g_t%20%5Cepsilon%20%5Ctextrm%7B%2C%7D%20%5Cquad%20%5Cepsilon%20%5Csim%20N%280%2C1%29)
+![Pv_i](https://latex.codecogs.com/gif.latex?%5Cdpi%7B150%7D%20%5Clarge%20l_t%20%3D%20Fl_%7Bt-1%7D%20&plus;%20g%5Cepsilon%20%5Ctextrm%7B%2C%7D%20%5Cquad%20N%20%5Csim%20%280%2C%201%29)
 
 Here you see a deterministic transition matrix F_t and a random innovation component summarized in vector ![ge](https://latex.codecogs.com/gif.latex?%5Cdpi%7B150%7D%20%5Clarge%20g_t%5Cepsilon)
 As this is the general form of any SSM, we need to list the instantiation parameters of our simple level-trend model:
