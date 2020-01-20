@@ -11,19 +11,19 @@ Let us start by defining the transition equation of our model:
 
 ![Pv_i](https://latex.codecogs.com/gif.latex?%5Cdpi%7B150%7D%20%5Clarge%20l_t%20%3D%20Fl_%7Bt-1%7D%20&plus;%20g%5Cepsilon%20%5Ctextrm%7B%2C%7D%20%5Cquad%20N%20%5Csim%20%280%2C%201%29)
 
-Here you see a deterministic transition matrix F_t and a random innovation component summarized in vector ![ge](https://latex.codecogs.com/gif.latex?%5Cdpi%7B150%7D%20%5Clarge%20g_t%5Cepsilon)
+Here you see a deterministic transition matrix ![F_t](https://latex.codecogs.com/gif.latex?%5Cdpi%7B150%7D%20%5Clarge%20F_t) and a random innovation component summarized in vector ![ge](https://latex.codecogs.com/gif.latex?%5Cdpi%7B150%7D%20%5Clarge%20g%5Cepsilon)
 As this is the general form of any SSM, we need to list the instantiation parameters of our simple level-trend model:
 
 ![param](https://latex.codecogs.com/gif.latex?%5Cdpi%7B150%7D%20%5Clarge%20F_t%20%3D%20%5Cbegin%7Bbmatrix%7D%201%20%26%201%5C%5C%200%20%26%201%20%5Cend%7Bbmatrix%7D%20%5Ctextrm%7B%2C%7D%5Cquad%20g_t%3D%5Cbegin%7Bbmatrix%7D%20%5Calpha%5C%5C%20%5Cbeta%20%5Cend%7Bbmatrix%7D)
 
-The previous equation refers to the dynamics of evolution of the latent state, which in turn generats real observations z_t through an *observation* model:
+The previous equation refers to the dynamics of evolution of the latent state, which in turn generats real observations ![z_t](https://latex.codecogs.com/gif.latex?%5Cdpi%7B150%7D%20%5Clarge%20z_t) through an *observation* model:
 
 ![obs](https://latex.codecogs.com/gif.latex?%5Cdpi%7B150%7D%20%5Clarge%20z_t%20%3D%20y_t%20&plus;%20%5Csigma%20%5Cepsilon%20%5Ctextrm%7B%2C%7D%20%5Cquad%20y_t%20%3D%20a%5ETl_%7Bt%20-%201%7D%20&plus;%20b%20%5Ctextrm%7B%2C%7D%20%5Cquad%20%5Cepsilon%20%5Csim%20N%280%2C%201%29)
 
 The parameters that specify this model are assumed to be fixed in time for our purposes, although in recent papers such as [this](https://papers.nips.cc/paper/8004-deep-state-space-models-for-time-series-forecasting.pdf) the parameters are predicted by a RNN at each time point, effectively creating a time-varying Deep State Space Model.
 The backpropagation is simply performed by perfoming Kalman filtering (more on that later) and calculating the negative log likelihood at each time point using the Gaussian distribution defined by the observation model above. 
 
-Let us start our description by simulating some time series using the generative model reported above and PyTorch:
+Let us start the description by simulating some time series using the generative model reported above:
 
 ```python
 import torch
@@ -55,10 +55,12 @@ plt.title('Random generation of time series using a linear state-space model')
 
 <img src="state_space/random_ts.png" alt="Image not found" width="600"/>
 
-I have talked above about the Kalman filter. Although it is not in the scope of this post a detailed explanation of the mechanics of filtering I will just go ahead and list the formulas that will be implemented in the below.
+## SSM Kalman filtering
+
+I have previously mentioned the Kalman filter in the context of SSMs. Although it is not in the scope of this post a detailed explanation of the mechanics of filtering I will just go ahead and list the formulas that will be implemented in the code below.
 Kalman filtering is composed of three recurrent steps:
 
-## Forecasting
+### Forecasting
 
 ![forecast](https://latex.codecogs.com/gif.latex?%5Cdpi%7B150%7D%20%5Clarge%20%5Cmu_t%20%3D%20a%5E%7BT%7Df_t%20%5Ctexrm%7B%2C%7D%5Cquad%20%5CSigma%3Da%5E%7BT%7DSa%20&plus;%20%5Csigma%5E2_1)
 
@@ -66,13 +68,13 @@ Then (to be clear) sample from the forecast distribution by assuming a Gaussian 
 
 ![sample](https://latex.codecogs.com/gif.latex?%5Cdpi%7B150%7D%20%5Clarge%20x_t%20%5Csim%20N%28%5Cmu_t%2C%20%5Csigma_t%29)
 
-## Updating (state filtering)
+### Updating (state filtering)
 
 ![mean update](https://latex.codecogs.com/gif.latex?%5Cdpi%7B150%7D%20%5Clarge%20f_t%20%3D%20f_%7Bt-1%7D%20&plus;%20S_%7Bt-1%7Da%5CSigma%5E%7B-1%7D%28z_%7Bobs%7D%20-%20%5Cmu_%7Bt-1%7D%29)
 
 ![cov_update](https://latex.codecogs.com/gif.latex?%5Cdpi%7B150%7D%20%5Clarge%20S_t%20%3D%20S_%7Bt-1%7D%20-%20S_%7Bt-1%7Da%5CSigma%5E%7B-1%7Da%5E%7BT%7DS_%7Bt-1%7D)
 
-## State prediction
+### State prediction
 
 ![mu pred](https://latex.codecogs.com/gif.latex?%5Cdpi%7B150%7D%20%5Clarge%20f_%7Bt&plus;1%7D%20%3D%20Fx_%7Bt%7D)
 
