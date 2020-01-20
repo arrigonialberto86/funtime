@@ -9,12 +9,12 @@ The main components of a SSM are a **transition** model, which describes how the
 
 Let us start by defining the transition equation of our model:
 
-![Pv_i](https://latex.codecogs.com/gif.latex?%5Cdpi%7B150%7D%20%5Clarge%20l_t%20%3D%20Fl_%7Bt-1%7D%20&plus;%20g%5Cepsilon%20%5Ctextrm%7B%2C%7D%20%5Cquad%20N%20%5Csim%20%280%2C%201%29)
+![Pv_i](https://latex.codecogs.com/gif.latex?%5Cdpi%7B150%7D%20%5Clarge%20l_t%20%3D%20Fl_%7Bt-1%7D%20&plus;%20g%5Cepsilon%20%5Cterm%7B%2C%7D%20%5Cquad%20%5Cepsilon%20%5Csim%20N%280%2C%201%29)
 
 Here you see a deterministic transition matrix ![F_t](https://latex.codecogs.com/gif.latex?%5Cdpi%7B150%7D%20%5Clarge%20F_t) and a random innovation component summarized in vector ![ge](https://latex.codecogs.com/gif.latex?%5Cdpi%7B150%7D%20%5Clarge%20g%5Cepsilon)
 As this is the general form of any SSM, we need to list the instantiation parameters of our simple level-trend model:
 
-![param](https://latex.codecogs.com/gif.latex?%5Cdpi%7B150%7D%20%5Clarge%20F_t%20%3D%20%5Cbegin%7Bbmatrix%7D%201%20%26%201%5C%5C%200%20%26%201%20%5Cend%7Bbmatrix%7D%20%5Ctextrm%7B%2C%7D%5Cquad%20g_t%3D%5Cbegin%7Bbmatrix%7D%20%5Calpha%5C%5C%20%5Cbeta%20%5Cend%7Bbmatrix%7D)
+![param](https://latex.codecogs.com/gif.latex?%5Cdpi%7B150%7D%20%5Clarge%20F%20%3D%20%5Cbegin%7Bbmatrix%7D%201%20%26%201%5C%5C%200%20%26%201%20%5Cend%7Bbmatrix%7D%20%5Ctextrm%7B%2C%7D%20%5Cquad%20g%20%3D%20%5Cbegin%7Bbmatrix%7D%20%5Calpha%5C%5C%20%5Cbeta%20%5Cend%7Bbmatrix%7D)
 
 The previous equation refers to the dynamics of evolution of the latent state, which in turn generats real observations ![z_t](https://latex.codecogs.com/gif.latex?%5Cdpi%7B150%7D%20%5Clarge%20z_t) through an *observation* model:
 
