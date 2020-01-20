@@ -58,7 +58,7 @@ plt.title('Random generation of time series using a linear state-space model')
 ## SSM Kalman filtering
 
 I have previously mentioned the Kalman filter in the context of SSMs. Although it is not in the scope of this post a detailed explanation of the mechanics of filtering I will just go ahead and list the formulas that will be implemented in the code below.
-Kalman filtering is composed of three recurrent steps:
+Kalman filtering is composed of three recurrent steps (considering that the first latent state ![l_t](https://latex.codecogs.com/gif.latex?%5Cdpi%7B150%7D%20%5Clarge%20l_t) comes from a multivariate normal distribution with diagonal covariance matrix ![0](https://latex.codecogs.com/gif.latex?%5Cdpi%7B150%7D%20%5Clarge%20l_t%20%5Csim%20N%28f_0%2C%20S_0%29))
 
 ### Forecasting
 
