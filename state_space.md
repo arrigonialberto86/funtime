@@ -175,7 +175,7 @@ class LevelTrendSSM:
     return output_list
 ```
 
-And the some code to call the class and fit a randomly generated time series:
+We can use this code to fit a randomly generated time series:
 
 ```python
 fig = plt.figure(figsize=(12,9))
@@ -209,7 +209,7 @@ plt.title('SSM filtering and prediction')
 
 <img src="state_space/preds.png" alt="Image not found" width="600"/>
 
-As expected, the system is dinamically reacting to the observations it receives from the external environment and adjusts the trajectory we observe.
+As expected, the system is dinamically reacting to the observations it receives from the external environment and adjusts the trajectory accordingly.
 
 ## A matter of parameters initialization
 
@@ -260,7 +260,7 @@ plt.title('SSM filtering and prediction')
 
 <img src="state_space/simple_fit.png" alt="Image not found" width="600"/>
 
-We now exploit PyTorch to calculate the log-likehood function for different initialization parameters:
+We now leverage PyTorch functions to calculate the log-likehood function for different initialization parameters:
 
 ```python
 def log_lik(actual: Tensor, predictions: Tensor):
@@ -288,7 +288,7 @@ plt.legend()
 
 <img src="state_space/log_lik.png" alt="Image not found" width="300"/>
 
-Of course by updating the initial parameters according to what we found the fitting procedure works much better:
+Of course by updating the initial parameters according to what we found the filtering procedure works much better:
 
 ```python
 ssm = LevelTrendSSM(ts_data)
