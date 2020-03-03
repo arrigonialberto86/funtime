@@ -1,7 +1,7 @@
 # DeepSets (NIPS 2018)
 
 This is a long overdue piece on a paper I read last year and found to be very interesting. 
-It suggests a relatively simple way to structure deep nets in order to handle 'sets' instead of ordered 'list' of elements.
+It suggests a relatively simple way to structure deep nets in order to handle *sets* instead of ordered *lists* of elements.
 Despite this unimpressive description, it has important practical applications and surely its range of applicability goes far
 beyond what I thought of when I read it for the first time.
 
