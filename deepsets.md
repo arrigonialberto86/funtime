@@ -127,7 +127,7 @@ for sample_idx in range(n_sample_viz):
                                     fontsize=15, loc='left')
 ```
 
-<img src="deepsets/numbers.png" alt="Image not found" width="600"/>
+<img src="deepsets/numbers.png" alt="Image not found" width="400"/>
 
 And now the network structure. In this simple example notice in particular the shared portion of the model (named `feature_ext_model`)
 which processes in parallel the input images. The *pooling* operation in this model is the `Add` function that simply sums the values taken by 
@@ -204,7 +204,7 @@ for sample_idx in range(n_sample_viz):
                                     fontsize=15, loc='left')
 ```
 
-<img src="deepsets/numbers_2.png" alt="Image not found" width="600"/>
+<img src="deepsets/numbers_2.png" alt="Image not found" width="400"/>
 
 
 ## Reference
