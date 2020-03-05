@@ -216,7 +216,7 @@ to address problems like these.
 
 Nonetheless, the simplistic *pooling* operation that we are using in this case (the `sum`) does not model interactions 
 between elements in the sets, giving way to (relevant) information loss. In the next post I will talk about (and provide a TF implementation of) the [Set transformer](https://arxiv.org/pdf/1810.00825.pdf),
-which is an interesting work based on self-attention that model permutation-invariant function 
+which is an interesting work based on self-attention that models permutation-invariant function 
 while preserving higher-order interactions between members of input sets.
 
 ## Reference
