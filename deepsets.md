@@ -1,17 +1,19 @@
 # Paper review & code: Deep Sets
 ## Deep Sets, NIPS 
 
-This is a long overdue piece on a paper I read last year and found to be very interesting, practical and super easy to implement. 
+This is a long overdue piece on a paper I read last year and found to be very interesting and easy to implement. 
 It suggests a relatively simple way to structure deep nets in order to handle *sets* instead of ordered *lists* of elements.
-Despite this unimpressive description, it has important practical applications and surely its range of applicability goes far
-beyond what I thought of when I read it for the first time.
+Despite this *unimpressive* description, it has important practical applications and its range of applicability goes far
+beyond what I thought of when I read the paper for the first time.
 
-Sets in data are everywhere, and the class of models I will describe in the present post are set to attain *permutation invariance*
-of the inputs. An intuitive explanation of what a permutation invariant function is a function for which this relationship holds true:
+Sets in data are everywhere, and the class of models I will describe in the present post are in fact set to attain *permutation invariance*
+of the inputs. An intuitive explanation of what a permutation invariant function is represented by the following chain of equalities
+for a function f:
 ![perm](https://latex.codecogs.com/gif.latex?%5Cdpi%7B150%7D%20%5Clarge%20f%28a%2C%20b%2C%20c%29%20%3D%20f%28b%2C%20c%2C%20a%29%20%3D%20f%28c%2C%20b%2C%20a%29)
 
 In the **supervised** setting modeling sets is relevant when dealing with mappings to a label that should be invariant to inputs ordering
 e.g. sets of objects in a scene, multi-agent reinforcement learning, estimation of population statistics...
+
 In the **unsupervised** setting sets are relevant to tasks such as set/audience expansion, where given a set of objects that are similar to 
 each other (e.g. set of words {lion, tiger, leopard}), our goal is to find new objects from a large pool of candidates such that 
 the selected new objects are similar to the query (Zaheer et al., 2018).
@@ -20,24 +22,24 @@ Using the same notation of the DeepSets paper (Zaheer et al. 2018) a function op
 (i.e. **invariant** to the permutation of instances in X) iff it can be decomposed in the form ![t](https://latex.codecogs.com/gif.latex?%5Cdpi%7B150%7D%20%5Clarge%20%5Crho%28%5Csum_%7Bx%20%5Cepsilon%20X%7D%20%5Cphi%28x%29%29)
 
 The two "sub"-functions ![rho](https://latex.codecogs.com/gif.latex?%5Cdpi%7B150%7D%20%5Clarge%20%5Crho) and
-![phi](https://latex.codecogs.com/gif.latex?%5Cdpi%7B150%7D%20%5Clarge%20%5Cphi) are parameterized by neural networks, and by this 
-simple formula you can tell that there is a shared branch of the net (defined by ![phi](https://latex.codecogs.com/gif.latex?%5Cdpi%7B150%7D%20%5Clarge%20%5Cphi))
-which processes set elements independently, which are later *pooled* by ![rho](https://latex.codecogs.com/gif.latex?%5Cdpi%7B150%7D%20%5Clarge%20%5Crho).
+![phi](https://latex.codecogs.com/gif.latex?%5Cdpi%7B150%7D%20%5Clarge%20%5Cphi) are parameterized by neural networks, 
+so that shared branches of the net (defined by ![phi](https://latex.codecogs.com/gif.latex?%5Cdpi%7B150%7D%20%5Clarge%20%5Cphi))
+process set elements independently, which are later *pooled* by ![rho](https://latex.codecogs.com/gif.latex?%5Cdpi%7B150%7D%20%5Clarge%20%5Crho).
 You can picture this process as well by regarding these two functions as `map` ops followed by `reduce`.
 
 ## The architecture
 
-Let me now list the required architectural elements that compose a DeepSet neural network:
+And this is a list of the required architectural elements we have just mentioned:
 - Each input element of the set if transformed (possibily by several layers) of the 'mapping' function ![phi](https://latex.codecogs.com/gif.latex?%5Cdpi%7B150%7D%20%5Clarge%20%5Cphi)
-- The resulting vectors are summed up and the output is in turn transformed by using the ![rho](https://latex.codecogs.com/gif.latex?%5Cdpi%7B150%7D%20%5Clarge%20%5Crho)
-network (the same as any other feed-forward neural network).
+- The resulting vectors are summed up (*pooling operation*) and the output is in turn transformed by the ![rho](https://latex.codecogs.com/gif.latex?%5Cdpi%7B150%7D%20%5Clarge%20%5Crho)
+network (which is the same as any other feed-forward neural network).
 - An optional 'branch' of the neural network may be used to encode additional contextual information ![z](https://latex.codecogs.com/gif.latex?%5Cdpi%7B150%7D%20%5Clarge%20z) related to the entire set.
 This effectively models the conditioning mapping ![d](https://latex.codecogs.com/gif.latex?%5Cdpi%7B150%7D%20%5Clarge%20%5Cphi%28X/z%29)
 
 ## De Finetti's theorem and the basis of exchangeability
  
 The concept of permutation invariance is intimately connected with the concept of exchangeability in Bayesian statistics,
-whose cornerstone is represented by the De Finetti theorem. 
+which is notably expressed in the De Finetti theorem. 
 This theorem states that exchangeable observations (i.e. members of a set) are conditionally independent relative to some
 latent variable (![t](https://latex.codecogs.com/gif.latex?%5Cdpi%7B150%7D%20%5Clarge%20%5Ctheta)). The formula is very clear in this regard:
 
@@ -55,7 +57,8 @@ and the likelihood as:
 
 It is now possible to marginalize out the latent variable ![e](https://latex.codecogs.com/gif.latex?%5Cdpi%7B150%7D%20%5Clarge%20%5Ctheta)
 and observe the resulting functional form, which looks exactly as the one listed above when defining the structure of our
-*permutation invariant* neural network:
+*permutation invariant* neural network (just think of ![phi](https://latex.codecogs.com/gif.latex?%5Cdpi%7B150%7D%20%5Clarge%20%5Cphi) and
+![rho](https://latex.codecogs.com/gif.latex?%5Cdpi%7B150%7D%20%5Clarge%20%5Crho)):
 
 ![f](https://latex.codecogs.com/gif.latex?%5Cdpi%7B150%7D%20%5Clarge%20p%28X/%5Calpha%2C%20M_0%29%20%3D%20exp%28h%28%5Calpha%20&plus;%20%5Csum_%7Bm%7D%20%5Cphi%28x_m%29%2C%20M_0%20&plus;%20M%29%20-%20h%28%5Calpha%2C%20M_0%29%29)
 
@@ -63,8 +66,8 @@ and observe the resulting functional form, which looks exactly as the one listed
 
 Let us now implement a simple experiment that is also reported in the original **Deep Sets** publication. A neural network 
 receives in input a set of MNIST images (28 x 28 pixels) and needs to compute their numerical sum. In this experiment, the model
-is trained end-to-end in order to interpret the identity of the numbers in input image and to produce their sum after aggregation (*pooling*). 
-The number of images to be used (the input set) is itself a variable, in this simple example though, it will be restricted to 3.
+is trained end-to-end in order to interpret the identity of the numbers in the input images and to produce their sum after aggregation (*pooling*). 
+The number of images to be used (the input set) is itself a variable, in this simple example though it will be restricted to 3.
 
 The structure of the neural net consists of an *image-processing* part which condense the information contained in the input image
 (as usual through subsequent convolutional layers) and a feed-forward neural net after pooling (the *sum* operation) which transforms
@@ -76,7 +79,7 @@ import tensorflow as tf
 (x_train, y_train), (x_test, y_test) = tf.keras.datasets.mnist.load_data()
 ```
 
-Next, we create a suitable form for the input training/test set by sampling random triplets of numbers and computing their sum:
+Next, we create a training/test set by sampling random triplets of numbers and computing their sum:
 
 ```python
 import numpy as np
@@ -108,7 +111,7 @@ X_train_data, y_train_data = generate_dataset(n_samples=100000, x_data=x_train, 
 X_test_data, y_test_data = generate_dataset(n_samples=20000, x_data=x_test, y_data=y_test, n_images=3)
 ```
 
-And just to have an idea of what the dataset looks like we can visualize it like this:
+And just to have an idea of what the dataset looks like we can create this visualization:
 
 ```python
 import matplotlib.pyplot as plt
@@ -206,6 +209,15 @@ for sample_idx in range(n_sample_viz):
 
 <img src="deepsets/numbers_2.png" alt="Image not found" width="500"/>
 
+## Conclusion
+
+The prediction accuracy on this simple dataset is of course very high, and it is safe to say that we do not need more complicated models
+to address problems like these. 
+
+Nonetheless, the simplistic *pooling* operation that we are using in this case (the `sum`) does not model interactions 
+between elements in the sets, giving way to (relevant) information loss. In the next post I will talk about (and provide a TF implementation of) the [Set transformer](https://arxiv.org/pdf/1810.00825.pdf),
+which is an interesting work based on self-attention that model permutation-invariant function 
+while preserving higher-order interactions between members of input sets.
 
 ## Reference
 - https://www.inference.vc/deepsets-modeling-permutation-invariance/
