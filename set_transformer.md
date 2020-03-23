@@ -2,13 +2,13 @@
 ## Set Transformer, ICML 2019
 
 
-In a ![previous post](https://arrigonialberto86.github.io/funtime/deepsets.html) I talked about functions preserving 
+In a [previous post](https://arrigonialberto86.github.io/funtime/deepsets.html) I talked about functions preserving 
 *permutation invariance* with respect to input data (i.e. sets of data points such as items in a shopping cart).
-If you are not familiar with this concept please review that post or refer to the original ![DeepSet paper](https://arxiv.org/abs/1703.06114).
+If you are not familiar with this concept please review that post or refer to the original [DeepSet paper](https://arxiv.org/abs/1703.06114).
 
 I this post we will go through the details of a recent paper that leverage the idea of attention and the overall transformer architecture
 to attain input permutation invariance, and solves some of the shortcomings connected with the naive pooling operation we used in
-DeepSets. You can find the original publication by Lee et al. ![here](https://arxiv.org/pdf/1810.00825.pdf): Set Transformer: A Framework for Attention-based
+DeepSets. You can find the original publication by Lee et al. [here](https://arxiv.org/pdf/1810.00825.pdf): Set Transformer: A Framework for Attention-based
 Permutation-Invariant Neural Networks.
 
 
@@ -23,7 +23,7 @@ is lost after combining data points.
 
 ## Paper contributions
 
-It has been observed before ![before](https://arxiv.org/abs/1706.03762) that the transformer architecture (![here](http://jalammar.github.io/illustrated-transformer/) 
+It has been observed before [before](https://arxiv.org/abs/1706.03762) that the transformer architecture ([here](http://jalammar.github.io/illustrated-transformer/) 
 you can find a very nice 'visual' explanation) without positional encoding
 does not retain information regarding the order by which the input words are being supplied. Thus, it makes sense to suppose that
 the attention mechanism (which constitutes the basis of the Transformer architecture) could be used to process sets of elements in the same way
@@ -52,7 +52,7 @@ but not necessarily since the corresponding queries and keys (after projection) 
 What we get by the queries (Q) and keys (K) product is a unnormalized attention weight matrix, which we later normalize by using a **softmax** function.
 Once we have the normalized attention weights, we then multiply these by the corresponding value matrix (V) to focus on only certain salient parts of the value (V) matrix, and this will give us a new and updated node matrix:
 
-[attention](https://latex.codecogs.com/gif.latex?%5Cdpi%7B150%7D%20%5Clarge%20%5Chat%7BN%7D%20%3D%20softmax%28QK%5E%7BT%7D%29V)
+![attention](https://latex.codecogs.com/gif.latex?%5Cdpi%7B150%7D%20%5Clarge%20%5Chat%7BN%7D%20%3D%20softmax%28QK%5E%7BT%7D%29V)
 
 The `QK^T` matrix is a `nxn` matrix which encoded the pairwise relationships between the elements of the input set.
 We then multiply this by the value (V) matrix, which will update each feature vector according to its interactions with other elements, such that the final result is an updated set matrix.
