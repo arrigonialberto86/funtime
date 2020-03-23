@@ -50,9 +50,16 @@ Remember, we compute all pairwise interactions between nodes include self-intera
 but not necessarily since the corresponding queries and keys (after projection) may be different.
 
 What we get by the queries (Q) and keys (K) product is a unnormalized attention weight matrix, which we later normalize by using a **softmax** function.
-Once we have the normalized attention weights, we then multiply these by the corresponding value matrix to focus on only certain salient parts of the value (V) matrix, and this will give us a new and updated node matrix:
+Once we have the normalized attention weights, we then multiply these by the corresponding value matrix (V) to focus on only certain salient parts of the value (V) matrix, and this will give us a new and updated node matrix:
 
 [attention](https://latex.codecogs.com/gif.latex?%5Cdpi%7B150%7D%20%5Clarge%20%5Chat%7BN%7D%20%3D%20softmax%28QK%5E%7BT%7D%29V)
+
+The `QK^T` matrix is a `nxn` matrix which encoded the pairwise relationships between the elements of the input set.
+We then multiply this by the value (V) matrix, which will update each feature vector according to its interactions with other elements, such that the final result is an updated set matrix.
+
+What is truly remarkable about this encoding process is that is flexible enough to be useful in very different contexts: in NLP (where attention was conceived) 
+the weight matrix represents how much one word is relevant for the translation of another word, i.e. the contextual information, in graph neural network the `QK^T` matrix
+becomes the weighted adjacency matrix of the graph. 
 
 ## The network structure
 
