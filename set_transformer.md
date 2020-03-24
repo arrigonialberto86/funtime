@@ -2,11 +2,13 @@
 ## Set Transformer, ICML 2019
 
 
+Click [here](https://github.com/arrigonialberto86/set_transformer) for the companion Python package on Github 
+
 In a [previous post](https://arrigonialberto86.github.io/funtime/deepsets.html) I talked about functions preserving 
 *permutation invariance* with respect to input data (i.e. sets of data points such as items in a shopping cart).
 If you are not familiar with this concept please review that post or refer to the original [DeepSet paper](https://arxiv.org/abs/1703.06114).
 
-I this post we will go through the details of a recent paper that leverage the idea of attention and the overall transformer architecture
+In this post we will go through the details of a recent paper that leverages the idea of attention and the overall transformer architecture
 to attain input permutation invariance, and solves some of the shortcomings connected with the naive pooling operation we used in
 DeepSets. You can find the original publication by Lee et al. [here](https://arxiv.org/pdf/1810.00825.pdf): Set Transformer: A Framework for Attention-based
 Permutation-Invariant Neural Networks.
@@ -20,37 +22,35 @@ The **Set Tranformer** architecture suggested in the aforementioned publication 
 representation of input data that capture higher-order interactions and parametrizes the *pooling* operation so that no information
 is lost after combining data points. 
 
-**Disclaimer**: the code reported below is meant to be executed in the Docker container reported in the package in Github: 
+**Disclaimer**: the code reported below is meant to be executed in the Docker container reported in the companion Python package on Github:
+https://github.com/arrigonialberto86/set_transformer . See the docs on the repo on how to use `docker-compose.yml` to try this in a Jupyter Notebook. 
 
 ## Paper contributions
 
-
-I am releasing this blog post with a companion Python package available on Github: [set_transformer](https://github.com/arrigonialberto86/set_transformer)
-
-It has been observed before [before](https://arxiv.org/abs/1706.03762) that the transformer architecture ([here](http://jalammar.github.io/illustrated-transformer/) 
-you can find a very nice 'visual' explanation) without positional encoding
+It has been observed [before](https://arxiv.org/abs/1706.03762) that the transformer architecture ([here](http://jalammar.github.io/illustrated-transformer/) 
+you can find a very nice 'visual' introduction to Transformer) without positional encoding
 does not retain information regarding the order by which the input words are being supplied. Thus, it makes sense to suppose that
 the attention mechanism (which constitutes the basis of the Transformer architecture) could be used to process sets of elements in the same way
-as we have seen for the DeepSet architecture. In Lemma 1 of the their paper, Lee et al. demonstrate that the mean operator (i.e. a pooling function we have talked about)
-is a special case of dot-product attention with softmax (i.e. the self-attention mechanism). 
+as we have seen for the DeepSet architecture. In Lemma 1 of the their paper, Lee et al. demonstrate that the mean operator (i.e. the *pooling* function we have used in the previous blog [post](https://arrigonialberto86.github.io/funtime/deepsets.html))
+is a special case of dot-product attention with *softmax* (i.e. the self-attention mechanism). 
 If this sounds strange to you (or, on the other hand, too simple to be true) I can provide an informal explanation of what self-attention is,
 and why it matters in so many different contexts. 
 
 Let us say we have a set of `f`-dimensional elements/vectors (in the classical NLP context these would be one-hot-encoded vectors to be subsequently
-projected down to an embedding space, here just feature vectors). Since here we are processing *sets* we do not care about the order, 
+projected down to an embedding space, here just feature vectors). Since we are processing *sets* we do not care about the order, 
 just know that we have a `n x f` input matrix `N`. We project this matrix into 3 separate new matrices that are referred to as **keys** (K), **queries** (Q), and **values** (V).
 The projection matrices will be learned during training just like any other parameters in the model. During training the projection matrices will learn how to produce queries, 
 keys and values that will lead to optimal attention weights.
 
 Let us just take a pair of feature vectors to make this concrete (and hopefully clearer): vector `a` and `b` both defined in ![R10](https://latex.codecogs.com/gif.latex?%5Cdpi%7B150%7D%20%5Clarge%20%7B%5CBbb%20R%7D%5E%7B10%7D).
 We now use the three projection matrices K, Q and V (which are all trainable as said before) to obtain three versions (possibly very different according to parametrization)
-of the input vector `a`, i.e. `a_Q`, `a_K`, `a_V`, whose dimensionality depends on K, Q, and V (this is an hyperparameter that needs tuning).
-We do the same thing for `b` to obtain `b_Q`, `b_K`, `b_V`. The two-vector set (`{a, b}`) has now been converted to two lists of vectors.
+of the input vector `a`, i.e. `a_Q`, `a_K`, `a_V`, whose dimensionality depends on K, Q, and V (their dimension is an hyperparameter that needs tuning).
+We do the same thing for `b` to obtain `b_Q`, `b_K`, `b_V` (i.e. the two-vector set (`{a, b}`) has now been converted to two lists of vectors).
 What we would like to understand with these operations (the whole attention mechanism) is how much `a` is *related* to itself and `b`, or put in other terms:
 do I need `b` when predicting a target related to `a` or all the information I need is already present in `a`?
 
-We can calculate how related `a` is to itself first by multiplying (via the inner product) its query (a_q) and key (a_k) together. 
-Remember, we compute all pairwise interactions between nodes include self-interactions, and unsurprisingly objects are likely to be related to themselves, 
+We can calculate how much `a` is related to itself by multiplying (via the inner product) its query (`a_q`) and key (`a_k`) together. 
+Remember, we compute all pairwise interactions between nodes including self-interactions and unsurprisingly objects are likely to be related to themselves, 
 but not necessarily since the corresponding queries and keys (after projection) may be different.
 
 What we get by the queries (Q) and keys (K) product is a unnormalized attention weight matrix, which we later normalize by using a **softmax** function.
@@ -58,10 +58,10 @@ Once we have the normalized attention weights, we then multiply these by the cor
 
 ![attention](https://latex.codecogs.com/gif.latex?%5Cdpi%7B150%7D%20%5Clarge%20%5Chat%7BN%7D%20%3D%20softmax%28QK%5E%7BT%7D%29V)
 
-The `QK^T` matrix is a `nxn` matrix which encoded the pairwise relationships between the elements of the input set.
+The `QK^T` matrix is a `nxn` matrix which encodes the pairwise relationships between the elements of the input set.
 We then multiply this by the value (V) matrix, which will update each feature vector according to its interactions with other elements, such that the final result is an updated set matrix.
 
-What is truly remarkable about this encoding process is that is flexible enough to be useful in very different contexts: in NLP (where attention was conceived) 
+What is truly remarkable about this encoding process is that it is flexible enough to be useful in very different contexts: in NLP (where attention was conceived) 
 the weight matrix represents how much one word is relevant for the translation of another word, i.e. the contextual information, in graph neural network the `QK^T` matrix
 becomes the weighted adjacency matrix of the graph (more on this [here](https://graphdeeplearning.github.io/post/transformers-are-gnns/)). 
 
@@ -112,7 +112,7 @@ this method projects Q,K and V onto `h` different triplets of vectors.
 An attention function is applied to each of these `h` projections and the output is a linear transformation of the concatenation of all attention outputs.
 
 For an implementation of multihead attention see [here](https://github.com/arrigonialberto86/set_transformer/blob/master/set_transformer/layers/attention.py).
-For simplicity, we define the `Multihead` function, which receives Q, K, V, parameters w and returns the encoded vector (for a dimensionality
+For simplicity, we define the `Multihead` function, which receives `Q`, `K`, `V`, parameters `w` and returns the encoded vector (for a dimensionality
 check on input/output vectors you may want to reference [these unit tests](https://github.com/arrigonialberto86/set_transformer/blob/master/tests/test_attention.py) I wrote
 for the package). 
 
@@ -123,17 +123,17 @@ The network structure proposed by Lee et al. closely resembles a Transformer, co
 layer in the encoder and decoder attends to their inputs to produce activations.
 
 The encoder and the decoder are built by *almost* the same building blocks, the main difference is that in the decoder they introduce a block that performs
-pooling by using a parametric function (a neural network) (PMA), so that is can model more complex relationships than the *mean* operator used elsewhere.
+pooling by using a parametric function (a neural network) (PMA), so that it can model more complex relationships than the *mean* operator used elsewhere.
 These are the building blocks of their model:
 
 
-ENCODER = SAB(SAB(X))    with output Z, input of the decoder
+**ENCODER** = SAB(SAB(X))    with output Z, input of the decoder
 
-DECODER = rFF(SAB(PMA(Z)))
+**DECODER** = rFF(SAB(PMA(Z)))
 
 <img src="set_transformer/blocks_structure.png" alt="Image not found" width="900"/>
 
-In the following sections we go through the listed building blocks of the network to give a formal definition and implementation.
+In the following sections we go through the list of building blocks of the network and present an informal definition and implementation.
 
 
 ### Permutation equivariant Set Attention Blocks (SAB)
