@@ -435,6 +435,8 @@ render_chart(fig=fig, axis=axs[1, 2], image_id=5, data_list=sampled_paths)
 
 <img src="set_transformer/chars.png" alt="Image not found" width="400"/>
 
+In this case the number of unique characters present in the sample is 4, which we are setting as target value to be learnt from the model.
+
 And here is how we can combine the building blocks we have written above to create more complicated models:
 
 ```python
