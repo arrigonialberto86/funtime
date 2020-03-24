@@ -130,7 +130,7 @@ ENCODER = SAB(SAB(X))    with output Z, input of the decoder
 
 DECODER = rFF(SAB(PMA(Z)))
 
-<img src="set_transformer/blocks_structure.png" alt="Image not found" width="500"/>
+<img src="set_transformer/blocks_structure.png" alt="Image not found" width="800"/>
 
 In the following sections we go through the listed building blocks of the network to give a formal definition and implementation.
 
