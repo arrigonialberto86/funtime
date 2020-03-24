@@ -1,4 +1,4 @@
-# Paper review & Tf code: Set Transformer
+# Paper review & code: Set Transformer
 ## Set Transformer, ICML 2019
 
 
