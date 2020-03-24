@@ -433,8 +433,77 @@ render_chart(fig=fig, axis=axs[1, 1], image_id=4, data_list=sampled_paths)
 render_chart(fig=fig, axis=axs[1, 2], image_id=5, data_list=sampled_paths)
 ```
 
-<img src="set_transformer/chars.png" alt="Image not found" width="500"/>
+<img src="set_transformer/chars.png" alt="Image not found" width="400"/>
 
+And here is how we can combine the building blocks we have written above to create more complicated models:
+
+```python
+from tensorflow.keras.layers import LayerNormalization, Dense
+import tensorflow as tf
+from set_transformer.layers.attention import MultiHeadAttention
+from set_transformer.layers import RFF
+from set_transformer.blocks import SetAttentionBlock, PoolingMultiHeadAttention
+from tensorflow.keras.layers import Conv2D
+from tensorflow.keras.layers import Conv2D, Input, MaxPooling2D, Dropout, Flatten
+from tensorflow.keras.models import Model
+tf.keras.backend.set_floatx('float32')
+
+
+def image_processing_model(input_image_shape = (105, 105, 1), output_len=128):
+    input_image = Input(shape=input_image_shape)
+    y = Conv2D(64, kernel_size=(3, 3),
+               activation='relu',
+               input_shape=input_image_shape)(input_image)
+    y = Conv2D(64, (3, 3), activation='relu')(y)
+    y = Conv2D(64, (3, 3), activation='relu')(y)
+    y = Conv2D(64, (3, 3), activation='relu')(y)
+    y = MaxPooling2D(pool_size=(2, 2))(y)
+    y = Dropout(0.25)(y)
+    y = Flatten()(y)
+    output_vec = Dense(output_len, activation='relu')(y)
+    return Model(input_image, output_vec)
+
+
+class CharEncoder(tf.keras.layers.Layer):
+    def __init__(self, d=128, h=8):
+        super(CharEncoder, self).__init__()
+
+        # Instantiate image processing model
+        self.image_model = image_processing_model(output_len=d)
+
+        # Encoding part
+        self.sab_1 = SetAttentionBlock(d, h, RFF(d))
+        self.sab_2 = SetAttentionBlock(d, h, RFF(d))
+
+    def call(self, x):
+        return self.sab_2(self.sab_1(tf.map_fn(self.image_model, x)))
+    
+
+class CharDecoder(tf.keras.layers.Layer):
+    def __init__(self, out_dim, d=128, h=8, k=32):
+        super(CharDecoder, self).__init__()
+
+        self.PMA = PoolingMultiHeadAttention(d, k, h, RFF(d), RFF(d))
+        self.SAB = SetAttentionBlock(d, h, RFF(d))
+        self.output_mapper = Dense(out_dim)
+        self.k, self.d = k, d
+
+    def call(self, x):
+        decoded_vec = self.SAB(self.PMA(x))
+        decoded_vec = tf.reshape(decoded_vec, [-1, self.k * self.d])
+        return tf.reshape(self.output_mapper(decoded_vec), (tf.shape(decoded_vec)[0],))
+
+    
+class CharSetTransformer(tf.keras.Model):
+    def __init__(self):
+        super(CharSetTransformer, self).__init__()
+        self.encoder = CharEncoder()
+        self.decoder = CharDecoder(out_dim=1)
+
+    def call(self, x):
+        enc_output = self.encoder(x)  # (batch_size, set_len, d_model)
+        return self.decoder(enc_output)
+```
 
 ## Conclusion
 
@@ -447,6 +516,7 @@ in Bayesian models (did not see that coming!)
 ## Reference
 - "Attention is all you need", 2017, https://arxiv.org/abs/1706.03762
 - "Set Transformer: A Framework for Attention-based Permutation-Invariant Neural Networks", 2019, https://arxiv.org/pdf/1810.00825.pdf
+- "Graph transformer networks", 2019, https://papers.nips.cc/paper/9367-graph-transformer-networks.pdf
 
 ## Equation editor
 - https://www.codecogs.com/latex/eqneditor.php (Latin Modern, 12pts, 150 dpi)
