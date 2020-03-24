@@ -138,10 +138,10 @@ In the following sections we go through the list of building blocks of the netwo
 
 ### Permutation equivariant Set Attention Blocks (SAB)
 
-Since using self-attention to concurrently encode the whole set of input data, we recall the Multihead Attention Block (MAB) with parameters `w` (as in the publication).
+Since we are using self-attention to concurrently encode the whole set of input data, we define a Multihead Attention Block (**MAB**) with parameters `w` (as in the publication).
 Given input matrices X and Y (both of dimensionality `n` x `d`) we define a MAB as:
 
-MAB(X, Y) = LayerNorm(H + RFF(H))
+**MAB**(X, Y) = LayerNorm(H + RFF(H))
 
 where H = LayerNorm(X + Multihead(X,Y,Y; w)) 
 
@@ -175,11 +175,11 @@ class RFF(tf.keras.layers.Layer):
 ```
 
 With the MAB in place (which is just an adaptation of the encoder block of the Transformer but without positional encoding) we can now define the 
-Set Attention Block (SAB):
+Set Attention Block (**SAB**):
 
-SAB(X) := MAB(X, X)
+**SAB**(X) := MAB(X, X)
 
-And this is a SAB layer tf implementation:
+And this is a SAB layer implementation:
 
 ```python
 class SetAttentionBlock(tf.keras.layers.Layer):
@@ -197,10 +197,10 @@ class SetAttentionBlock(tf.keras.layers.Layer):
         return self.mab(x, x)
 ```
 
-You may have noticed an issue with this implementation: for set structured data we need to derive an all-vs-all matrix of weights which results
-in a squared complexity of the algorithm (![comp](https://latex.codecogs.com/gif.latex?%5Cdpi%7B150%7D%20%5Clarge%20O%28n%5E2%29)).
-The authors come up with a clever way to reduce the complexity to ![c](https://latex.codecogs.com/gif.latex?%5Cdpi%7B150%7D%20%5Clarge%20O%28mn%29), 
-where `m` is the dimensionality of trainable 'inducing points'. These 'inducible' vectors are in fact trainable parameters that are learned during training
+You may have noticed a scalability issue with this implementation: for set structured data we need to derive an all-vs-all matrix of weights which results
+in an algorithm of complexity (![comp](https://latex.codecogs.com/gif.latex?%5Cdpi%7B150%7D%20%5Clarge%20O%28n%5E2%29)).
+The authors come up with a clever way to reduce this complexity to ![c](https://latex.codecogs.com/gif.latex?%5Cdpi%7B150%7D%20%5Clarge%20O%28mn%29), 
+where `m` is the dimensionality of trainable 'inducing points'. These 'inducible' vectors are in fact parameters that are learned during training
 along with all the others. You may picture this operation as making a low-rank projection or using an under-complete autoencoder model.
 Let us slightly modify our SAB implementation to obtain an ISAB:
 
@@ -236,7 +236,7 @@ class InducedSetAttentionBlock(tf.keras.layers.Layer):
         return self.mab2(x, h)
 ```
 
-We now have all the ingredients to write the encoder layer of our model:
+We now have all the ingredients/blocks to write the encoder layer of our model:
 
 ```python
 class STEncoder(tf.keras.layers.Layer):
@@ -259,7 +259,7 @@ class STEncoder(tf.keras.layers.Layer):
 We said before that feature aggregation is commonly performed by dimension-wise averaging. The authors propose instead to apply multihead attention 
 on a learnable set of `k` seed vectors (S). The idea is not dissimilar to what we saw for ISAB and has the following structure (remember that Z is the encoder's output):
 
-PMA(Z) = MAB(S, rFF(Z))
+**PMA**(Z) = MAB(S, rFF(Z))
 
 To complete the decoder layer, we apply a SAB on the output of PMA:
 
@@ -373,7 +373,7 @@ Notably, the authors report that the Set Transformer achieves performance compar
 
 ## Counting unique characters
 
-In this example I will just set the stage for a run using the `set_transformer` APIs. The reference dataset is called 'Omniglot', 
+In this example I will just set the stage for a run using the [`set_transformer` APIs](https://github.com/arrigonialberto86/set_transformer). The reference dataset is called 'Omniglot', 
 which consists of 1,623 different handwritten characters from various alphabets, where each character is represented by 20 different images.
 Characters are sampled at random from this dataset and the task at hand is to predict the number of unique characters present in the input set.
 
@@ -436,7 +436,7 @@ render_chart(fig=fig, axis=axs[1, 2], image_id=5, data_list=sampled_paths)
 
 <img src="set_transformer/chars.png" alt="Image not found" width="400"/>
 
-In this case the number of unique characters present in the sample is 4, which we are setting as target value to be learnt from the model.
+In this case the number of unique characters present in the sample is 4, which we are setting as target value to be learnt by the model.
 
 And here is how we can combine the building blocks we have written above to create more complicated models:
 
