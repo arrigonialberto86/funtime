@@ -372,6 +372,70 @@ Notably, the authors report that the Set Transformer achieves performance compar
 
 ## Counting unique characters
 
+In this example I will just set the stage for a run using the `set_transformer` APIs. The reference dataset is called 'Omniglot', 
+which consists of 1,623 different handwritten characters from various alphabets, where each character is represented by 20 different images.
+Characters are sampled at random from this dataset and the task at hand is to predict the number of unique characters present in the input set.
+
+```python
+import numpy as np
+import matplotlib.pyplot as plt
+%matplotlib inline
+from tqdm.notebook import tqdm
+from typing import List
+
+
+# Get list of different character paths
+img_dir = './images_background'
+alphabet_names = [a for a in os.listdir(img_dir) if a[0] != '.'] # get folder names
+char_paths = []
+for lang in alphabet_names:
+    for char in [a for a in os.listdir(img_dir+'/'+lang) if a[0] != '.']:
+        char_paths.append(img_dir+'/'+lang+'/'+char)
+
+char_to_png = {char_path: os.listdir(char_path) for char_path in tqdm(char_paths)}
+
+
+
+def draw_one_sample(char_paths: List, sample_size=6):
+    n_chars = np.random.randint(low=1, high=sample_size, size=1)
+    selected_chars = np.random.choice(char_paths, size=n_chars, replace=False)
+    rep_char_list = selected_chars.tolist() + \
+                    np.random.choice(selected_chars, size=sample_size-len(selected_chars), replace=True).tolist()
+    sampled_paths = [char_path+'/'+np.random.choice(char_to_png[char_path]) for char_path in rep_char_list]
+    return sampled_paths, n_chars[0]
+
+sampled_paths, n_chars = draw_one_sample(char_paths, sample_size=6)
+```
+
+And that is what a random sample looks like:
+
+```python
+
+from matplotlib.figure import Figure
+from numpy import ndarray
+from typing import List
+import matplotlib.image as mpimg
+
+def render_chart(fig: Figure, axis: ndarray, image_id: int, data_list: List):
+    image = mpimg.imread(data_list[image_id])
+    axis.title.set_text(data_list[image_id].split('/')[-2])
+    axis.axis('off')
+    axis.imshow(image, cmap='gray')
+
+print('Number of selected characters is {}'.format(n_chars))    
+
+fig, axs = plt.subplots(2, 3)
+render_chart(fig=fig, axis=axs[0, 0], image_id=0, data_list=sampled_paths)
+render_chart(fig=fig, axis=axs[0, 1], image_id=1, data_list=sampled_paths)
+render_chart(fig=fig, axis=axs[0, 2], image_id=2, data_list=sampled_paths)
+render_chart(fig=fig, axis=axs[1, 0], image_id=3, data_list=sampled_paths)
+render_chart(fig=fig, axis=axs[1, 1], image_id=4, data_list=sampled_paths)
+render_chart(fig=fig, axis=axs[1, 2], image_id=5, data_list=sampled_paths)
+```
+
+<img src="set_transformer/chars.png" alt="Image not found" width="500"/>
+
+
 ## Conclusion
 
 I encourage you to read the original paper (complete with supplementary materials) where the authors show useful theoretical properties of the Set Transformer,
