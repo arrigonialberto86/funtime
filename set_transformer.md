@@ -2,7 +2,7 @@
 ## Set Transformer, ICML 2019
 
 
-Click [here](https://github.com/arrigonialberto86/set_transformer) for the companion Python package on Github 
+** Click [here](https://github.com/arrigonialberto86/set_transformer) for the companion Python package on Github **
 
 In a [previous post](https://arrigonialberto86.github.io/funtime/deepsets.html) I talked about functions preserving 
 *permutation invariance* with respect to input data (i.e. sets of data points such as items in a shopping cart).
