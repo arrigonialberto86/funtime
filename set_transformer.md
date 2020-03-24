@@ -468,7 +468,7 @@ def image_processing_model(input_image_shape = (105, 105, 1), output_len=128):
 
 
 class CharEncoder(tf.keras.layers.Layer):
-    def __init__(self, d=128, h=8):
+    def __init__(self, d=64, h=8):
         super(CharEncoder, self).__init__()
 
         # Instantiate image processing model
@@ -483,7 +483,7 @@ class CharEncoder(tf.keras.layers.Layer):
     
 
 class CharDecoder(tf.keras.layers.Layer):
-    def __init__(self, out_dim, d=128, h=8, k=32):
+    def __init__(self, out_dim, d=64, h=8, k=32):
         super(CharDecoder, self).__init__()
 
         self.PMA = PoolingMultiHeadAttention(d, k, h, RFF(d), RFF(d))
