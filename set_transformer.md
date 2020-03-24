@@ -1,4 +1,4 @@
-# Paper review & (TensorFlow) code: Set Transformer
+# Paper review & Tf code: Set Transformer
 ## Set Transformer, ICML 2019
 
 
@@ -20,6 +20,7 @@ The **Set Tranformer** architecture suggested in the aforementioned publication 
 representation of input data that capture higher-order interactions and parametrizes the *pooling* operation so that no information
 is lost after combining data points. 
 
+**Disclaimer**: the code reported below is meant to be executed in the Docker container reported in the package in Github: 
 
 ## Paper contributions
 
