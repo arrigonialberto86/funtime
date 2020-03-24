@@ -363,7 +363,7 @@ Epoch 1/3
 Epoch 2/3
 100000/100000 [==============================] - 20s 197us/sample - loss: 6.6131
 Epoch 3/3
-100000/100000 [==============================] - 22s 216us/sample - loss: 6.6121
+100000/100000 [==============================] - 22s 216us/sample - loss: 6.4121
 MAE on test set is:  6.558687
 ```
 
@@ -377,8 +377,8 @@ Notably, the authors report that the Set Transformer achieves performance compar
 I encourage you to read the original paper (complete with supplementary materials) where the authors show useful theoretical properties of the Set Transformer,
 , including the fact that it is a universal approximator for permutation invariant functions. 
 
-I was surprised to see that among the future developments of this work they suggest that the Set Transformer can be used to meta-learn posterior inference 
-in Bayesian models. 
+I was also surprised to see that among the future developments of this work they suggest that Set Transformer can be used to meta-learn posterior inference 
+in Bayesian models (did not see that coming!)
 
 ## Reference
 - "Attention is all you need", 2017, https://arxiv.org/abs/1706.03762
