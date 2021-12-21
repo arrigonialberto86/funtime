@@ -4,6 +4,7 @@
 ## FunTime
 
 Posts list:
+- [(Paper to be submitted) Inductive inference of novel protein-molecule interactions using Heterogeneous Graph Transformer (HGT) AutoEncoder](HGT_paper.pdf)
 - [Set Transformer: paper review with code](set_transformer.md)
 - [Level-trend State Space Models: a PyTorch implementation from scratch](state_space.md)
 - [Dirichlet processes (DP) and the Chinese Restaurant Process (CRP)](dirichlet.md)
